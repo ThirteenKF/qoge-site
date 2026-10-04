@@ -539,7 +539,7 @@ a:hover{color:oklch(0.72 0.17 40)}
 
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;heroVariant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Countdown&quot;,&quot;Transmission&quot;,&quot;Meme&quot;,&quot;Breaking News&quot;],&quot;default&quot;:&quot;Breaking News&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Hero&quot;},&quot;buildProgress&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0,&quot;max&quot;:100,&quot;step&quot;:1,&quot;default&quot;:37,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Mission&quot;},&quot;chain&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Quai Network&quot;,&quot;Solana&quot;,&quot;Ethereum&quot;,&quot;Base&quot;,&quot;BNB Chain&quot;,&quot;TON&quot;],&quot;default&quot;:&quot;Quai Network&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Token&quot;},&quot;contractAddress&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;0x00QOGE0000000000000000000000000000MarsDog&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Token&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;heroVariant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Countdown&quot;,&quot;Transmission&quot;,&quot;Meme&quot;,&quot;Breaking News&quot;],&quot;default&quot;:&quot;Breaking News&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Hero&quot;},&quot;buildProgress&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0,&quot;max&quot;:100,&quot;step&quot;:1,&quot;default&quot;:37,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Mission&quot;},&quot;chain&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Quai Network&quot;,&quot;Solana&quot;,&quot;Ethereum&quot;,&quot;Base&quot;,&quot;BNB Chain&quot;,&quot;TON&quot;],&quot;default&quot;:&quot;Quai Network&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Token&quot;},&quot;contractAddress&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;0x0048848cA70eA1560577B4725A84b23B6bC589e2&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Token&quot;}}">
 class Component extends DCLogic {
   state = { now: Date.now(), copied: false, scroll: 0, progress: 0, openFaq: 0, lang: (typeof localStorage !== 'undefined' && localStorage.getItem('qoge-lang')) || 'en' };
   setLang(l) { try { localStorage.setItem('qoge-lang', l); } catch (e) {} document.documentElement.lang = l; this.setState({ lang: l }); }
@@ -642,7 +642,7 @@ class Component extends DCLogic {
     clearInterval(this.t); window.removeEventListener('scroll', this.onScroll); this.io && this.io.disconnect();
   }
   renderVals() {
-    const ca = this.props.contractAddress || '0x00QOGE0000000000000000000000000000MarsDog';
+    const ca = this.props.contractAddress || '0x0048848cA70eA1560577B4725A84b23B6bC589e2';
     const chain = this.props.chain || 'Quai Network';
     const pad = n => String(n).padStart(2, '0');
     let diff = Math.max(0, new Date('2026-12-31T00:00:00Z').getTime() - this.state.now) / 1000;
