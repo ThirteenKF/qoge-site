@@ -524,12 +524,15 @@ class Component extends DCLogic {
     // Live token data (assets/metrics.js sets window.QOGE_METRICS; works on file:// too)
     const ms = document.createElement('script');
     ms.src = 'assets/metrics.js?t=' + Math.floor(Date.now() / 60000);
-    ms.onload = () => window.QOGE_METRICS && this.setState({ metrics: window.QOGE_METRICS });
+    ms.onload = () => {
+      if (this.liveMetrics) { window.QOGE_METRICS = this.liveMetrics; return; } // fresher data from /api/metrics already arrived
+      if (window.QOGE_METRICS) this.setState({ metrics: window.QOGE_METRICS });
+    };
     document.head.appendChild(ms);
     // On Vercel: fresher numbers from the serverless function (404 elsewhere — ignored)
     if (location.protocol.startsWith('http') && !location.hostname.endsWith('github.io')) {
       fetch('/api/metrics').then(r => r.ok ? r.json() : null).then(m => {
-        if (m && m.updatedAt && !m.error) { window.QOGE_METRICS = m; this.setState({ metrics: m }); }
+        if (m && m.updatedAt && !m.error) { this.liveMetrics = m; window.QOGE_METRICS = m; this.tickerKey = null; this.setState({ metrics: m }); }
       }).catch(() => {});
     }
     const ns = document.createElement('script');
