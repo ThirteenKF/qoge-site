@@ -29,7 +29,8 @@ Context for picking this project up in a new chat.
 - X: https://x.com/QOGEofficial
 - Telegram: https://t.me/QOGEofficial
 - Contract (Quai Network): 0x0048848cA70eA1560577B4725A84b23B6bC589e2
-- DexScreener, Chart buttons: still `href="#"` — waiting for URLs.
+- Discord: https://discord.gg/eHVA8rJ2J (replaced the old Chart button)
+- DexScreener button: still `href="#"` — waiting for URL.
 
 ## How we work
 - Claude cannot push to GitHub directly. Claude edits files in the local folder

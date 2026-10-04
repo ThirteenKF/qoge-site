@@ -4,6 +4,7 @@ Landing page for **$QOGE** — the very good boy who accidentally colonized Mars
 
 - X / Twitter: https://x.com/QOGEofficial
 - Telegram: https://t.me/QOGEofficial
+- Discord: https://discord.gg/eHVA8rJ2J
 
 ## Structure
 
