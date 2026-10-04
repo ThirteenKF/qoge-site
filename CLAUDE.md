@@ -30,7 +30,7 @@ Context for picking this project up in a new chat.
 - Telegram: https://t.me/QOGEofficial
 - Contract (Quai Network): 0x0048848cA70eA1560577B4725A84b23B6bC589e2
 - Discord: https://discord.gg/eHVA8rJ2J (replaced the old Chart button)
-- DexScreener button: still `href="#"` — waiting for URL.
+- Quainance button (replaced DexScreener — it does not list Quai Network yet)
 
 ## How we work
 - Claude cannot push to GitHub directly. Claude edits files in the local folder
