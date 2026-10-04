@@ -17,7 +17,8 @@ Context for picking this project up in a new chat.
 - `assets/` — mars-bg.png, earth-bg.png, logo.jpg, doge.gif.
 
 ## Live metrics
-- Tokenomics cards (market cap, price, liquidity, holders) load `assets/metrics.js`
+- Tokenomics cards (market cap, price, liquidity, holders) + 7-day price chart
+  (renderChart(), hand-drawn SVG, hover tooltip) load `assets/metrics.js`
   (sets window.QOGE_METRICS; works from file://). `metrics.json` = same data.
 - `scripts/fetch-metrics.mjs` refreshes it from the Quainance API every 30 min
   in `.github/workflows/pages.yml`. Quainance API has no CORS, so the browser

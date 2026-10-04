@@ -407,6 +407,7 @@ a:hover{color:oklch(0.72 0.17 40)}
       <span style="background:#f4f0ec;color:#141110;padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;white-space:nowrap">{{ t.m4 }}</span>
       <span style="padding:18px 14px 22px;font-weight:900;font-size:clamp(20px,2.2vw,34px);line-height:1.05;font-variant-numeric:tabular-nums;overflow-wrap:anywhere">{{ mHolders }}</span></div></div>
   </div>
+  <div>{{ priceChart }}</div>
   <a href="{{ mSource }}" target="_blank" rel="noopener" style="align-self:flex-start;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;color:#141110;border-bottom:2px solid #141110;padding-bottom:2px" style-hover="color:oklch(0.62 0.21 25)">● {{ t.mLive }} · {{ t.mUpd }} {{ mUpdated }} ↗</a>
 </section>
 <section class="q-pr" id="roadmap" data-screen-label="Roadmap News" style="background:#141110;color:#f4f0ec;padding:clamp(72px,10vw,140px) clamp(16px,4vw,56px);padding-right:clamp(112px,8vw,140px);display:flex;flex-direction:column;gap:48px;border-bottom:4px solid #141110">
@@ -556,7 +557,7 @@ a:hover{color:oklch(0.72 0.17 40)}
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;heroVariant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Countdown&quot;,&quot;Transmission&quot;,&quot;Meme&quot;,&quot;Breaking News&quot;],&quot;default&quot;:&quot;Breaking News&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Hero&quot;},&quot;buildProgress&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0,&quot;max&quot;:100,&quot;step&quot;:1,&quot;default&quot;:37,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Mission&quot;},&quot;chain&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Quai Network&quot;,&quot;Solana&quot;,&quot;Ethereum&quot;,&quot;Base&quot;,&quot;BNB Chain&quot;,&quot;TON&quot;],&quot;default&quot;:&quot;Quai Network&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Token&quot;},&quot;contractAddress&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;0x0048848cA70eA1560577B4725A84b23B6bC589e2&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Token&quot;}}">
 class Component extends DCLogic {
-  state = { now: Date.now(), copied: false, scroll: 0, progress: 0, openFaq: 0, metrics: null, lang: (typeof localStorage !== 'undefined' && localStorage.getItem('qoge-lang')) || 'en' };
+  state = { now: Date.now(), copied: false, scroll: 0, progress: 0, openFaq: 0, metrics: null, hi: null, lang: (typeof localStorage !== 'undefined' && localStorage.getItem('qoge-lang')) || 'en' };
   setLang(l) { try { localStorage.setItem('qoge-lang', l); } catch (e) {} document.documentElement.lang = l; this.setState({ lang: l }); }
   dict(chain) {
     const en = {
@@ -582,7 +583,7 @@ class Component extends DCLogic {
       s1b: 'Download Pelagus or another ' + chain + ' wallet. Guard the seed phrase like the last bacon on Mars.', s2b: 'Buy QUAI on an exchange and send it to your wallet.',
       s3b: 'Open a DEX, paste the contract address below and swap. Double-check the CA.', s4b: 'Hop into the community. Every holder is ground control now.',
       caLabel: 'CONTRACT ADDRESS',
-      tkTag: 'By the numbers', tkSub: 'TOKENOMICS', tkH: 'The fuel specs', k1: 'TOTAL SUPPLY', k2: 'BUY / SELL TAX', k3: 'LIQUIDITY', k4: 'CONTRACT', v3: 'Burned', v4: 'Renounced', m1: 'MARKET CAP', m2: 'PRICE', m3: 'LIQUIDITY', m4: 'HOLDERS', mLive: 'LIVE DATA · QUAINANCE', mUpd: 'UPDATED',
+      tkTag: 'By the numbers', tkSub: 'TOKENOMICS', tkH: 'The fuel specs', k1: 'TOTAL SUPPLY', k2: 'BUY / SELL TAX', k3: 'LIQUIDITY', k4: 'CONTRACT', v3: 'Burned', v4: 'Renounced', m1: 'MARKET CAP', m2: 'PRICE', m3: 'LIQUIDITY', m4: 'HOLDERS', mLive: 'LIVE DATA · QUAINANCE', mUpd: 'UPDATED', chTitle: 'PRICE · 7D', chVol: 'VOL', chNow: 'NOW', chNoData: 'No trades yet',
       rmTag: 'Coming up next', rmSub: 'ROADMAP · TV GUIDE', rmH1: 'Mars → Earth:', rmH2: 'the schedule', aired: 'AIRED ✓', onAir: '● ON AIR', upNext: 'UP NEXT',
       fqTag: 'Viewer questions', fqH1: 'You asked.', fqH2: 'We barked.',
       cmH1: 'Join the rescue team.', cmH2: 'Bring him home.', bubble: 'pls hurry, i\'m out of bacon',
@@ -616,7 +617,7 @@ class Component extends DCLogic {
       s1b: 'Скачай Pelagus или другой кошелёк ' + chain + '. Храни сид-фразу как последний бекон на Марсе.', s2b: 'Купи QUAI на бирже и отправь на свой кошелёк.',
       s3b: 'Открой DEX, вставь адрес контракта ниже и обменяй. Проверь CA дважды.', s4b: 'Заходи в комьюнити. Теперь каждый холдер — центр управления полётом.',
       caLabel: 'АДРЕС КОНТРАКТА',
-      tkTag: 'В цифрах', tkSub: 'ТОКЕНОМИКА', tkH: 'Характеристики топлива', k1: 'ОБЩИЙ ОБЪЁМ', k2: 'НАЛОГ ПОКУПКА / ПРОДАЖА', k3: 'ЛИКВИДНОСТЬ', k4: 'КОНТРАКТ', v3: 'Сожжена', v4: 'Без владельца', m1: 'КАПИТАЛИЗАЦИЯ', m2: 'ЦЕНА', m3: 'ЛИКВИДНОСТЬ', m4: 'ХОЛДЕРЫ', mLive: 'ЖИВЫЕ ДАННЫЕ · QUAINANCE', mUpd: 'ОБНОВЛЕНО',
+      tkTag: 'В цифрах', tkSub: 'ТОКЕНОМИКА', tkH: 'Характеристики топлива', k1: 'ОБЩИЙ ОБЪЁМ', k2: 'НАЛОГ ПОКУПКА / ПРОДАЖА', k3: 'ЛИКВИДНОСТЬ', k4: 'КОНТРАКТ', v3: 'Сожжена', v4: 'Без владельца', m1: 'КАПИТАЛИЗАЦИЯ', m2: 'ЦЕНА', m3: 'ЛИКВИДНОСТЬ', m4: 'ХОЛДЕРЫ', mLive: 'ЖИВЫЕ ДАННЫЕ · QUAINANCE', mUpd: 'ОБНОВЛЕНО', chTitle: 'ЦЕНА · 7 ДНЕЙ', chVol: 'ОБЪЁМ', chNow: 'СЕЙЧАС', chNoData: 'Сделок пока нет',
       rmTag: 'Далее в эфире', rmSub: 'РОАДМАП · ТЕЛЕПРОГРАММА', rmH1: 'Марс → Земля:', rmH2: 'расписание', aired: 'В ЭФИРЕ БЫЛО ✓', onAir: '● В ЭФИРЕ', upNext: 'СКОРО',
       fqTag: 'Вопросы зрителей', fqH1: 'Вы спросили.', fqH2: 'Мы гавкнули.',
       cmH1: 'Вступай в спасательную команду.', cmH2: 'Верни его домой.', bubble: 'поторопитесь, бекон кончился',
@@ -661,6 +662,53 @@ class Component extends DCLogic {
   componentWillUnmount() {
     clearInterval(this.t); window.removeEventListener('scroll', this.onScroll); this.io && this.io.disconnect();
   }
+  renderChart(t, L) {
+    const e = React.createElement;
+    const m = this.state.metrics || {}, c = m.candles || [];
+    const Y = 'oklch(0.88 0.17 95)', INK = '#f4f0ec', MUTED = '#a59e97', GRID = '#2a2523';
+    const mono = "'IBM Plex Mono',monospace";
+    const fmt = v => { const d = Math.max(2, -Math.floor(Math.log10(v)) + 2); return v.toFixed(Math.min(d, 12)); };
+    const loc = L === 'ru' ? 'ru-RU' : 'en-GB';
+    const head = (right) => e('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'stretch', gap: 12, flexWrap: 'wrap' } },
+      e('span', { style: { background: INK, color: '#141110', padding: '8px 12px', fontFamily: mono, fontSize: 12, letterSpacing: '.1em' } }, t.chTitle), right);
+    const box = kids => e('div', { style: { background: '#141110', color: INK, border: '4px solid #141110', display: 'flex', flexDirection: 'column' } }, ...kids);
+    if (c.length < 2) return box([head(null), e('div', { style: { padding: 24, fontFamily: mono, fontSize: 12, color: MUTED } }, t.chNoData)]);
+    const W = 1000, H = 220, PAD = 12;
+    const ps = c.map(x => x[1]); let lo = Math.min(...ps), hi = Math.max(...ps);
+    const span = (hi - lo) || hi * 0.1; lo -= span * 0.08; hi += span * 0.08;
+    const X = i => i / (c.length - 1) * W, Yp = v => PAD + (1 - (v - lo) / (hi - lo)) * (H - 2 * PAD);
+    const line = c.map((x, i) => (i ? 'L' : 'M') + X(i).toFixed(1) + ' ' + Yp(x[1]).toFixed(1)).join(' ');
+    const area = line + ` L${W} ${H} L0 ${H} Z`;
+    const first = ps[0], last = ps[ps.length - 1], ch = (last - first) / first * 100, up = ch >= 0;
+    const usdPerQuai = m.priceUsd && m.priceQuai ? m.priceUsd / m.priceQuai : null;
+    const hiIdx = this.state.hi, cur = hiIdx == null ? null : c[hiIdx];
+    const pick = (clientX, el) => { const r = el.getBoundingClientRect(); const k = Math.round(Math.min(1, Math.max(0, (clientX - r.left) / r.width)) * (c.length - 1)); if (k !== this.state.hi) this.setState({ hi: k }); };
+    const pct = i => (i / (c.length - 1) * 100) + '%', topPct = v => (Yp(v) / H * 100) + '%';
+    const right = e('div', { style: { display: 'flex', alignItems: 'baseline', gap: 12, padding: '8px 12px', fontVariantNumeric: 'tabular-nums' } },
+      e('span', { style: { fontWeight: 900, fontSize: 18 } }, fmt(last) + ' QUAI'),
+      e('span', { style: { fontFamily: mono, fontSize: 13, fontWeight: 500, color: up ? 'oklch(0.8 0.17 145)' : 'oklch(0.7 0.19 25)' } }, (up ? '▲ +' : '▼ ') + ch.toFixed(1) + '%'));
+    const yLab = (v, top) => e('span', { style: { position: 'absolute', left: 8, top, transform: 'translateY(-50%)', fontFamily: mono, fontSize: 11, color: MUTED, background: 'rgba(20,17,16,.75)', padding: '0 4px', pointerEvents: 'none' } }, fmt(v));
+    const plot = e('div', {
+        style: { position: 'relative', height: 'clamp(180px,24vw,260px)', margin: '8px 0 0', cursor: 'crosshair', touchAction: 'pan-y' },
+        onMouseMove: ev => pick(ev.clientX, ev.currentTarget), onMouseLeave: () => this.setState({ hi: null }),
+        onTouchStart: ev => pick(ev.touches[0].clientX, ev.currentTarget), onTouchMove: ev => pick(ev.touches[0].clientX, ev.currentTarget), onTouchEnd: () => this.setState({ hi: null }),
+      },
+      e('svg', { viewBox: `0 0 ${W} ${H}`, preserveAspectRatio: 'none', role: 'img', 'aria-label': `${t.chTitle}: ${fmt(first)} → ${fmt(last)} QUAI (${ch.toFixed(1)}%)`, style: { position: 'absolute', inset: 0, width: '100%', height: '100%', display: 'block' } },
+        [0.25, 0.5, 0.75].map(f => e('line', { key: f, x1: 0, x2: W, y1: H * f, y2: H * f, stroke: GRID, strokeWidth: 1, vectorEffect: 'non-scaling-stroke' })),
+        e('path', { d: area, fill: Y, fillOpacity: 0.12 }),
+        e('path', { d: line, fill: 'none', stroke: Y, strokeWidth: 2, strokeLinejoin: 'round', vectorEffect: 'non-scaling-stroke' })),
+      yLab(hi - span * 0.08, topPct(hi - span * 0.08)), yLab(lo + span * 0.08, topPct(lo + span * 0.08)),
+      cur && e('div', { style: { position: 'absolute', top: 0, bottom: 0, left: pct(hiIdx), width: 1, background: MUTED, pointerEvents: 'none' } }),
+      cur && e('div', { style: { position: 'absolute', left: pct(hiIdx), top: topPct(cur[1]), width: 10, height: 10, borderRadius: '50%', background: Y, boxShadow: '0 0 0 2px #141110', transform: 'translate(-50%,-50%)', pointerEvents: 'none' } }),
+      cur && e('div', { style: { position: 'absolute', top: 8, left: pct(hiIdx), transform: hiIdx > c.length / 2 ? 'translateX(calc(-100% - 10px))' : 'translateX(10px)', background: INK, color: '#141110', padding: '8px 10px', fontFamily: mono, fontSize: 12, lineHeight: 1.5, whiteSpace: 'nowrap', pointerEvents: 'none', boxShadow: '3px 3px 0 #000' } },
+        e('div', { style: { color: '#6b635d' } }, new Date(cur[0] * 1000).toLocaleString(loc, { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })),
+        e('div', { style: { fontWeight: 700 } }, fmt(cur[1]) + ' QUAI'),
+        usdPerQuai && e('div', null, '≈ $' + fmt(cur[1] * usdPerQuai)),
+        e('div', null, t.chVol + ' ' + cur[2].toLocaleString(loc) + ' QUAI')));
+    const d0 = new Date(c[0][0] * 1000).toLocaleDateString(loc, { day: '2-digit', month: 'short' });
+    const xAxis = e('div', { style: { display: 'flex', justifyContent: 'space-between', padding: '6px 10px 10px', fontFamily: mono, fontSize: 11, color: MUTED, borderTop: '1px solid ' + GRID } }, e('span', null, d0), e('span', null, t.chNow));
+    return box([head(right), plot, xAxis]);
+  }
   renderVals() {
     const ca = this.props.contractAddress || '0x0048848cA70eA1560577B4725A84b23B6bC589e2';
     const chain = this.props.chain || 'Quai Network';
@@ -675,6 +723,7 @@ class Component extends DCLogic {
     return {
       heroA: hero === 'Countdown', heroB: hero === 'Transmission', heroC: hero === 'Meme', heroD: hero === 'Breaking News', notNews: hero !== 'Breaking News', stdHeader: hero !== 'Meme' && hero !== 'Breaking News',
       cd, ca, chain,
+      priceChart: this.renderChart(this.dict(chain), L),
       ...(() => {
         const m = this.state.metrics || {}, dash = '—';
         const usd = v => v == null ? dash : '$' + (v >= 1e6 ? (v / 1e6).toFixed(2) + 'M' : v >= 1e3 ? (v / 1e3).toFixed(1) + 'K' : v.toFixed(0));
