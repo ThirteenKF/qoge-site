@@ -7,7 +7,12 @@ echo.
 echo [1/5] Checking SSH access to GitHub...
 ssh -o StrictHostKeyChecking=accept-new -T git@github.com
 echo.
-if exist .git (echo [2/5] Repo already initialized) else (git init -b main)
+if exist .git (
+  echo Repo already set up - running publish.bat instead...
+  call "%~dp0publish.bat"
+  exit /b
+)
+git init -b main
 git config core.autocrlf true
 git config user.name "ThirteenKF"
 git config user.email "zasadayourock@gmail.com"
