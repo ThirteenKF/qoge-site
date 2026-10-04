@@ -52,8 +52,6 @@ a:hover{color:oklch(0.72 0.17 40)}
   .q-rm-badge{grid-column:2;grid-row:1;padding:0 12px!important;justify-content:flex-end}
   .q-rm-body{grid-column:1 / -1;grid-row:2;padding:14px!important}
 }
-/* YouTube embeds don't play from file:// — show the placeholder instead */
-html.is-file .q-yt{display:none!important}
 @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
 </style>
 </helmet>
@@ -142,8 +140,7 @@ html.is-file .q-yt{display:none!important}
     <article style="display:flex;flex-direction:column;background:#141110;color:#f4f0ec;border:4px solid #141110;box-shadow:8px 8px 0 #141110">
       <div style="position:relative;aspect-ratio:4/3;overflow:hidden;background:repeating-linear-gradient(135deg,#1c1817 0 14px,#241e1c 14px 28px);">
         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px 24px 60px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;color:#a59e97">[ ROCKET LIFTOFF, SMOKE EVERYWHERE ]</div>
-        <iframe class="q-yt" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube-nocookie.com/embed/mNPSEoqxhOk?autoplay=1&amp;mute=1&amp;controls=0&amp;end=36&amp;loop=1&amp;playlist=mNPSEoqxhOk&amp;playsinline=1&amp;rel=0&amp;modestbranding=1&amp;disablekb=1&amp;iv_load_policy=3" title="Falcon Heavy liftoff (video: SpaceX via Space.com)" allow="autoplay; encrypted-media; picture-in-picture" loading="lazy" frameborder="0" tabindex="-1" style="position:absolute;top:50%;left:50%;width:160%;height:120%;transform:translate(-50%,-50%);border:0;pointer-events:none"></iframe>
-        <span class="q-yt" style="position:absolute;right:8px;bottom:44px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:#cfc8c1;background:rgba(14,8,8,.6);padding:2px 5px">VIDEO: SPACEX</span>
+        <img src="assets/liftoff.svg" alt="QOGE rocket liftoff" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
         <div style="position:absolute;top:10px;left:10px;right:10px;display:flex;flex-wrap:wrap;gap:6px;justify-content:space-between;align-items:center"><span style="background:oklch(0.62 0.21 25);color:#f4f0ec;padding:4px 10px;font-weight:900;font-size:13px;text-transform:uppercase;white-space:nowrap">{{ t.c2tag }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#f4f0ec;white-space:nowrap;background:rgba(14,8,8,.6);padding:3px 6px">T−00:00:00 · LIFTOFF</span></div>
         <div style="position:absolute;left:0;right:0;bottom:0;display:flex;align-items:stretch;font-weight:900;text-transform:uppercase;font-size:14px;line-height:1.15">
           <span style="background:oklch(0.62 0.21 25);color:#f4f0ec;padding:8px 10px;display:flex;align-items:center">02</span>
@@ -523,7 +520,6 @@ class Component extends DCLogic {
   }
   progressRef = el => { this.progEl = el; if (el && this.io) this.io.observe(el); };
   componentDidMount() {
-    if (location.protocol === 'file:') document.documentElement.classList.add('is-file');
     // Live token data (assets/metrics.js sets window.QOGE_METRICS; works on file:// too)
     const ms = document.createElement('script');
     ms.src = 'assets/metrics.js?t=' + Math.floor(Date.now() / 60000);
