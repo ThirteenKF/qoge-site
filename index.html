@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;background:#141110;color:#f4f0ec;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:#f4f0ec;text-decoration:none}
+a:hover{color:oklch(0.72 0.17 40)}
+@keyframes qnnTicker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+</style>
+</helmet>
+
+<div style="font-family:'Archivo',sans-serif;background:#141110;color:#f4f0ec;min-height:100vh;position:relative;overflow-x:hidden">
+
+<!-- flight tracker -->
+<div style="position:fixed;right:20px;top:50%;transform:translateY(-50%);height:56vh;width:72px;padding:12px 0;background:rgba(20,17,16,.88);border:1px solid #2a2523;z-index:40;display:flex;flex-direction:column;align-items:center;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;color:#a59e97;pointer-events:none">
+  <div style="color:oklch(0.72 0.17 40)">MARS</div>
+  <div style="position:relative;flex:1;width:1px;background:#3a3431;margin:10px 0">
+    <div style="position:absolute;left:0;top:0;width:1px;height:{{ markerTop }};background:oklch(0.72 0.17 40)"></div>
+    <div style="position:absolute;left:-5px;top:{{ markerTop }};width:11px;height:11px;background:#f4f0ec;transform:translateY(-50%) rotate(45deg)"></div>
+  </div>
+  <div style="color:oklch(0.72 0.14 230)">EARTH</div>
+  <div style="margin-top:10px;color:#f4f0ec;text-align:center;line-height:1.5">{{ distance }}<br><span style="color:#a59e97">M KM</span></div>
+</div>
+
+<!-- nav -->
+<sc-if value="{{ heroC }}" hint-placeholder-val="{{ false }}">
+<header style="position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:14px clamp(16px,3vw,40px);background:#f4f0ec;color:#141110;border-bottom:3px solid #141110">
+  <a href="#top" style="display:flex;align-items:center;gap:10px;color:#141110;font-weight:900;font-stretch:125%;font-size:24px">
+    <img src="assets/logo.jpg" alt="" style="width:44px;height:44px;border-radius:50%;border:3px solid #141110;object-fit:cover">$QOGE
+  </a>
+  <nav style="display:flex;gap:6px;flex-wrap:nowrap;white-space:nowrap;font-weight:800;font-size:13px;overflow-x:auto;max-width:100%">
+    <a href="#legend" style="color:#141110;padding:7px 11px;border:2px solid #141110;border-radius:999px" style-hover="background:#141110;color:#f4f0ec">lore</a>
+    <a href="#mission" style="color:#141110;padding:7px 11px;border:2px solid #141110;border-radius:999px" style-hover="background:#141110;color:#f4f0ec">the rocket</a>
+    <a href="#tokenomics" style="color:#141110;padding:7px 11px;border:2px solid #141110;border-radius:999px" style-hover="background:#141110;color:#f4f0ec">numbers</a>
+    <a href="#roadmap" style="color:#141110;padding:7px 11px;border:2px solid #141110;border-radius:999px" style-hover="background:#141110;color:#f4f0ec">wen home</a>
+    <a href="#faq" style="color:#141110;padding:7px 11px;border:2px solid #141110;border-radius:999px" style-hover="background:#141110;color:#f4f0ec">???</a>
+  </nav>
+  <a href="#buy" style="background:oklch(0.72 0.17 40);color:#141110;padding:12px 20px;border:3px solid #141110;box-shadow:4px 4px 0 #141110;font-weight:900;font-size:15px;text-transform:uppercase;transform:rotate(-2deg)" style-hover="box-shadow:6px 6px 0 #141110;color:#141110">ser, buy</a>
+</header>
+<section id="top" data-screen-label="Hero Meme" style="position:relative;overflow:hidden;background:oklch(0.72 0.17 40);color:#141110;padding:clamp(32px,5vw,72px) clamp(16px,4vw,56px) clamp(48px,6vw,88px);padding-right:clamp(112px,8vw,140px);border-bottom:3px solid #141110;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(32px,4vw,56px);align-items:center">
+  <div style="display:flex;flex-direction:column;gap:24px;position:relative">
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <span style="background:#141110;color:#f4f0ec;padding:6px 12px;font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap;transform:rotate(-3deg)">NASA DID NOT APPROVE THIS</span>
+      <span style="background:#f4f0ec;border:2px solid #141110;padding:6px 12px;font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap;transform:rotate(2deg)">100% ACCIDENTAL ASTRONAUT</span>
+    </div>
+    <h1 style="margin:0;font-weight:900;font-stretch:125%;font-size:clamp(52px,8.4vw,136px);line-height:.86;letter-spacing:-.03em;text-transform:uppercase">oops.<br>i'm on<br><span style="display:inline-block;background:#141110;color:oklch(0.72 0.17 40);padding:0 .12em;transform:rotate(-2deg)">mars</span></h1>
+    <p style="margin:0;max-width:440px;font-size:20px;line-height:1.4;font-weight:600;text-wrap:pretty">Hid in a NASA rocket to sniff some cables. Woke up 225 million km from the nearest fire hydrant. Pls send $QOGE, need rocket.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:14px">
+      <a href="#buy" style="background:#141110;color:#f4f0ec;padding:18px 26px;border:3px solid #141110;box-shadow:5px 5px 0 #f4f0ec;font-weight:900;font-size:16px;text-transform:uppercase" style-hover="color:oklch(0.72 0.17 40)">Bring doge home</a>
+      <button onClick="{{ copyCA }}" style="display:flex;align-items:center;gap:12px;background:#f4f0ec;color:#141110;border:3px solid #141110;box-shadow:5px 5px 0 #141110;padding:0 18px;min-height:60px;font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:500;cursor:pointer">CA {{ caShort }} <span style="font-weight:900;font-family:'Archivo',sans-serif">{{ copyLabel }}</span></button>
+    </div>
+  </div>
+  <div style="position:relative;padding:24px 8px 40px;width:100%;max-width:520px;margin:0 auto">
+    <div style="aspect-ratio:1/1;border:3px solid #141110;background:url(assets/mars-bg.png) 70% bottom/cover no-repeat;box-shadow:10px 10px 0 #141110;transform:rotate(2deg);overflow:hidden;position:relative"><img src="assets/doge.gif" alt="QOGE dancing" style="position:absolute;left:50%;bottom:0;transform:translateX(-50%);height:92%;width:auto;image-rendering:pixelated"></div>
+    <div style="position:absolute;top:0;left:-8px;max-width:230px;background:#f4f0ec;border:3px solid #141110;border-radius:18px;padding:14px 16px;font-weight:800;font-size:17px;line-height:1.25;transform:rotate(-5deg)">how the hell did i get here</div>
+    <div style="position:absolute;bottom:8px;right:0;background:oklch(0.72 0.14 230);color:#141110;border:3px solid #141110;padding:10px 14px;font-weight:900;font-stretch:115%;font-size:18px;text-transform:uppercase;transform:rotate(4deg)">wen earth?</div>
+  </div>
+</section>
+<div style="background:#141110;color:#f4f0ec;border-bottom:3px solid #141110;padding:14px clamp(16px,4vw,56px);display:flex;gap:28px;flex-wrap:wrap;font-weight:900;font-stretch:115%;font-size:18px;text-transform:uppercase">
+  <span>no hydrants</span><span style="color:oklch(0.72 0.17 40)">✦</span><span>no bacon</span><span style="color:oklch(0.72 0.17 40)">✦</span><span>no mailman</span><span style="color:oklch(0.72 0.17 40)">✦</span><span>just vibes & red dust</span>
+</div>
+</sc-if>
+<sc-if value="{{ heroD }}" hint-placeholder-val="{{ false }}">
+<header style="position:sticky;top:0;z-index:50;display:flex;align-items:stretch;justify-content:space-between;gap:0;background:#f4f0ec;color:#141110;border-bottom:4px solid #141110;font-weight:900">
+  <a href="#top" style="display:flex;align-items:center;gap:10px;background:oklch(0.62 0.21 25);color:#f4f0ec;padding:12px 20px;font-stretch:125%;font-size:22px;white-space:nowrap"><img src="assets/logo.jpg" alt="" style="width:36px;height:36px;border-radius:50%;border:2px solid #f4f0ec;object-fit:cover">QNN</a>
+  
+  <nav style="flex:1;min-width:0;display:flex;align-items:center;justify-content:flex-start;gap:18px;padding:0 18px;overflow-x:auto;scrollbar-width:none;white-space:nowrap;font-size:14px;text-transform:uppercase">
+    <a href="#legend" style="color:#141110;margin-left:auto" style-hover="color:oklch(0.62 0.21 25)">{{ t.nav1 }}</a>
+    <a href="#mission" style="color:#141110" style-hover="color:oklch(0.62 0.21 25)">{{ t.nav2 }}</a>
+    <a href="#tokenomics" style="color:#141110" style-hover="color:oklch(0.62 0.21 25)">{{ t.nav3 }}</a>
+    <a href="#faq" style="color:#141110" style-hover="color:oklch(0.62 0.21 25)">{{ t.nav4 }}</a>
+  </nav>
+  <div style="display:flex;align-items:center;gap:0;padding:0 12px;border-left:4px solid #141110"><button onClick="{{ setEn }}" style="background:{{ enBg }};color:{{ enFg }};border:2px solid #141110;padding:6px 10px;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:12px;cursor:pointer">EN</button><button onClick="{{ setRu }}" style="background:{{ ruBg }};color:{{ ruFg }};border:2px solid #141110;border-left:0;padding:6px 10px;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:12px;cursor:pointer">RU</button></div>
+  <a href="#buy" style="display:flex;align-items:center;background:oklch(0.88 0.17 95);color:#141110;padding:0 22px;border-left:4px solid #141110;font-size:15px;text-transform:uppercase;white-space:nowrap" style-hover="background:#141110;color:oklch(0.88 0.17 95)">{{ t.buyCta }}</a>
+</header>
+<section id="top" data-screen-label="Hero News" style="background:linear-gradient(90deg,rgba(14,8,8,.85) 0%,rgba(14,8,8,.4) 55%,rgba(14,8,8,0) 100%),url(assets/mars-bg.png) 88% bottom/cover no-repeat;color:#f4f0ec;border-bottom:4px solid #141110">
+  <div style="padding:clamp(24px,4vw,48px) clamp(16px,4vw,56px) 0;padding-right:clamp(112px,8vw,140px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(24px,3vw,40px);align-items:stretch">
+    <div style="display:flex;flex-direction:column;gap:20px;justify-content:center">
+      <div style="align-self:flex-start;background:oklch(0.62 0.21 25);color:#f4f0ec;padding:8px 16px;font-weight:900;font-stretch:125%;font-size:clamp(28px,3.4vw,48px);text-transform:uppercase;transform:skewX(-8deg)">{{ t.breaking }}</div>
+      <h1 style="margin:0;font-weight:900;font-stretch:100%;font-size:clamp(34px,4.4vw,84px);line-height:.92;letter-spacing:-.02em;text-transform:uppercase;text-wrap:balance;overflow-wrap:anywhere">{{ t.h1a }} <span style="color:oklch(0.88 0.17 95)">{{ t.h1b }}</span></h1>
+      <p style="margin:0;max-width:460px;font-size:18px;line-height:1.45;color:#cfc8c1;text-wrap:pretty">{{ t.heroP }}</p>
+      <div style="display:flex;flex-wrap:wrap;gap:12px">
+        <a href="#buy" style="background:oklch(0.88 0.17 95);color:#141110;padding:18px 24px;font-weight:900;font-size:15px;text-transform:uppercase;border:3px solid oklch(0.88 0.17 95)" style-hover="background:transparent;color:oklch(0.88 0.17 95)">{{ t.fund }}</a>
+        <button onClick="{{ copyCA }}" style="display:flex;align-items:center;gap:12px;background:transparent;color:#f4f0ec;border:3px solid #f4f0ec;padding:0 18px;min-height:60px;font-family:'IBM Plex Mono',monospace;font-size:13px;cursor:pointer">CA {{ caShort }} <span style="font-weight:900;font-family:'Archivo',sans-serif;color:oklch(0.88 0.17 95)">{{ copyLabel }}</span></button>
+      </div>
+    </div>
+    <div style="position:relative;min-height:360px;border:4px solid #f4f0ec;background:rgba(14,8,8,.18);backdrop-filter:blur(0px);overflow:hidden;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em;color:#a59e97">
+      <img src="assets/doge.gif" alt="QOGE dancing" style="position:absolute;left:50%;bottom:44px;transform:translateX(-50%);height:calc(100% - 90px);width:auto;image-rendering:pixelated">
+      <div style="position:absolute;top:12px;left:12px;background:oklch(0.62 0.21 25);color:#f4f0ec;padding:4px 10px;font-weight:700">{{ t.exclusive }}</div>
+      <div style="position:absolute;top:12px;right:12px;color:#f4f0ec;white-space:nowrap">SOL 0412 · 04:12:{{ cd.s }}</div>
+      <div style="position:absolute;bottom:-4px;left:-4px;right:-4px;background:#f4f0ec;color:#141110;padding:10px 14px;text-align:left;font-family:'Archivo',sans-serif;font-weight:800;font-size:15px;letter-spacing:0">{{ t.heroQuote }}</div>
+    </div>
+  </div>
+  <div style="margin-top:clamp(24px,4vw,48px);display:flex;align-items:stretch;border-top:4px solid #141110;background:oklch(0.88 0.17 95);color:#141110;font-weight:900;text-transform:uppercase">
+    <div style="background:oklch(0.62 0.21 25);color:#f4f0ec;padding:14px 18px;white-space:nowrap;font-size:15px">{{ t.justIn }}</div>
+    <div style="flex:1;min-width:0;overflow:hidden;display:flex;align-items:center">{{ newsTicker }}</div>
+  </div>
+</section>
+</sc-if>
+<sc-if value="{{ stdHeader }}" hint-placeholder-val="{{ true }}">
+<header style="position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px clamp(20px,4vw,56px);background:rgba(20,17,16,.82);backdrop-filter:blur(10px);border-bottom:1px solid #2a2523">
+  <a href="#top" style="font-weight:900;font-stretch:125%;font-size:20px;letter-spacing:.02em">$QOGE</a>
+  <nav style="display:flex;gap:clamp(12px,2vw,28px);flex-wrap:wrap;justify-content:center;white-space:nowrap;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase">
+    <a href="#legend">Legend</a><a href="#mission">Mission</a><a href="#buy">How to buy</a><a href="#tokenomics">Tokenomics</a><a href="#roadmap">Roadmap</a><a href="#faq">FAQ</a>
+  </nav>
+  <a href="#buy" style="background:oklch(0.72 0.17 40);color:#141110;padding:11px 20px;font-weight:800;font-size:13px;letter-spacing:.08em;text-transform:uppercase">Buy $QOGE</a>
+</header>
+</sc-if>
+
+<!-- HERO A: cinematic countdown -->
+<sc-if value="{{ heroA }}" hint-placeholder-val="{{ true }}">
+<section id="top" data-screen-label="Hero A" style="position:relative;min-height:calc(100vh - 64px);display:flex;flex-direction:column;justify-content:flex-end;padding:clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px);overflow:hidden">
+  <div style="position:absolute;inset:0;background:url(assets/mars-bg.png) 88% bottom/cover no-repeat"></div>
+  <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,17,16,0) 0%,rgba(20,17,16,.15) 55%,rgba(20,17,16,.85) 100%)"></div>
+  <div style="margin-bottom:auto"></div>
+  <div style="position:relative;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#a59e97;margin-bottom:40px">
+    <div style="display:flex;gap:10px;align-items:center;white-space:nowrap"><span style="width:8px;height:8px;border-radius:50%;background:oklch(0.72 0.17 40);animation:blink 1.2s infinite"></span>LIVE FEED · ARES BASIN · SOL 0412</div>
+    <div style="white-space:nowrap">SIGNAL DELAY 12:41 · SURFACE −63°C</div>
+  </div>
+  <div style="position:relative;font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.2em;color:oklch(0.72 0.17 40);margin-bottom:18px">MISSION $QOGE — ONE-WAY TICKET, UNPLANNED</div>
+  <h1 style="position:relative;margin:0;font-weight:900;font-stretch:125%;font-size:clamp(48px,9vw,148px);line-height:.88;letter-spacing:-.02em;text-transform:uppercase;text-wrap:balance">The first dog<br>on Mars</h1>
+  <div style="position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:32px;align-items:end;margin-top:48px">
+    <p style="margin:0;max-width:460px;font-size:18px;line-height:1.5;color:#cfc8c1;text-wrap:pretty">He didn't aim for the moon. He accidentally conquered Mars. Now he's building a rocket home, and $QOGE is the fuel.</p>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;color:#a59e97">T-MINUS · RETURN WINDOW OPENS</div>
+      <div style="display:flex;gap:18px;font-weight:800;font-stretch:110%;font-size:clamp(32px,4vw,56px);font-variant-numeric:tabular-nums;line-height:1">
+        <div>{{ cd.d }}<div style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:400;color:#a59e97;letter-spacing:.2em;margin-top:6px">DAYS</div></div>
+        <div>{{ cd.h }}<div style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:400;color:#a59e97;letter-spacing:.2em;margin-top:6px">HRS</div></div>
+        <div>{{ cd.m }}<div style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:400;color:#a59e97;letter-spacing:.2em;margin-top:6px">MIN</div></div>
+        <div style="color:oklch(0.72 0.17 40)">{{ cd.s }}<div style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:400;color:#a59e97;letter-spacing:.2em;margin-top:6px">SEC</div></div>
+      </div>
+    </div>
+  </div>
+  <div style="position:relative;display:flex;flex-wrap:wrap;gap:12px;margin-top:40px;align-items:stretch">
+    <a href="#buy" style="background:oklch(0.72 0.17 40);color:#141110;padding:18px 28px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:14px;display:flex;align-items:center">Fuel the rocket</a>
+    <button onClick="{{ copyCA }}" style="display:flex;align-items:center;gap:14px;background:transparent;border:1px solid #4a423e;color:#f4f0ec;padding:0 20px;min-height:56px;font-family:'IBM Plex Mono',monospace;font-size:13px;cursor:pointer" style-hover="border-color:#f4f0ec">
+      <span style="color:#a59e97">CA</span><span>{{ caShort }}</span><span style="color:oklch(0.72 0.17 40);letter-spacing:.12em">{{ copyLabel }}</span>
+    </button>
+  </div>
+</section>
+</sc-if>
+
+<!-- HERO B: first transmission -->
+<sc-if value="{{ heroB }}" hint-placeholder-val="{{ false }}">
+<section id="top" data-screen-label="Hero B" style="min-height:calc(100vh - 64px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:clamp(24px,4vw,64px);align-items:center;padding:clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px)">
+  <div style="display:flex;flex-direction:column;gap:28px">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.2em;color:oklch(0.72 0.17 40)">INCOMING TRANSMISSION · 225M KM</div>
+    <h1 style="margin:0;font-weight:900;font-stretch:125%;font-size:clamp(44px,6.4vw,108px);line-height:.9;letter-spacing:-.02em;text-transform:uppercase;text-wrap:balance">The first dog on Mars</h1>
+    <p style="margin:0;max-width:480px;font-size:19px;line-height:1.5;color:#cfc8c1;text-wrap:pretty">The first camera feed didn't show red rocks. It showed a puppy staring back at Earth, wondering how he got there.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:12px">
+      <a href="#buy" style="background:oklch(0.72 0.17 40);color:#141110;padding:18px 28px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:14px">Fuel the rocket</a>
+      <button onClick="{{ copyCA }}" style="display:flex;align-items:center;gap:14px;background:transparent;border:1px solid #4a423e;color:#f4f0ec;padding:0 20px;min-height:56px;font-family:'IBM Plex Mono',monospace;font-size:13px;cursor:pointer" style-hover="border-color:#f4f0ec">
+        <span style="color:#a59e97">CA</span><span>{{ caShort }}</span><span style="color:oklch(0.72 0.17 40);letter-spacing:.12em">{{ copyLabel }}</span>
+      </button>
+    </div>
+  </div>
+  <div style="position:relative;aspect-ratio:4/3;border:1px solid #3a3431;background:repeating-linear-gradient(135deg,#1c1817 0 14px,#211c1a 14px 28px);font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;color:#a59e97">
+    <div style="position:absolute;top:16px;left:16px;display:flex;gap:8px;align-items:center;color:#f4f0ec"><span style="width:9px;height:9px;border-radius:50%;background:#e5484d;animation:blink 1.2s infinite"></span>REC · CAM 02</div>
+    <div style="position:absolute;top:16px;right:16px">SOL 0001 · 04:12:{{ cd.s }}</div>
+    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:40px">[ FIRST CAMERA FEED: BEWILDERED PUPPY LOOKING INTO LENS ]</div>
+    <div style="position:absolute;bottom:16px;left:16px">LAT 18.4°N · LON 77.5°E</div>
+    <div style="position:absolute;bottom:16px;right:16px">ROVER-CAM / GRAIN ON</div>
+    <div style="position:absolute;left:50%;top:50%;width:64px;height:64px;transform:translate(-50%,-50%);border:1px solid rgba(244,240,236,.25)"></div>
+  </div>
+</section>
+</sc-if>
+
+<!-- ticker -->
+<div style="border-top:1px solid #2a2523;border-bottom:1px solid #2a2523;padding:16px clamp(20px,4vw,56px);display:flex;gap:40px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#a59e97;white-space:nowrap">
+  <span>NO FIRE HYDRANTS</span><span>·</span><span>NO MAIL SERVICE</span><span>·</span><span>NO BACON</span><span>·</span><span style="color:#f4f0ec">ONE VERY GOOD BOY</span>
+</div>
+
+<!-- LEGEND (news) -->
+<sc-if value="{{ heroD }}" hint-placeholder-val="{{ false }}">
+<section id="legend" data-screen-label="Legend News" style="background:#f4f0ec;color:#141110;padding:clamp(72px,10vw,140px) clamp(16px,4vw,56px);padding-right:clamp(112px,8vw,140px);display:flex;flex-direction:column;gap:56px;border-bottom:4px solid #141110">
+  <div style="display:flex;flex-direction:column;gap:20px;max-width:980px">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <span style="background:oklch(0.62 0.21 25);color:#f4f0ec;padding:6px 14px;font-weight:900;font-size:14px;text-transform:uppercase;white-space:nowrap;transform:skewX(-8deg)">{{ t.lgTag }}</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;white-space:nowrap">{{ t.lgSub }}</span>
+    </div>
+    <h2 style="margin:0;font-weight:900;font-size:clamp(34px,4.8vw,76px);line-height:.95;letter-spacing:-.02em;text-transform:uppercase;text-wrap:balance">{{ t.lgH1 }} <span style="background:oklch(0.88 0.17 95);padding:0 .1em">{{ t.lgH2 }}</span> {{ t.lgH3 }}</h2>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:24px">
+    
+    <article style="display:flex;flex-direction:column;background:#141110;color:#f4f0ec;border:4px solid #141110;box-shadow:8px 8px 0 #141110">
+      <div style="position:relative;aspect-ratio:4/3;overflow:hidden;background:repeating-linear-gradient(135deg,#1c1817 0 14px,#241e1c 14px 28px);">
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px 24px 60px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;color:#a59e97">[ LAUNCH PAD CCTV: PUPPY NEAR CABLES ]</div>
+        <div style="position:absolute;top:10px;left:10px;right:10px;display:flex;flex-wrap:wrap;gap:6px;justify-content:space-between;align-items:center"><span style="background:oklch(0.62 0.21 25);color:#f4f0ec;padding:4px 10px;font-weight:900;font-size:13px;text-transform:uppercase;white-space:nowrap">{{ t.c1tag }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#f4f0ec;white-space:nowrap;background:rgba(14,8,8,.6);padding:3px 6px">T−00:10:00 · CAPE</span></div>
+        <div style="position:absolute;left:0;right:0;bottom:0;display:flex;align-items:stretch;font-weight:900;text-transform:uppercase;font-size:14px;line-height:1.15">
+          <span style="background:oklch(0.62 0.21 25);color:#f4f0ec;padding:8px 10px;display:flex;align-items:center">01</span>
+          <span style="flex:1;background:oklch(0.88 0.17 95);color:#141110;padding:8px 12px">{{ t.c1ch }}</span>
+        </div>
+      </div>
+      <p style="margin:0;padding:22px 22px 26px;font-size:17px;line-height:1.55;color:#e4ddd6;text-wrap:pretty">{{ t.c1b }}</p>
+    </article>
+    
+    <article style="display:flex;flex-direction:column;background:#141110;color:#f4f0ec;border:4px solid #141110;box-shadow:8px 8px 0 #141110">
+      <div style="position:relative;aspect-ratio:4/3;overflow:hidden;background:repeating-linear-gradient(135deg,#1c1817 0 14px,#241e1c 14px 28px);">
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px 24px 60px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;color:#a59e97">[ ROCKET LIFTOFF, SMOKE EVERYWHERE ]</div>
+        <div style="position:absolute;top:10px;left:10px;right:10px;display:flex;flex-wrap:wrap;gap:6px;justify-content:space-between;align-items:center"><span style="background:oklch(0.62 0.21 25);color:#f4f0ec;padding:4px 10px;font-weight:900;font-size:13px;text-transform:uppercase;white-space:nowrap">{{ t.c2tag }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#f4f0ec;white-space:nowrap;background:rgba(14,8,8,.6);padding:3px 6px">T−00:00:00 · LIFTOFF</span></div>
+        <div style="position:absolute;left:0;right:0;bottom:0;display:flex;align-items:stretch;font-weight:900;text-transform:uppercase;font-size:14px;line-height:1.15">
+          <span style="background:oklch(0.62 0.21 25);color:#f4f0ec;padding:8px 10px;display:flex;align-items:center">02</span>
+          <span style="flex:1;background:oklch(0.88 0.17 95);color:#141110;padding:8px 12px">{{ t.c2ch }}</span>
+        </div>
+      </div>
+      <p style="margin:0;padding:22px 22px 26px;font-size:17px;line-height:1.55;color:#e4ddd6;text-wrap:pretty">{{ t.c2b }}</p>
+    </article>
+    
+    <article style="display:flex;flex-direction:column;background:#141110;color:#f4f0ec;border:4px solid #141110;box-shadow:8px 8px 0 #141110">
+      <div style="position:relative;aspect-ratio:4/3;overflow:hidden;background:url(assets/mars-bg.png) 88% bottom/cover no-repeat;">
+        <img src="assets/doge.gif" alt="QOGE on Mars" style="position:absolute;left:38%;bottom:34px;height:62%;width:auto;image-rendering:pixelated">
+        <div style="position:absolute;top:10px;left:10px;right:10px;display:flex;flex-wrap:wrap;gap:6px;justify-content:space-between;align-items:center"><span style="background:oklch(0.62 0.21 25);color:#f4f0ec;padding:4px 10px;font-weight:900;font-size:13px;text-transform:uppercase;white-space:nowrap">{{ t.c3tag }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#f4f0ec;white-space:nowrap;background:rgba(14,8,8,.6);padding:3px 6px">SOL 0001 · MARS</span></div>
+        <div style="position:absolute;left:0;right:0;bottom:0;display:flex;align-items:stretch;font-weight:900;text-transform:uppercase;font-size:14px;line-height:1.15">
+          <span style="background:oklch(0.62 0.21 25);color:#f4f0ec;padding:8px 10px;display:flex;align-items:center">03</span>
+          <span style="flex:1;background:oklch(0.88 0.17 95);color:#141110;padding:8px 12px">{{ t.c3ch }}</span>
+        </div>
+      </div>
+      <p style="margin:0;padding:22px 22px 26px;font-size:17px;line-height:1.55;color:#e4ddd6;text-wrap:pretty">{{ t.c3b }}</p>
+    </article>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:32px;align-items:stretch">
+    <blockquote style="margin:0;background:oklch(0.88 0.17 95);border:4px solid #141110;box-shadow:8px 8px 0 #141110;padding:clamp(24px,3vw,40px);display:flex;flex-direction:column;gap:16px;transform:rotate(-1deg)">
+      <span style="font-weight:900;font-size:clamp(26px,3vw,42px);line-height:1.05;text-transform:uppercase;text-wrap:balance">{{ t.lgQuote }}</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em">{{ t.lgQuoteBy }}</span>
+    </blockquote>
+    <div style="border:4px solid #141110;padding:clamp(24px,3vw,40px);display:flex;flex-direction:column;gap:14px;background:#fff">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;color:oklch(0.62 0.21 25);font-weight:500">{{ t.stmt }}</span>
+      <span style="font-weight:800;font-size:22px;line-height:1.3">{{ t.stmtText }}</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em;color:#5a524d">{{ t.stmtBy }}</span>
+    </div>
+  </div>
+</section>
+</sc-if>
+<sc-if value="{{ notNews }}" hint-placeholder-val="{{ true }}">
+<!-- LEGEND -->
+<section id="legend" data-screen-label="Legend" style="padding:clamp(80px,12vw,160px) clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px);display:flex;flex-direction:column;gap:64px">
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:32px;align-items:end">
+    <div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;color:oklch(0.72 0.17 40);margin-bottom:16px">01 — THE LEGEND OF QOGE</div>
+      <h2 style="margin:0;font-weight:900;font-stretch:115%;font-size:clamp(36px,5vw,72px);line-height:.95;text-transform:uppercase;letter-spacing:-.01em;text-wrap:balance">Every meme has an origin story. This one left orbit.</h2>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:2px;background:#2a2523;border:1px solid #2a2523">
+    <div style="background:#141110;padding:32px;display:flex;flex-direction:column;gap:20px">
+      <div style="aspect-ratio:3/2;background:repeating-linear-gradient(135deg,#1c1817 0 12px,#211c1a 12px 24px);display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8a827b;letter-spacing:.1em;text-align:center;padding:16px">[ STILL: LAUNCH PAD, PUPPY SNIFFING CABLES ]</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.16em;color:#a59e97">T−00:10:00 · THE STOWAWAY</div>
+      <p style="margin:0;font-size:17px;line-height:1.6;color:#cfc8c1;text-wrap:pretty">NASA was prepping a rocket for Mars. Amid the cables and final checks, a tiny, ordinary puppy wandered in and hid inside the spacecraft, just to explore.</p>
+    </div>
+    <div style="background:#141110;padding:32px;display:flex;flex-direction:column;gap:20px">
+      <div style="aspect-ratio:3/2;background:repeating-linear-gradient(135deg,#1c1817 0 12px,#211c1a 12px 24px);display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8a827b;letter-spacing:.1em;text-align:center;padding:16px">[ STILL: THRUSTERS IGNITE ]</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.16em;color:#a59e97">T−00:00:00 · LIFTOFF</div>
+      <p style="margin:0;font-size:17px;line-height:1.6;color:#cfc8c1;text-wrap:pretty">The countdown hit zero, the thrusters roared, and our furry adventurer was launched into deep space on a one-way trip to the Red Planet.</p>
+    </div>
+    <div style="background:#141110;padding:32px;display:flex;flex-direction:column;gap:20px">
+      <div style="aspect-ratio:3/2;background:repeating-linear-gradient(135deg,#1c1817 0 12px,#211c1a 12px 24px);display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8a827b;letter-spacing:.1em;text-align:center;padding:16px">[ STILL: PUPPY STARING AT TINY BLUE EARTH ]</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.16em;color:#a59e97">SOL 0001 · TOUCHDOWN</div>
+      <p style="margin:0;font-size:17px;line-height:1.6;color:#cfc8c1;text-wrap:pretty">The first camera feeds didn't show barren rocks. They showed a bewildered puppy staring back at Earth, wondering how the hell he got there.</p>
+    </div>
+  </div>
+  <blockquote style="margin:0;max-width:900px;font-weight:800;font-stretch:110%;font-size:clamp(26px,3.2vw,44px);line-height:1.15;text-wrap:balance">"He didn't just aim for the moon. <span style="color:oklch(0.72 0.17 40)">He accidentally conquered Mars."</span></blockquote>
+</section>
+
+</sc-if>
+<!-- MISSION (news) -->
+<sc-if value="{{ heroD }}" hint-placeholder-val="{{ false }}">
+<section id="mission" data-screen-label="Mission News" style="position:relative;background:linear-gradient(180deg,rgba(14,8,8,.92) 0%,rgba(14,8,8,.78) 60%,rgba(14,8,8,.55) 100%),url(assets/mars-bg.png) 88% bottom/cover no-repeat;color:#f4f0ec;padding:clamp(72px,10vw,140px) clamp(16px,4vw,56px);padding-right:clamp(112px,8vw,140px);display:flex;flex-direction:column;gap:48px;border-bottom:4px solid #141110">
+  <div style="display:flex;flex-direction:column;gap:20px;max-width:980px">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <span style="background:oklch(0.62 0.21 25);color:#f4f0ec;padding:6px 14px;font-weight:900;font-size:14px;text-transform:uppercase;white-space:nowrap;transform:skewX(-8deg)">{{ t.msTag }}</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;white-space:nowrap;color:#cfc8c1">{{ t.msSub }}</span>
+    </div>
+    <h2 style="margin:0;font-weight:900;font-size:clamp(34px,4.8vw,76px);line-height:.95;letter-spacing:-.02em;text-transform:uppercase;text-wrap:balance">{{ t.msH1 }} <span style="color:oklch(0.88 0.17 95)">{{ t.msH2 }}</span></h2>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(24px,3vw,40px);align-items:start">
+    <div style="display:flex;flex-direction:column;gap:24px">
+      <p style="margin:0;font-size:18px;line-height:1.55;color:#e4ddd6;max-width:520px;text-wrap:pretty">{{ t.msP }}</p>
+      <div style="display:flex;flex-direction:column;border-bottom:2px solid rgba(244,240,236,.18);max-width:520px">
+        <div style="display:flex;justify-content:space-between;gap:16px;align-items:center;padding:14px 0;border-top:2px solid rgba(244,240,236,.18)"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;color:#cfc8c1;white-space:nowrap">{{ t.f1k }}</span><span style="font-weight:900;font-size:18px;text-transform:uppercase;white-space:nowrap">{{ t.f1v }}</span></div><div style="display:flex;justify-content:space-between;gap:16px;align-items:center;padding:14px 0;border-top:2px solid rgba(244,240,236,.18)"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;color:#cfc8c1;white-space:nowrap">{{ t.f2k }}</span><span style="font-weight:900;font-size:18px;text-transform:uppercase;white-space:nowrap">0</span></div><div style="display:flex;justify-content:space-between;gap:16px;align-items:center;padding:14px 0;border-top:2px solid rgba(244,240,236,.18)"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;color:#cfc8c1;white-space:nowrap">{{ t.f3k }}</span><span style="font-weight:900;font-size:18px;text-transform:uppercase;white-space:nowrap">{{ t.f3v }}</span></div><div style="display:flex;justify-content:space-between;gap:16px;align-items:center;padding:14px 0;border-top:2px solid rgba(244,240,236,.18)"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;color:#cfc8c1;white-space:nowrap">{{ t.f4k }}</span><span style="font-weight:900;font-size:18px;text-transform:uppercase;white-space:nowrap">{{ t.f4v }}</span></div>
+      </div>
+      <div style="background:oklch(0.88 0.17 95);color:#141110;border:4px solid #141110;box-shadow:6px 6px 0 #f4f0ec;padding:20px 22px;max-width:520px;font-weight:800;font-size:19px;line-height:1.35">{{ t.msBox }}</div>
+    </div>
+    <div ref="{{ progressRef }}" style="background:#f4f0ec;color:#141110;border:4px solid #141110;box-shadow:8px 8px 0 oklch(0.62 0.21 25);display:flex;flex-direction:column">
+      <div style="display:flex;justify-content:space-between;align-items:stretch;background:#141110;color:#f4f0ec;font-weight:900;text-transform:uppercase;font-size:14px">
+        <span style="background:oklch(0.62 0.21 25);padding:10px 14px;white-space:nowrap">{{ t.tracker }}</span>
+        <span style="padding:10px 14px;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:12px;display:flex;align-items:center;white-space:nowrap">{{ partsDone }} / {{ partsTotal }} {{ t.parts }}</span>
+      </div>
+      <div style="padding:24px 24px 8px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">
+        <div style="font-weight:900;font-size:clamp(72px,9vw,128px);line-height:.82;letter-spacing:-.03em;font-variant-numeric:tabular-nums">{{ progressShown }}<span style="color:oklch(0.62 0.21 25)">%</span></div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em;text-align:right;line-height:1.5">{{ t.rocket }}<br>{{ t.complete }}</div>
+      </div>
+      <div style="margin:12px 24px 20px;height:18px;border:3px solid #141110;background:#fff;position:relative">
+        <div style="position:absolute;inset:0 auto 0 0;width:{{ progressWidth }};background:oklch(0.62 0.21 25)"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;padding:0 24px 20px">
+        <sc-for list="{{ parts }}" as="p" hint-placeholder-count="6">
+          <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;padding:10px 0;border-top:2px solid #141110;font-weight:700;font-size:15px">
+            <span>{{ p.name }}</span>
+            <sc-if value="{{ p.done }}" hint-placeholder-val="{{ true }}"><span style="background:#141110;color:oklch(0.88 0.17 95);padding:3px 8px;font-size:12px;font-weight:900;white-space:nowrap">{{ t.installed }}</span></sc-if>
+            <sc-if value="{{ p.pending }}" hint-placeholder-val="{{ false }}"><span style="border:2px solid #141110;padding:2px 8px;font-size:12px;font-weight:900;white-space:nowrap">{{ p.need }}</span></sc-if>
+          </div>
+        </sc-for>
+      </div>
+      <a href="#buy" style="display:block;background:#141110;color:oklch(0.88 0.17 95);text-align:center;padding:16px;font-weight:900;text-transform:uppercase;font-size:16px" style-hover="background:oklch(0.62 0.21 25);color:#f4f0ec">{{ t.addFuel }}</a>
+    </div>
+  </div>
+</section>
+</sc-if>
+<sc-if value="{{ notNews }}" hint-placeholder-val="{{ true }}">
+<!-- MISSION -->
+<section id="mission" data-screen-label="Mission" style="padding:clamp(80px,12vw,160px) clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px);border-top:1px solid #2a2523;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:clamp(32px,5vw,80px)">
+  <div style="display:flex;flex-direction:column;gap:28px">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;color:oklch(0.72 0.17 40)">02 — BUILDING THE ROAD HOME</div>
+    <h2 style="margin:0;font-weight:900;font-stretch:115%;font-size:clamp(36px,5vw,72px);line-height:.95;text-transform:uppercase;letter-spacing:-.01em;text-wrap:balance">Red dust. No hydrants. Zero bacon.</h2>
+    <p style="margin:0;font-size:18px;line-height:1.6;color:#cfc8c1;max-width:520px;text-wrap:pretty">Deep down, our cosmic canine misses green grass and Earth treats. Fueled by intergalactic boredom and an unbreakable spirit, he's building a massive rocket from repurposed rover parts to come home in style.</p>
+    <p style="margin:0;font-size:18px;line-height:1.6;color:#f4f0ec;max-width:520px;text-wrap:pretty">$QOGE isn't just a memecoin. It's the official fuel for the mission. Join the pack and help him build that ship.</p>
+  </div>
+  <div ref="{{ progressRef }}" style="border:1px solid #3a3431;padding:clamp(24px,3vw,40px);display:flex;flex-direction:column;gap:28px;background:#181413">
+    <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.16em;color:#a59e97"><span>ROCKET BUILD STATUS</span><span>{{ partsDone }} / {{ partsTotal }} PARTS</span></div>
+    <div style="font-weight:900;font-stretch:125%;font-size:clamp(72px,10vw,140px);line-height:.85;font-variant-numeric:tabular-nums">{{ progressShown }}<span style="color:oklch(0.72 0.17 40)">%</span></div>
+    <div style="height:10px;background:#2a2523;position:relative">
+      <div style="position:absolute;inset:0 auto 0 0;width:{{ progressWidth }};background:oklch(0.72 0.17 40)"></div>
+    </div>
+    <div style="display:flex;flex-direction:column">
+      <sc-for list="{{ parts }}" as="p" hint-placeholder-count="6">
+        <div style="display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-top:1px solid #2a2523;font-family:'IBM Plex Mono',monospace;font-size:13px">
+          <span>{{ p.name }}</span>
+          <sc-if value="{{ p.done }}" hint-placeholder-val="{{ true }}"><span style="color:oklch(0.72 0.17 40);letter-spacing:.12em">INSTALLED</span></sc-if>
+          <sc-if value="{{ p.pending }}" hint-placeholder-val="{{ false }}"><span style="color:#a59e97;letter-spacing:.12em">{{ p.need }}</span></sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+</sc-if>
+<!-- REST (news) -->
+<sc-if value="{{ heroD }}" hint-placeholder-val="{{ false }}">
+<section id="buy" data-screen-label="Buy News" style="background:#f4f0ec;color:#141110;padding:clamp(72px,10vw,140px) clamp(16px,4vw,56px);padding-right:clamp(112px,8vw,140px);display:flex;flex-direction:column;gap:48px;border-bottom:4px solid #141110">
+  
+  <div style="display:flex;flex-direction:column;gap:20px;max-width:980px">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <span style="background:oklch(0.62 0.21 25);color:#f4f0ec;padding:6px 14px;font-weight:900;font-size:14px;text-transform:uppercase;white-space:nowrap;transform:skewX(-8deg)">{{ t.byTag }}</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;white-space:nowrap;color:#141110">{{ t.bySub }} {{ chain }}</span>
+    </div>
+    <h2 style="margin:0;font-weight:900;font-size:clamp(34px,4.8vw,76px);line-height:.95;letter-spacing:-.02em;text-transform:uppercase;text-wrap:balance">{{ t.byH1 }} <span style="background:oklch(0.88 0.17 95);padding:0 .1em">{{ t.byH2 }}</span></h2>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:24px">
+    <div style="background:#fff;border:4px solid #141110;box-shadow:6px 6px 0 #141110;display:flex;flex-direction:column">
+      <div style="display:flex;align-items:stretch;border-bottom:4px solid #141110"><span style="background:oklch(0.62 0.21 25);color:#f4f0ec;font-weight:900;font-size:28px;padding:8px 14px">01</span><span style="flex:1;display:flex;align-items:center;padding:0 14px;font-weight:900;font-size:19px;text-transform:uppercase;line-height:1.1">{{ t.s1t }}</span></div>
+      <p style="margin:0;padding:18px;font-size:16px;line-height:1.5;color:#3a3431">{{ t.s1b }}</p></div>
+    <div style="background:#fff;border:4px solid #141110;box-shadow:6px 6px 0 #141110;display:flex;flex-direction:column">
+      <div style="display:flex;align-items:stretch;border-bottom:4px solid #141110"><span style="background:oklch(0.62 0.21 25);color:#f4f0ec;font-weight:900;font-size:28px;padding:8px 14px">02</span><span style="flex:1;display:flex;align-items:center;padding:0 14px;font-weight:900;font-size:19px;text-transform:uppercase;line-height:1.1">{{ t.s2t }}</span></div>
+      <p style="margin:0;padding:18px;font-size:16px;line-height:1.5;color:#3a3431">{{ t.s2b }}</p></div>
+    <div style="background:#fff;border:4px solid #141110;box-shadow:6px 6px 0 #141110;display:flex;flex-direction:column">
+      <div style="display:flex;align-items:stretch;border-bottom:4px solid #141110"><span style="background:oklch(0.62 0.21 25);color:#f4f0ec;font-weight:900;font-size:28px;padding:8px 14px">03</span><span style="flex:1;display:flex;align-items:center;padding:0 14px;font-weight:900;font-size:19px;text-transform:uppercase;line-height:1.1">{{ t.s3t }}</span></div>
+      <p style="margin:0;padding:18px;font-size:16px;line-height:1.5;color:#3a3431">{{ t.s3b }}</p></div>
+    <div style="background:#fff;border:4px solid #141110;box-shadow:6px 6px 0 #141110;display:flex;flex-direction:column">
+      <div style="display:flex;align-items:stretch;border-bottom:4px solid #141110"><span style="background:oklch(0.62 0.21 25);color:#f4f0ec;font-weight:900;font-size:28px;padding:8px 14px">04</span><span style="flex:1;display:flex;align-items:center;padding:0 14px;font-weight:900;font-size:19px;text-transform:uppercase;line-height:1.1">{{ t.s4t }}</span></div>
+      <p style="margin:0;padding:18px;font-size:16px;line-height:1.5;color:#3a3431">{{ t.s4b }}</p></div>
+  </div>
+  <button onClick="{{ copyCA }}" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;width:100%;background:oklch(0.88 0.17 95);color:#141110;border:4px solid #141110;box-shadow:8px 8px 0 #141110;padding:24px 28px;cursor:pointer;text-align:left" style-hover="background:#fff">
+    <span style="display:flex;flex-direction:column;gap:6px;min-width:0"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em">{{ t.caLabel }} · {{ chain }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:clamp(14px,1.6vw,20px);font-weight:500;word-break:break-all">{{ ca }}</span></span>
+    <span style="background:#141110;color:oklch(0.88 0.17 95);padding:12px 18px;font-weight:900;font-size:16px;text-transform:uppercase;white-space:nowrap">{{ copyLabel }}</span>
+  </button>
+</section>
+<section id="tokenomics" data-screen-label="Tokenomics News" style="background:oklch(0.88 0.17 95);color:#141110;padding:clamp(72px,10vw,140px) clamp(16px,4vw,56px);padding-right:clamp(112px,8vw,140px);display:flex;flex-direction:column;gap:48px;border-bottom:4px solid #141110">
+  
+  <div style="display:flex;flex-direction:column;gap:20px;max-width:980px">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <span style="background:#141110;color:oklch(0.88 0.17 95);padding:6px 14px;font-weight:900;font-size:14px;text-transform:uppercase;white-space:nowrap;transform:skewX(-8deg)">{{ t.tkTag }}</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;white-space:nowrap;color:#141110">{{ t.tkSub }}</span>
+    </div>
+    <h2 style="margin:0;font-weight:900;font-size:clamp(34px,4.8vw,76px);line-height:.95;letter-spacing:-.02em;text-transform:uppercase;text-wrap:balance">{{ t.tkH }}</h2>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:24px"><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px"><div style="background:#141110;color:oklch(0.88 0.17 95);border:4px solid #141110;display:flex;flex-direction:column">
+      <span style="background:#f4f0ec;color:#141110;padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;white-space:nowrap">{{ t.k1 }}</span>
+      <span style="padding:18px 14px 22px;font-weight:900;font-size:clamp(22px,2.6vw,40px);line-height:1;font-variant-numeric:tabular-nums;text-transform:uppercase">1B</span></div><div style="background:#141110;color:oklch(0.88 0.17 95);border:4px solid #141110;display:flex;flex-direction:column">
+      <span style="background:#f4f0ec;color:#141110;padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;white-space:nowrap">{{ t.k2 }}</span>
+      <span style="padding:18px 14px 22px;font-weight:900;font-size:clamp(22px,2.6vw,40px);line-height:1;font-variant-numeric:tabular-nums;text-transform:uppercase">0 / 0</span></div></div><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px"><div style="background:#141110;color:oklch(0.88 0.17 95);border:4px solid #141110;display:flex;flex-direction:column">
+      <span style="background:#f4f0ec;color:#141110;padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;white-space:nowrap">{{ t.k3 }}</span>
+      <span style="padding:18px 14px 22px;font-weight:900;font-size:clamp(22px,2.6vw,40px);line-height:1;font-variant-numeric:tabular-nums;text-transform:uppercase">{{ t.v3 }}</span></div><div style="background:#141110;color:oklch(0.88 0.17 95);border:4px solid #141110;display:flex;flex-direction:column">
+      <span style="background:#f4f0ec;color:#141110;padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;white-space:nowrap">{{ t.k4 }}</span>
+      <span style="padding:18px 14px 22px;font-weight:900;font-size:clamp(22px,2.6vw,40px);line-height:1;font-variant-numeric:tabular-nums;text-transform:uppercase">{{ t.v4 }}</span></div></div>
+  </div>
+</section>
+<section id="roadmap" data-screen-label="Roadmap News" style="background:#141110;color:#f4f0ec;padding:clamp(72px,10vw,140px) clamp(16px,4vw,56px);padding-right:clamp(112px,8vw,140px);display:flex;flex-direction:column;gap:48px;border-bottom:4px solid #141110">
+  
+  <div style="display:flex;flex-direction:column;gap:20px;max-width:980px">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <span style="background:oklch(0.62 0.21 25);color:#f4f0ec;padding:6px 14px;font-weight:900;font-size:14px;text-transform:uppercase;white-space:nowrap;transform:skewX(-8deg)">{{ t.rmTag }}</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;white-space:nowrap;color:#cfc8c1">{{ t.rmSub }}</span>
+    </div>
+    <h2 style="margin:0;font-weight:900;font-size:clamp(34px,4.8vw,76px);line-height:.95;letter-spacing:-.02em;text-transform:uppercase;text-wrap:balance">{{ t.rmH1 }} <span style="color:oklch(0.88 0.17 95)">{{ t.rmH2 }}</span></h2>
+  </div>
+  <div style="display:flex;flex-direction:column;border:4px solid #f4f0ec">
+    <sc-for list="{{ phases }}" as="ph" hint-placeholder-count="4">
+      <div style="display:grid;grid-template-columns:minmax(110px,160px) minmax(0,1fr) auto;gap:0;border-bottom:4px solid #f4f0ec;align-items:stretch">
+        <div style="background:#f4f0ec;color:#141110;padding:18px;font-weight:900;font-size:16px;display:flex;align-items:center">{{ ph.n }}</div>
+        <div style="padding:18px 20px;display:flex;flex-direction:column;gap:6px;min-width:0">
+          <span style="font-weight:900;font-size:clamp(22px,2.4vw,30px);text-transform:uppercase;line-height:1">{{ ph.title }}</span>
+          <span style="color:#cfc8c1;font-size:15px;line-height:1.45">{{ ph.itemsText }}</span>
+        </div>
+        <div style="display:flex;align-items:center;padding:0 18px">
+          <sc-if value="{{ ph.isDone }}" hint-placeholder-val="{{ false }}"><span style="background:oklch(0.88 0.17 95);color:#141110;padding:6px 10px;font-weight:900;font-size:12px;white-space:nowrap">{{ t.aired }}</span></sc-if>
+          <sc-if value="{{ ph.isLive }}" hint-placeholder-val="{{ false }}"><span style="background:oklch(0.62 0.21 25);color:#f4f0ec;padding:6px 10px;font-weight:900;font-size:12px;white-space:nowrap">{{ t.onAir }}</span></sc-if>
+          <sc-if value="{{ ph.isQueued }}" hint-placeholder-val="{{ true }}"><span style="border:2px solid #f4f0ec;padding:4px 10px;font-weight:900;font-size:12px;white-space:nowrap">{{ t.upNext }}</span></sc-if>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</section>
+<section id="faq" data-screen-label="FAQ News" style="background:#f4f0ec;color:#141110;padding:clamp(72px,10vw,140px) clamp(16px,4vw,56px);padding-right:clamp(112px,8vw,140px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:48px;border-bottom:4px solid #141110">
+  
+  <div style="display:flex;flex-direction:column;gap:20px;max-width:980px">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <span style="background:oklch(0.62 0.21 25);color:#f4f0ec;padding:6px 14px;font-weight:900;font-size:14px;text-transform:uppercase;white-space:nowrap;transform:skewX(-8deg)">{{ t.fqTag }}</span>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;white-space:nowrap;color:#141110">FAQ</span>
+    </div>
+    <h2 style="margin:0;font-weight:900;font-size:clamp(34px,4.8vw,76px);line-height:.95;letter-spacing:-.02em;text-transform:uppercase;text-wrap:balance">{{ t.fqH1 }} <span style="background:oklch(0.88 0.17 95);padding:0 .1em">{{ t.fqH2 }}</span></h2>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:14px">
+    <sc-for list="{{ faqs }}" as="f" hint-placeholder-count="5">
+      <div style="background:#fff;border:4px solid #141110;box-shadow:5px 5px 0 #141110">
+        <button onClick="{{ f.toggle }}" style="width:100%;display:flex;justify-content:space-between;gap:16px;align-items:center;background:none;border:0;color:#141110;padding:18px 20px;cursor:pointer;text-align:left;font-family:'Archivo',sans-serif;font-weight:900;font-size:18px;text-transform:uppercase"><span style="flex:1;min-width:0">{{ f.q }}</span><span style="background:oklch(0.62 0.21 25);color:#f4f0ec;width:32px;height:32px;flex:none;display:flex;align-items:center;justify-content:center;font-size:20px">{{ f.sign }}</span></button>
+        <sc-if value="{{ f.open }}" hint-placeholder-val="{{ false }}"><p style="margin:0;padding:0 20px 20px;color:#3a3431;font-size:16px;line-height:1.55;text-wrap:pretty">{{ f.a }}</p></sc-if>
+      </div>
+    </sc-for>
+  </div>
+</section>
+<section data-screen-label="Community News" style="background:linear-gradient(180deg,rgba(8,10,20,.35) 0%,rgba(8,10,20,.15) 50%,rgba(8,10,20,.75) 100%),url(assets/earth-bg.png) 88% bottom/cover no-repeat;color:#f4f0ec;min-height:80vh;justify-content:flex-end;padding:clamp(72px,10vw,140px) clamp(16px,4vw,56px);padding-right:clamp(112px,8vw,140px);display:flex;flex-direction:column;gap:40px;border-bottom:4px solid #141110">
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:32px;align-items:end">
+    <h2 style="margin:0;font-weight:900;font-size:clamp(44px,7vw,112px);line-height:.88;letter-spacing:-.03em;text-transform:uppercase;text-wrap:balance">{{ t.cmH1 }}<br><span style="color:oklch(0.88 0.17 95)">{{ t.cmH2 }}</span></h2>
+    <div style="display:flex;align-items:flex-end;gap:16px">
+      <img src="assets/doge.gif" alt="" style="height:160px;width:auto;image-rendering:pixelated">
+      <div style="background:#f4f0ec;color:#141110;border:4px solid #141110;border-radius:18px;padding:12px 16px;font-weight:900;font-size:18px;line-height:1.2;transform:rotate(-3deg);max-width:220px">{{ t.bubble }}</div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:20px"><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px"><a href="https://x.com/QOGEofficial" target="_blank" rel="noopener" style="background:#141110;color:oklch(0.88 0.17 95);border:4px solid #141110;box-shadow:6px 6px 0 #f4f0ec;padding:22px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;font-weight:900;font-size:19px;white-space:nowrap;text-transform:uppercase" style-hover="background:oklch(0.88 0.17 95);color:#141110">X / Twitter<span>↗</span></a><a href="https://t.me/QOGEofficial" target="_blank" rel="noopener" style="background:#141110;color:oklch(0.88 0.17 95);border:4px solid #141110;box-shadow:6px 6px 0 #f4f0ec;padding:22px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;font-weight:900;font-size:19px;white-space:nowrap;text-transform:uppercase" style-hover="background:oklch(0.88 0.17 95);color:#141110">Telegram<span>↗</span></a></div><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px"><a href="#" style="background:#141110;color:oklch(0.88 0.17 95);border:4px solid #141110;box-shadow:6px 6px 0 #f4f0ec;padding:22px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;font-weight:900;font-size:19px;white-space:nowrap;text-transform:uppercase" style-hover="background:oklch(0.88 0.17 95);color:#141110">DexScreener<span>↗</span></a><a href="#" style="background:#141110;color:oklch(0.88 0.17 95);border:4px solid #141110;box-shadow:6px 6px 0 #f4f0ec;padding:22px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;font-weight:900;font-size:19px;white-space:nowrap;text-transform:uppercase" style-hover="background:oklch(0.88 0.17 95);color:#141110">Chart<span>↗</span></a></div>
+  </div>
+</section>
+</sc-if>
+<sc-if value="{{ notNews }}" hint-placeholder-val="{{ true }}">
+<!-- HOW TO BUY -->
+<section id="buy" data-screen-label="How to buy" style="padding:clamp(80px,12vw,160px) clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px);border-top:1px solid #2a2523;display:flex;flex-direction:column;gap:56px">
+  <div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;color:oklch(0.72 0.17 40);margin-bottom:16px">03 — HOW TO BUY</div>
+    <h2 style="margin:0;font-weight:900;font-stretch:115%;font-size:clamp(36px,5vw,72px);line-height:.95;text-transform:uppercase;letter-spacing:-.01em">Pre-flight checklist</h2>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:2px;background:#2a2523;border:1px solid #2a2523">
+    <div style="background:#141110;padding:32px;display:flex;flex-direction:column;gap:16px"><div style="font-weight:900;font-stretch:125%;font-size:48px;color:oklch(0.72 0.17 40)">01</div><div style="font-weight:800;font-size:22px">Get a wallet</div><p style="margin:0;color:#cfc8c1;line-height:1.55">Download Pelagus or another {{ chain }} wallet. Guard your seed phrase like the last bacon on Mars.</p></div>
+    <div style="background:#141110;padding:32px;display:flex;flex-direction:column;gap:16px"><div style="font-weight:900;font-stretch:125%;font-size:48px;color:oklch(0.72 0.17 40)">02</div><div style="font-weight:800;font-size:22px">Load fuel</div><p style="margin:0;color:#cfc8c1;line-height:1.55">Buy QUAI on an exchange and send it to your wallet.</p></div>
+    <div style="background:#141110;padding:32px;display:flex;flex-direction:column;gap:16px"><div style="font-weight:900;font-stretch:125%;font-size:48px;color:oklch(0.72 0.17 40)">03</div><div style="font-weight:800;font-size:22px">Swap for $QOGE</div><p style="margin:0;color:#cfc8c1;line-height:1.55">Open a DEX, paste the contract address below, and swap. Always double-check the CA.</p></div>
+    <div style="background:#141110;padding:32px;display:flex;flex-direction:column;gap:16px"><div style="font-weight:900;font-stretch:125%;font-size:48px;color:oklch(0.72 0.17 40)">04</div><div style="font-weight:800;font-size:22px">Join the crew</div><p style="margin:0;color:#cfc8c1;line-height:1.55">Hop into the community. Every holder is ground control now.</p></div>
+  </div>
+  <button onClick="{{ copyCA }}" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;width:100%;background:oklch(0.72 0.17 40);color:#141110;border:0;padding:28px 32px;cursor:pointer;text-align:left" style-hover="background:oklch(0.78 0.15 40)">
+    <span style="display:flex;flex-direction:column;gap:6px"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em">CONTRACT ADDRESS · {{ chain }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:clamp(14px,1.6vw,20px);word-break:break-all">{{ ca }}</span></span>
+    <span style="font-weight:900;font-stretch:115%;font-size:18px;letter-spacing:.08em">{{ copyLabel }}</span>
+  </button>
+</section>
+
+<!-- TOKENOMICS -->
+<section id="tokenomics" data-screen-label="Tokenomics" style="padding:clamp(80px,12vw,160px) clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px);border-top:1px solid #2a2523;display:flex;flex-direction:column;gap:56px">
+  <div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;color:oklch(0.72 0.17 40);margin-bottom:16px">04 — TOKENOMICS</div>
+    <h2 style="margin:0;font-weight:900;font-stretch:115%;font-size:clamp(36px,5vw,72px);line-height:.95;text-transform:uppercase;letter-spacing:-.01em">Fuel specs</h2>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:40px 32px">
+    <div style="border-top:2px solid #f4f0ec;padding-top:20px;display:flex;flex-direction:column;gap:10px"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.16em;color:#a59e97">TOTAL SUPPLY</span><span style="font-weight:900;font-stretch:120%;font-size:clamp(32px,4vw,52px)">1,000,000,000</span></div>
+    <div style="border-top:2px solid #f4f0ec;padding-top:20px;display:flex;flex-direction:column;gap:10px"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.16em;color:#a59e97">BUY / SELL TAX</span><span style="font-weight:900;font-stretch:120%;font-size:clamp(32px,4vw,52px)">0 / 0</span></div>
+    <div style="border-top:2px solid #f4f0ec;padding-top:20px;display:flex;flex-direction:column;gap:10px"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.16em;color:#a59e97">LIQUIDITY</span><span style="font-weight:900;font-stretch:120%;font-size:clamp(32px,4vw,52px)">Burned</span></div>
+    <div style="border-top:2px solid #f4f0ec;padding-top:20px;display:flex;flex-direction:column;gap:10px"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.16em;color:#a59e97">CONTRACT</span><span style="font-weight:900;font-stretch:120%;font-size:clamp(32px,4vw,52px)">Renounced</span></div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section id="roadmap" data-screen-label="Roadmap" style="padding:clamp(80px,12vw,160px) clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px);border-top:1px solid #2a2523;display:flex;flex-direction:column;gap:56px">
+  <div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;color:oklch(0.72 0.17 40);margin-bottom:16px">05 — ROADMAP</div>
+    <h2 style="margin:0;font-weight:900;font-stretch:115%;font-size:clamp(36px,5vw,72px);line-height:.95;text-transform:uppercase;letter-spacing:-.01em">Mars → Earth</h2>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:24px">
+    <sc-for list="{{ phases }}" as="ph" hint-placeholder-count="4">
+      <div style="display:flex;flex-direction:column;gap:16px;padding:28px;border:1px solid #3a3431;background:#181413">
+        <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.16em"><span style="color:oklch(0.72 0.17 40)">{{ ph.n }}</span><span style="color:#a59e97">{{ ph.status }}</span></div>
+        <div style="font-weight:900;font-stretch:115%;font-size:28px;text-transform:uppercase">{{ ph.title }}</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <sc-for list="{{ ph.items }}" as="it" hint-placeholder-count="3">
+            <div style="color:#cfc8c1;line-height:1.5;padding-left:18px;position:relative"><span style="position:absolute;left:0;top:9px;width:6px;height:6px;background:#6b625c"></span>{{ it }}</div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" data-screen-label="FAQ" style="padding:clamp(80px,12vw,160px) clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px);border-top:1px solid #2a2523;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:48px">
+  <div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;color:oklch(0.72 0.17 40);margin-bottom:16px">06 — FAQ</div>
+    <h2 style="margin:0;font-weight:900;font-stretch:115%;font-size:clamp(36px,5vw,72px);line-height:.95;text-transform:uppercase;letter-spacing:-.01em">Ground control, questions</h2>
+  </div>
+  <div style="display:flex;flex-direction:column;border-bottom:1px solid #3a3431">
+    <sc-for list="{{ faqs }}" as="f" hint-placeholder-count="5">
+      <div style="border-top:1px solid #3a3431">
+        <button onClick="{{ f.toggle }}" style="width:100%;display:flex;justify-content:space-between;gap:24px;align-items:center;background:none;border:0;color:#f4f0ec;padding:24px 0;cursor:pointer;text-align:left;font-family:'Archivo',sans-serif;font-weight:700;font-size:20px"><span>{{ f.q }}</span><span style="font-family:'IBM Plex Mono',monospace;color:oklch(0.72 0.17 40);font-size:22px">{{ f.sign }}</span></button>
+        <sc-if value="{{ f.open }}" hint-placeholder-val="{{ false }}"><p style="margin:0 0 24px;color:#cfc8c1;font-size:17px;line-height:1.6;max-width:620px;text-wrap:pretty">{{ f.a }}</p></sc-if>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<!-- COMMUNITY -->
+<section data-screen-label="Community" style="padding:clamp(80px,12vw,160px) clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px);border-top:1px solid #2a2523;display:flex;flex-direction:column;gap:48px">
+  <h2 style="margin:0;font-weight:900;font-stretch:125%;font-size:clamp(44px,8vw,128px);line-height:.88;text-transform:uppercase;letter-spacing:-.02em;text-wrap:balance">Bring him<br><span style="color:oklch(0.72 0.14 230)">home.</span></h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:2px;background:#2a2523;border:1px solid #2a2523">
+    <a href="https://x.com/QOGEofficial" target="_blank" rel="noopener" style="background:#141110;padding:28px 32px;display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:22px" style-hover="background:#1e1a18">X / Twitter<span style="font-family:'IBM Plex Mono',monospace;color:oklch(0.72 0.17 40)">↗</span></a>
+    <a href="https://t.me/QOGEofficial" target="_blank" rel="noopener" style="background:#141110;padding:28px 32px;display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:22px" style-hover="background:#1e1a18">Telegram<span style="font-family:'IBM Plex Mono',monospace;color:oklch(0.72 0.17 40)">↗</span></a>
+    <a href="#" style="background:#141110;padding:28px 32px;display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:22px" style-hover="background:#1e1a18">DexScreener<span style="font-family:'IBM Plex Mono',monospace;color:oklch(0.72 0.17 40)">↗</span></a>
+    <a href="#" style="background:#141110;padding:28px 32px;display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:22px" style-hover="background:#1e1a18">Chart<span style="font-family:'IBM Plex Mono',monospace;color:oklch(0.72 0.17 40)">↗</span></a>
+  </div>
+</section>
+
+</sc-if>
+<footer style="padding:32px clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px);border-top:1px solid #2a2523;display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;color:#8a827b">
+  <span>{{ t.foot1 }}</span>
+  <span>{{ t.foot2 }}</span>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;heroVariant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Countdown&quot;,&quot;Transmission&quot;,&quot;Meme&quot;,&quot;Breaking News&quot;],&quot;default&quot;:&quot;Breaking News&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Hero&quot;},&quot;buildProgress&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0,&quot;max&quot;:100,&quot;step&quot;:1,&quot;default&quot;:37,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Mission&quot;},&quot;chain&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Quai Network&quot;,&quot;Solana&quot;,&quot;Ethereum&quot;,&quot;Base&quot;,&quot;BNB Chain&quot;,&quot;TON&quot;],&quot;default&quot;:&quot;Quai Network&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Token&quot;},&quot;contractAddress&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;0x00QOGE0000000000000000000000000000MarsDog&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Token&quot;}}">
+class Component extends DCLogic {
+  state = { now: Date.now(), copied: false, scroll: 0, progress: 0, openFaq: 0, lang: (typeof localStorage !== 'undefined' && localStorage.getItem('qoge-lang')) || 'en' };
+  setLang(l) { try { localStorage.setItem('qoge-lang', l); } catch (e) {} document.documentElement.lang = l; this.setState({ lang: l }); }
+  dict(chain) {
+    const en = {
+      live: '● LIVE FROM MARS', nav1: 'The scandal', nav2: 'Rocket', nav3: 'Numbers', nav4: 'Q&A', buyCta: 'Buy $QOGE',
+      breaking: 'Breaking', h1a: 'Local puppy accidentally colonizes', h1b: 'Mars',
+      heroP: 'Snuck into a NASA rocket "just to sniff around." Now building a spaceship out of rover parts. Experts say he\'s "a very good boy" and "genuinely stuck."',
+      fund: 'Fund the rescue', exclusive: 'EXCLUSIVE', heroQuote: '"I just wanted to see the cables" — Q. Oge, 2 y/o, Mars', justIn: 'Just in',
+      lgTag: 'QNN Investigates', lgSub: 'PART 1 OF 1 · THE LEGEND OF QOGE', lgH1: 'How a very good boy ended up', lgH2: '225M km', lgH3: 'from home',
+      c1tag: 'Security cam', c2tag: 'Live', c3tag: 'Exclusive',
+      c1ch: 'Puppy enters launch site "just to sniff around"', c2ch: 'Countdown hits zero. Puppy still inside.', c3ch: 'First Mars feed shows... a dog?',
+      c1b: 'NASA was prepping a rocket for Mars. Between the cables and final checks, a tiny, ordinary puppy wandered in and hid inside the spacecraft. Just to explore. Allegedly.',
+      c2b: 'The thrusters roared and our furry adventurer was launched into deep space on a one-way trip to the Red Planet. No ticket. No snacks. No plan.',
+      c3b: 'Scientists expected barren red rocks. Instead the camera caught a bewildered puppy staring back at Earth, wondering how the hell he got there.',
+      lgQuote: '"He didn\'t aim for the moon. He accidentally conquered Mars."', lgQuoteBy: '— EVERY NEWS ANCHOR, PROBABLY',
+      stmt: 'OFFICIAL STATEMENT', stmtText: '"We have no idea how the dog got there, and frankly we\'re a little impressed."', stmtBy: '— UNNAMED SPACE AGENCY INTERN · NOT A REAL QUOTE',
+      msTag: '● Developing story', msSub: 'BUILDING THE ROAD HOME', msH1: 'Stranded dog builds rocket out of', msH2: 'rover parts',
+      msP: 'Sources close to the dog confirm he misses green grass and bacon. Fueled by intergalactic boredom and an unbreakable spirit, he\'s turning a retired rover into a ride home.',
+      f1k: 'RED DUST', f1v: 'Everywhere', f2k: 'FIRE HYDRANTS', f3k: 'MAIL SERVICE', f3v: 'Non-existent', f4k: 'MORALE', f4v: 'Unbreakable',
+      msBox: '$QOGE isn\'t just a memecoin. It\'s the official fuel for the mission. Every holder = more fuel in the tank.',
+      tracker: 'Live tracker', parts: 'PARTS', rocket: 'ROCKET', complete: 'COMPLETE', installed: 'INSTALLED', addFuel: 'Add fuel → buy $QOGE',
+      byTag: 'Survival guide', bySub: 'HOW TO BUY · ON', byH1: 'How to get $QOGE in', byH2: '4 steps',
+      s1t: 'Get a wallet', s2t: 'Load fuel', s3t: 'Swap for $QOGE', s4t: 'Join the crew',
+      s1b: 'Download Pelagus or another ' + chain + ' wallet. Guard the seed phrase like the last bacon on Mars.', s2b: 'Buy QUAI on an exchange and send it to your wallet.',
+      s3b: 'Open a DEX, paste the contract address below and swap. Double-check the CA.', s4b: 'Hop into the community. Every holder is ground control now.',
+      caLabel: 'CONTRACT ADDRESS',
+      tkTag: 'By the numbers', tkSub: 'TOKENOMICS', tkH: 'The fuel specs', k1: 'TOTAL SUPPLY', k2: 'BUY / SELL TAX', k3: 'LIQUIDITY', k4: 'CONTRACT', v3: 'Burned', v4: 'Renounced',
+      rmTag: 'Coming up next', rmSub: 'ROADMAP · TV GUIDE', rmH1: 'Mars → Earth:', rmH2: 'the schedule', aired: 'AIRED ✓', onAir: '● ON AIR', upNext: 'UP NEXT',
+      fqTag: 'Viewer questions', fqH1: 'You asked.', fqH2: 'We barked.',
+      cmH1: 'Join the rescue team.', cmH2: 'Bring him home.', bubble: 'pls hurry, i\'m out of bacon',
+      foot1: '© 2026 $QOGE · A MEMECOIN WITH NO INTRINSIC VALUE OR EXPECTATION OF RETURN.', foot2: 'NOT AFFILIATED WITH NASA. JUST A DOG.',
+      copy: 'COPY', copied: 'COPIED ✓', awaiting: 'AWAITING FUEL', at: 'AT ',
+      partNames: ['Hull plating (ex-rover chassis)', 'Navigation computer', 'Landing legs', 'Heat shield', 'Main thrusters', 'Fuel tanks ($QOGE)'],
+      phase: 'PHASE', phases: [['Salvage', ['Fair launch', 'Website + socials live', 'First 1,000 holders']], ['Assembly', ['DexScreener + CoinGecko listings', 'Meme contests', 'Community raids']], ['Fueling', ['CEX listings', 'Partnerships', '10,000 holders']], ['Homecoming', ['Liftoff from Mars', 'Earth re-entry', 'Unlimited bacon']]],
+      ticker: ['NASA declines to comment', 'Mars hydrant shortage hits 100%', 'Dog requests bacon via radio', '$QOGE holders form ground control'],
+      faqs: [['What is $QOGE?', 'A community memecoin telling the story of the first dog on Mars. Every holder is fuel for his rocket home.'], ['Is there a team allocation?', 'No. Fair launch, no presale, no team tokens. The pack owns the rocket.'], ['Which chain is it on?', '$QOGE lives on ' + chain + '. Always verify the contract address on this site before swapping.'], ['Is this investment advice?', 'No. $QOGE is a meme with no intrinsic value or expected financial return. Only use what you can afford to lose.'], ['When does he get home?', 'When the rocket is built. Watch the build status above.']]
+    };
+    const ru = {
+      live: '● ПРЯМОЙ ЭФИР С МАРСА', nav1: 'Скандал', nav2: 'Ракета', nav3: 'Цифры', nav4: 'Вопросы', buyCta: 'Купить $QOGE',
+      breaking: 'Срочно', h1a: 'Обычный щенок случайно колонизировал', h1b: 'Марс',
+      heroP: 'Залез в ракету NASA «просто понюхать». Теперь строит корабль из запчастей марсохода. Эксперты называют его «очень хорошим мальчиком» и «реально застрявшим».',
+      fund: 'Спасти пса', exclusive: 'ЭКСКЛЮЗИВ', heroQuote: '«Я просто хотел посмотреть на провода» — К. Оге, 2 года, Марс', justIn: 'Только что',
+      lgTag: 'Расследование QNN', lgSub: 'ЧАСТЬ 1 ИЗ 1 · ЛЕГЕНДА QOGE', lgH1: 'Как очень хороший мальчик оказался в', lgH2: '225 млн км', lgH3: 'от дома',
+      c1tag: 'Камера охраны', c2tag: 'Прямой эфир', c3tag: 'Эксклюзив',
+      c1ch: 'Щенок проник на стартовую площадку «просто понюхать»', c2ch: 'Отсчёт дошёл до нуля. Щенок всё ещё внутри.', c3ch: 'Первые кадры с Марса: это… собака?',
+      c1b: 'NASA готовило ракету к полёту на Марс. Среди кабелей и финальных проверок маленький обычный щенок забрёл внутрь и спрятался в корабле. Просто чтобы всё осмотреть. Предположительно.',
+      c2b: 'Двигатели взревели, и наш пушистый путешественник улетел в открытый космос в один конец до Красной планеты. Без билета. Без вкусняшек. Без плана.',
+      c3b: 'Учёные ждали пустые красные камни. А камера поймала растерянного щенка, который смотрел на Землю и не понимал, как он вообще тут оказался.',
+      lgQuote: '«Он не целился в Луну. Он случайно покорил Марс».', lgQuoteBy: '— КАЖДЫЙ ВЕДУЩИЙ НОВОСТЕЙ, НАВЕРНОЕ',
+      stmt: 'ОФИЦИАЛЬНОЕ ЗАЯВЛЕНИЕ', stmtText: '«Мы понятия не имеем, как пёс туда попал, и, честно говоря, немного впечатлены».', stmtBy: '— АНОНИМНЫЙ СТАЖЁР КОСМИЧЕСКОГО АГЕНТСТВА · ЦИТАТА НЕНАСТОЯЩАЯ',
+      msTag: '● Сюжет развивается', msSub: 'ДОРОГА ДОМОЙ', msH1: 'Застрявший пёс строит ракету из', msH2: 'запчастей марсохода',
+      msP: 'Источники, близкие к псу, подтверждают: он скучает по зелёной траве и бекону. На межпланетной скуке и несгибаемом духе он превращает списанный марсоход в билет домой.',
+      f1k: 'КРАСНАЯ ПЫЛЬ', f1v: 'Везде', f2k: 'ПОЖАРНЫЕ ГИДРАНТЫ', f3k: 'ПОЧТА', f3v: 'Нет', f4k: 'БОЕВОЙ ДУХ', f4v: 'Несгибаемый',
+      msBox: '$QOGE — не просто мемкоин. Это официальное топливо миссии. Каждый холдер = больше топлива в баке.',
+      tracker: 'Трекер', parts: 'ДЕТАЛЕЙ', rocket: 'РАКЕТА', complete: 'ГОТОВА', installed: 'УСТАНОВЛЕНО', addFuel: 'Заправить → купить $QOGE',
+      byTag: 'Инструкция', bySub: 'КАК КУПИТЬ · В СЕТИ', byH1: 'Как купить $QOGE за', byH2: '4 шага',
+      s1t: 'Заведи кошелёк', s2t: 'Залей топливо', s3t: 'Обменяй на $QOGE', s4t: 'Вступай в экипаж',
+      s1b: 'Скачай Pelagus или другой кошелёк ' + chain + '. Храни сид-фразу как последний бекон на Марсе.', s2b: 'Купи QUAI на бирже и отправь на свой кошелёк.',
+      s3b: 'Открой DEX, вставь адрес контракта ниже и обменяй. Проверь CA дважды.', s4b: 'Заходи в комьюнити. Теперь каждый холдер — центр управления полётом.',
+      caLabel: 'АДРЕС КОНТРАКТА',
+      tkTag: 'В цифрах', tkSub: 'ТОКЕНОМИКА', tkH: 'Характеристики топлива', k1: 'ОБЩИЙ ОБЪЁМ', k2: 'НАЛОГ ПОКУПКА / ПРОДАЖА', k3: 'ЛИКВИДНОСТЬ', k4: 'КОНТРАКТ', v3: 'Сожжена', v4: 'Без владельца',
+      rmTag: 'Далее в эфире', rmSub: 'РОАДМАП · ТЕЛЕПРОГРАММА', rmH1: 'Марс → Земля:', rmH2: 'расписание', aired: 'В ЭФИРЕ БЫЛО ✓', onAir: '● В ЭФИРЕ', upNext: 'СКОРО',
+      fqTag: 'Вопросы зрителей', fqH1: 'Вы спросили.', fqH2: 'Мы гавкнули.',
+      cmH1: 'Вступай в спасательную команду.', cmH2: 'Верни его домой.', bubble: 'поторопитесь, бекон кончился',
+      foot1: '© 2026 $QOGE · МЕМКОИН БЕЗ ВНУТРЕННЕЙ ЦЕННОСТИ И ОЖИДАНИЯ ДОХОДА.', foot2: 'НЕ СВЯЗАН С NASA. ПРОСТО СОБАКА.',
+      copy: 'КОПИРОВАТЬ', copied: 'СКОПИРОВАНО ✓', awaiting: 'ЖДЁТ ТОПЛИВА', at: 'НА ',
+      partNames: ['Обшивка (бывшее шасси марсохода)', 'Навигационный компьютер', 'Посадочные опоры', 'Теплозащитный экран', 'Главные двигатели', 'Топливные баки ($QOGE)'],
+      phase: 'ЭТАП', phases: [['Сбор запчастей', ['Честный запуск', 'Сайт и соцсети', 'Первые 1 000 холдеров']], ['Сборка', ['Листинг на DexScreener и CoinGecko', 'Мем-конкурсы', 'Рейды комьюнити']], ['Заправка', ['Листинги на CEX', 'Партнёрства', '10 000 холдеров']], ['Возвращение', ['Старт с Марса', 'Вход в атмосферу Земли', 'Бекон без ограничений']]],
+      ticker: ['NASA отказывается от комментариев', 'Дефицит гидрантов на Марсе — 100%', 'Пёс запросил бекон по радио', 'Холдеры $QOGE стали центром управления полётом'],
+      faqs: [['Что такое $QOGE?', 'Комьюнити-мемкоин с историей первой собаки на Марсе. Каждый холдер — топливо для его ракеты домой.'], ['Есть ли доля команды?', 'Нет. Честный запуск, без пресейла и токенов команды. Ракета принадлежит стае.'], ['В какой сети?', '$QOGE живёт в сети ' + chain + '. Всегда сверяй адрес контракта с этим сайтом перед обменом.'], ['Это инвестиционный совет?', 'Нет. $QOGE — мем без внутренней ценности и ожидаемой доходности. Вкладывай только то, что не жалко потерять.'], ['Когда он вернётся домой?', 'Когда ракета будет построена. Следи за статусом постройки выше.']]
+    };
+    return this.state.lang === 'ru' ? ru : en;
+  }
+  progressRef = el => { this.progEl = el; if (el && this.io) this.io.observe(el); };
+  componentDidMount() {
+    this.t = setInterval(() => this.setState({ now: Date.now() }), 1000);
+    this.onScroll = () => {
+      const el = document.scrollingElement || document.documentElement;
+      const max = el.scrollHeight - window.innerHeight;
+      this.setState({ scroll: max > 0 ? Math.min(1, el.scrollTop / max) : 0 });
+    };
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+    this.onScroll();
+    const target = this.props.buildProgress ?? 37;
+    this.io = new IntersectionObserver(es => {
+      if (!es[0].isIntersecting || this.animated) return;
+      this.animated = true;
+      const t0 = performance.now();
+      const step = t => {
+        const k = Math.min(1, (t - t0) / 1600), e = 1 - Math.pow(1 - k, 3);
+        this.setState({ progress: Math.round(target * e) });
+        if (k < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }, { threshold: 0.3 });
+    if (this.progEl) this.io.observe(this.progEl);
+  }
+  componentWillUnmount() {
+    clearInterval(this.t); window.removeEventListener('scroll', this.onScroll); this.io && this.io.disconnect();
+  }
+  renderVals() {
+    const ca = this.props.contractAddress || '0x00QOGE0000000000000000000000000000MarsDog';
+    const chain = this.props.chain || 'Quai Network';
+    const pad = n => String(n).padStart(2, '0');
+    let diff = Math.max(0, new Date('2026-12-31T00:00:00Z').getTime() - this.state.now) / 1000;
+    const cd = { d: pad(Math.floor(diff / 86400)), h: pad(Math.floor(diff % 86400 / 3600)), m: pad(Math.floor(diff % 3600 / 60)), s: pad(Math.floor(diff % 60)) };
+    const pct = this.props.buildProgress ?? 37;
+    const t = this.dict(chain), L = this.state.lang;
+    const names = [0, 0, 5, 40, 60, 100].map((at, i) => [t.partNames[i], at]);
+    const parts = names.map(([name, at]) => ({ name, done: pct >= at && at < 100 && at <= pct, pending: !(pct >= at && at < 100), need: at >= 100 ? t.awaiting : t.at + at + '%' }));
+    const hero = this.props.heroVariant || 'Breaking News';
+    return {
+      heroA: hero === 'Countdown', heroB: hero === 'Transmission', heroC: hero === 'Meme', heroD: hero === 'Breaking News', notNews: hero !== 'Breaking News', stdHeader: hero !== 'Meme' && hero !== 'Breaking News',
+      cd, ca, chain,
+      caShort: ca.slice(0, 6) + '…' + ca.slice(-4),
+      copyLabel: this.state.copied ? t.copied : t.copy,
+      t, setEn: () => this.setLang('en'), setRu: () => this.setLang('ru'),
+      enBg: L === 'en' ? '#141110' : 'transparent', enFg: L === 'en' ? '#f4f0ec' : '#141110',
+      ruBg: L === 'ru' ? '#141110' : 'transparent', ruFg: L === 'ru' ? '#f4f0ec' : '#141110',
+      copyCA: () => {
+        navigator.clipboard && navigator.clipboard.writeText(ca).catch(() => {});
+        this.setState({ copied: true });
+        clearTimeout(this.ct); this.ct = setTimeout(() => this.setState({ copied: false }), 1800);
+      },
+      markerTop: (this.state.scroll * 100).toFixed(1) + '%',
+      distance: Math.round(225 * (1 - this.state.scroll)),
+      progressShown: this.state.progress,
+      progressWidth: this.state.progress + '%',
+      partsDone: parts.filter(p => p.done).length, partsTotal: parts.length, parts,
+      phases: ['COMPLETE', 'IN PROGRESS', 'QUEUED', 'QUEUED'].map((status, i) => ({ n: t.phase + ' 0' + (i + 1), status, title: t.phases[i][0], items: t.phases[i][1] }))
+      .map(p => ({ ...p, isDone: p.status === 'COMPLETE', isLive: p.status === 'IN PROGRESS', isQueued: p.status === 'QUEUED', itemsText: p.items.join(' · ') })),
+      faqs: t.faqs.map(([q, a], i) => ({ q, a, open: this.state.openFaq === i, sign: this.state.openFaq === i ? '−' : '+', toggle: () => this.setState(s => ({ openFaq: s.openFaq === i ? -1 : i })) })),
+      progressRef: this.progressRef,
+      newsTicker: (this.tickers = this.tickers || {})[L] || (this.tickers[L] = (() => {
+        const items = t.ticker;
+        const run = k => items.flatMap((t, i) => [React.createElement('span', { key: k + i }, t), React.createElement('span', { key: k + 's' + i, style: { color: 'oklch(0.62 0.21 25)' } }, '✦')]);
+        return React.createElement('div', { style: { display: 'flex', gap: 28, paddingLeft: 18, whiteSpace: 'nowrap', fontSize: 15, animation: 'qnnTicker 22s linear infinite', width: 'max-content' } }, run('a'), run('b'));
+      })())
+    };
+  }
+}
+</script>
+</body>
+</html>
