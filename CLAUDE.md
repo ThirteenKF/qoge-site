@@ -5,7 +5,7 @@ Context for picking this project up in a new chat.
 ## Project
 - Landing page for the $QOGE memecoin (doge that colonized Mars).
 - Repo: https://github.com/ThirteenKF/qoge-site (public, branch `main`)
-- Live site: https://thirteenkf.github.io/qoge-site/ (GitHub Pages, from `main` / root)
+- Live site: https://thirteenkf.github.io/qoge-site/ (GitHub Pages via Actions workflow)
 - Local folder on the owner's PC: `C:\Users\0x13kf\Desktop\QOGE SITE\qoge-site`
   (the parent `QOGE SITE` folder holds the original export — do not edit it)
 
@@ -16,9 +16,18 @@ Context for picking this project up in a new chat.
 - `support.js` — generated runtime, loads React from unpkg. Do not edit.
 - `assets/` — mars-bg.png, earth-bg.png, logo.jpg, doge.gif.
 
+## Live metrics
+- Tokenomics cards (market cap, price, liquidity, holders) load `assets/metrics.js`
+  (sets window.QOGE_METRICS; works from file://). `metrics.json` = same data.
+- `scripts/fetch-metrics.mjs` refreshes it from the Quainance API every 30 min
+  in `.github/workflows/pages.yml`. Quainance API has no CORS, so the browser
+  can't call it directly.
+- Mobile layout: `@media (max-width:767px)` block in index.html helmet styles.
+
 ## Links
 - X: https://x.com/QOGEofficial
 - Telegram: https://t.me/QOGEofficial
+- Contract (Quai Network): 0x0048848cA70eA1560577B4725A84b23B6bC589e2
 - DexScreener, Chart buttons: still `href="#"` — waiting for URLs.
 
 ## How we work

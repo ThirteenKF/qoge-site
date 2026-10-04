@@ -16,6 +16,20 @@ html,body{margin:0;background:#141110;color:#f4f0ec;-webkit-font-smoothing:antia
 a{color:#f4f0ec;text-decoration:none}
 a:hover{color:oklch(0.72 0.17 40)}
 @keyframes qnnTicker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+/* ---- mobile ---- */
+@media (max-width:767px){
+  .q-tracker{display:none!important}
+  .q-pr{padding-right:16px!important;padding-left:16px!important}
+  .q-nav{display:none!important}
+  .q-head{flex-wrap:nowrap}
+  .q-head > a:first-child{padding:10px 12px!important;font-size:18px!important}
+  .q-head > a:first-child img{width:28px!important;height:28px!important}
+  .q-head > a:last-child{padding:0 14px!important;font-size:13px!important;margin-left:auto}
+  .q-head > div{padding:0 8px!important}
+  h1{font-size:clamp(30px,9vw,44px)!important}
+  h2{font-size:clamp(28px,8vw,40px)!important}
+  .q-ctas > *{flex:1 1 100%;justify-content:center;text-align:center}
+}
 @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
 </style>
 </helmet>
@@ -23,7 +37,7 @@ a:hover{color:oklch(0.72 0.17 40)}
 <div style="font-family:'Archivo',sans-serif;background:#141110;color:#f4f0ec;min-height:100vh;position:relative;overflow-x:hidden">
 
 <!-- flight tracker -->
-<div style="position:fixed;right:20px;top:50%;transform:translateY(-50%);height:56vh;width:72px;padding:12px 0;background:rgba(20,17,16,.88);border:1px solid #2a2523;z-index:40;display:flex;flex-direction:column;align-items:center;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;color:#a59e97;pointer-events:none">
+<div class="q-tracker" style="position:fixed;right:20px;top:50%;transform:translateY(-50%);height:56vh;width:72px;padding:12px 0;background:rgba(20,17,16,.88);border:1px solid #2a2523;z-index:40;display:flex;flex-direction:column;align-items:center;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;color:#a59e97;pointer-events:none">
   <div style="color:oklch(0.72 0.17 40)">MARS</div>
   <div style="position:relative;flex:1;width:1px;background:#3a3431;margin:10px 0">
     <div style="position:absolute;left:0;top:0;width:1px;height:{{ markerTop }};background:oklch(0.72 0.17 40)"></div>
@@ -35,11 +49,11 @@ a:hover{color:oklch(0.72 0.17 40)}
 
 <!-- nav -->
 <sc-if value="{{ heroC }}" hint-placeholder-val="{{ false }}">
-<header style="position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:14px clamp(16px,3vw,40px);background:#f4f0ec;color:#141110;border-bottom:3px solid #141110">
+<header class="q-head" style="position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:14px clamp(16px,3vw,40px);background:#f4f0ec;color:#141110;border-bottom:3px solid #141110">
   <a href="#top" style="display:flex;align-items:center;gap:10px;color:#141110;font-weight:900;font-stretch:125%;font-size:24px">
     <img src="assets/logo.jpg" alt="" style="width:44px;height:44px;border-radius:50%;border:3px solid #141110;object-fit:cover">$QOGE
   </a>
-  <nav style="display:flex;gap:6px;flex-wrap:nowrap;white-space:nowrap;font-weight:800;font-size:13px;overflow-x:auto;max-width:100%">
+  <nav class="q-nav" style="display:flex;gap:6px;flex-wrap:nowrap;white-space:nowrap;font-weight:800;font-size:13px;overflow-x:auto;max-width:100%">
     <a href="#legend" style="color:#141110;padding:7px 11px;border:2px solid #141110;border-radius:999px" style-hover="background:#141110;color:#f4f0ec">lore</a>
     <a href="#mission" style="color:#141110;padding:7px 11px;border:2px solid #141110;border-radius:999px" style-hover="background:#141110;color:#f4f0ec">the rocket</a>
     <a href="#tokenomics" style="color:#141110;padding:7px 11px;border:2px solid #141110;border-radius:999px" style-hover="background:#141110;color:#f4f0ec">numbers</a>
@@ -48,7 +62,7 @@ a:hover{color:oklch(0.72 0.17 40)}
   </nav>
   <a href="#buy" style="background:oklch(0.72 0.17 40);color:#141110;padding:12px 20px;border:3px solid #141110;box-shadow:4px 4px 0 #141110;font-weight:900;font-size:15px;text-transform:uppercase;transform:rotate(-2deg)" style-hover="box-shadow:6px 6px 0 #141110;color:#141110">ser, buy</a>
 </header>
-<section id="top" data-screen-label="Hero Meme" style="position:relative;overflow:hidden;background:oklch(0.72 0.17 40);color:#141110;padding:clamp(32px,5vw,72px) clamp(16px,4vw,56px) clamp(48px,6vw,88px);padding-right:clamp(112px,8vw,140px);border-bottom:3px solid #141110;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(32px,4vw,56px);align-items:center">
+<section class="q-pr" id="top" data-screen-label="Hero Meme" style="position:relative;overflow:hidden;background:oklch(0.72 0.17 40);color:#141110;padding:clamp(32px,5vw,72px) clamp(16px,4vw,56px) clamp(48px,6vw,88px);padding-right:clamp(112px,8vw,140px);border-bottom:3px solid #141110;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(32px,4vw,56px);align-items:center">
   <div style="display:flex;flex-direction:column;gap:24px;position:relative">
     <div style="display:flex;gap:10px;flex-wrap:wrap">
       <span style="background:#141110;color:#f4f0ec;padding:6px 12px;font-family:'IBM Plex Mono',monospace;font-size:12px;white-space:nowrap;transform:rotate(-3deg)">NASA DID NOT APPROVE THIS</span>
@@ -72,10 +86,10 @@ a:hover{color:oklch(0.72 0.17 40)}
 </div>
 </sc-if>
 <sc-if value="{{ heroD }}" hint-placeholder-val="{{ false }}">
-<header style="position:sticky;top:0;z-index:50;display:flex;align-items:stretch;justify-content:space-between;gap:0;background:#f4f0ec;color:#141110;border-bottom:4px solid #141110;font-weight:900">
+<header class="q-head" style="position:sticky;top:0;z-index:50;display:flex;align-items:stretch;justify-content:space-between;gap:0;background:#f4f0ec;color:#141110;border-bottom:4px solid #141110;font-weight:900">
   <a href="#top" style="display:flex;align-items:center;gap:10px;background:oklch(0.62 0.21 25);color:#f4f0ec;padding:12px 20px;font-stretch:125%;font-size:22px;white-space:nowrap"><img src="assets/logo.jpg" alt="" style="width:36px;height:36px;border-radius:50%;border:2px solid #f4f0ec;object-fit:cover">QNN</a>
   
-  <nav style="flex:1;min-width:0;display:flex;align-items:center;justify-content:flex-start;gap:18px;padding:0 18px;overflow-x:auto;scrollbar-width:none;white-space:nowrap;font-size:14px;text-transform:uppercase">
+  <nav class="q-nav" style="flex:1;min-width:0;display:flex;align-items:center;justify-content:flex-start;gap:18px;padding:0 18px;overflow-x:auto;scrollbar-width:none;white-space:nowrap;font-size:14px;text-transform:uppercase">
     <a href="#legend" style="color:#141110;margin-left:auto" style-hover="color:oklch(0.62 0.21 25)">{{ t.nav1 }}</a>
     <a href="#mission" style="color:#141110" style-hover="color:oklch(0.62 0.21 25)">{{ t.nav2 }}</a>
     <a href="#tokenomics" style="color:#141110" style-hover="color:oklch(0.62 0.21 25)">{{ t.nav3 }}</a>
@@ -85,12 +99,12 @@ a:hover{color:oklch(0.72 0.17 40)}
   <a href="#buy" style="display:flex;align-items:center;background:oklch(0.88 0.17 95);color:#141110;padding:0 22px;border-left:4px solid #141110;font-size:15px;text-transform:uppercase;white-space:nowrap" style-hover="background:#141110;color:oklch(0.88 0.17 95)">{{ t.buyCta }}</a>
 </header>
 <section id="top" data-screen-label="Hero News" style="background:linear-gradient(90deg,rgba(14,8,8,.85) 0%,rgba(14,8,8,.4) 55%,rgba(14,8,8,0) 100%),url(assets/mars-bg.png) 88% bottom/cover no-repeat;color:#f4f0ec;border-bottom:4px solid #141110">
-  <div style="padding:clamp(24px,4vw,48px) clamp(16px,4vw,56px) 0;padding-right:clamp(112px,8vw,140px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(24px,3vw,40px);align-items:stretch">
+  <div class="q-pr" style="padding:clamp(24px,4vw,48px) clamp(16px,4vw,56px) 0;padding-right:clamp(112px,8vw,140px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(24px,3vw,40px);align-items:stretch">
     <div style="display:flex;flex-direction:column;gap:20px;justify-content:center">
       <div style="align-self:flex-start;background:oklch(0.62 0.21 25);color:#f4f0ec;padding:8px 16px;font-weight:900;font-stretch:125%;font-size:clamp(28px,3.4vw,48px);text-transform:uppercase;transform:skewX(-8deg)">{{ t.breaking }}</div>
       <h1 style="margin:0;font-weight:900;font-stretch:100%;font-size:clamp(34px,4.4vw,84px);line-height:.92;letter-spacing:-.02em;text-transform:uppercase;text-wrap:balance;overflow-wrap:anywhere">{{ t.h1a }} <span style="color:oklch(0.88 0.17 95)">{{ t.h1b }}</span></h1>
       <p style="margin:0;max-width:460px;font-size:18px;line-height:1.45;color:#cfc8c1;text-wrap:pretty">{{ t.heroP }}</p>
-      <div style="display:flex;flex-wrap:wrap;gap:12px">
+      <div class="q-ctas" style="display:flex;flex-wrap:wrap;gap:12px">
         <a href="#buy" style="background:oklch(0.88 0.17 95);color:#141110;padding:18px 24px;font-weight:900;font-size:15px;text-transform:uppercase;border:3px solid oklch(0.88 0.17 95)" style-hover="background:transparent;color:oklch(0.88 0.17 95)">{{ t.fund }}</a>
         <button onClick="{{ copyCA }}" style="display:flex;align-items:center;gap:12px;background:transparent;color:#f4f0ec;border:3px solid #f4f0ec;padding:0 18px;min-height:60px;font-family:'IBM Plex Mono',monospace;font-size:13px;cursor:pointer">CA {{ caShort }} <span style="font-weight:900;font-family:'Archivo',sans-serif;color:oklch(0.88 0.17 95)">{{ copyLabel }}</span></button>
       </div>
@@ -109,9 +123,9 @@ a:hover{color:oklch(0.72 0.17 40)}
 </section>
 </sc-if>
 <sc-if value="{{ stdHeader }}" hint-placeholder-val="{{ true }}">
-<header style="position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px clamp(20px,4vw,56px);background:rgba(20,17,16,.82);backdrop-filter:blur(10px);border-bottom:1px solid #2a2523">
+<header class="q-head" style="position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px clamp(20px,4vw,56px);background:rgba(20,17,16,.82);backdrop-filter:blur(10px);border-bottom:1px solid #2a2523">
   <a href="#top" style="font-weight:900;font-stretch:125%;font-size:20px;letter-spacing:.02em">$QOGE</a>
-  <nav style="display:flex;gap:clamp(12px,2vw,28px);flex-wrap:wrap;justify-content:center;white-space:nowrap;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase">
+  <nav class="q-nav" style="display:flex;gap:clamp(12px,2vw,28px);flex-wrap:wrap;justify-content:center;white-space:nowrap;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase">
     <a href="#legend">Legend</a><a href="#mission">Mission</a><a href="#buy">How to buy</a><a href="#tokenomics">Tokenomics</a><a href="#roadmap">Roadmap</a><a href="#faq">FAQ</a>
   </nav>
   <a href="#buy" style="background:oklch(0.72 0.17 40);color:#141110;padding:11px 20px;font-weight:800;font-size:13px;letter-spacing:.08em;text-transform:uppercase">Buy $QOGE</a>
@@ -120,7 +134,7 @@ a:hover{color:oklch(0.72 0.17 40)}
 
 <!-- HERO A: cinematic countdown -->
 <sc-if value="{{ heroA }}" hint-placeholder-val="{{ true }}">
-<section id="top" data-screen-label="Hero A" style="position:relative;min-height:calc(100vh - 64px);display:flex;flex-direction:column;justify-content:flex-end;padding:clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px);overflow:hidden">
+<section class="q-pr" id="top" data-screen-label="Hero A" style="position:relative;min-height:calc(100vh - 64px);display:flex;flex-direction:column;justify-content:flex-end;padding:clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px);overflow:hidden">
   <div style="position:absolute;inset:0;background:url(assets/mars-bg.png) 88% bottom/cover no-repeat"></div>
   <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,17,16,0) 0%,rgba(20,17,16,.15) 55%,rgba(20,17,16,.85) 100%)"></div>
   <div style="margin-bottom:auto"></div>
@@ -153,7 +167,7 @@ a:hover{color:oklch(0.72 0.17 40)}
 
 <!-- HERO B: first transmission -->
 <sc-if value="{{ heroB }}" hint-placeholder-val="{{ false }}">
-<section id="top" data-screen-label="Hero B" style="min-height:calc(100vh - 64px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:clamp(24px,4vw,64px);align-items:center;padding:clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px)">
+<section class="q-pr" id="top" data-screen-label="Hero B" style="min-height:calc(100vh - 64px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:clamp(24px,4vw,64px);align-items:center;padding:clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px)">
   <div style="display:flex;flex-direction:column;gap:28px">
     <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.2em;color:oklch(0.72 0.17 40)">INCOMING TRANSMISSION · 225M KM</div>
     <h1 style="margin:0;font-weight:900;font-stretch:125%;font-size:clamp(44px,6.4vw,108px);line-height:.9;letter-spacing:-.02em;text-transform:uppercase;text-wrap:balance">The first dog on Mars</h1>
@@ -183,7 +197,7 @@ a:hover{color:oklch(0.72 0.17 40)}
 
 <!-- LEGEND (news) -->
 <sc-if value="{{ heroD }}" hint-placeholder-val="{{ false }}">
-<section id="legend" data-screen-label="Legend News" style="background:#f4f0ec;color:#141110;padding:clamp(72px,10vw,140px) clamp(16px,4vw,56px);padding-right:clamp(112px,8vw,140px);display:flex;flex-direction:column;gap:56px;border-bottom:4px solid #141110">
+<section class="q-pr" id="legend" data-screen-label="Legend News" style="background:#f4f0ec;color:#141110;padding:clamp(72px,10vw,140px) clamp(16px,4vw,56px);padding-right:clamp(112px,8vw,140px);display:flex;flex-direction:column;gap:56px;border-bottom:4px solid #141110">
   <div style="display:flex;flex-direction:column;gap:20px;max-width:980px">
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
       <span style="background:oklch(0.62 0.21 25);color:#f4f0ec;padding:6px 14px;font-weight:900;font-size:14px;text-transform:uppercase;white-space:nowrap;transform:skewX(-8deg)">{{ t.lgTag }}</span>
@@ -244,7 +258,7 @@ a:hover{color:oklch(0.72 0.17 40)}
 </sc-if>
 <sc-if value="{{ notNews }}" hint-placeholder-val="{{ true }}">
 <!-- LEGEND -->
-<section id="legend" data-screen-label="Legend" style="padding:clamp(80px,12vw,160px) clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px);display:flex;flex-direction:column;gap:64px">
+<section class="q-pr" id="legend" data-screen-label="Legend" style="padding:clamp(80px,12vw,160px) clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px);display:flex;flex-direction:column;gap:64px">
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:32px;align-items:end">
     <div>
       <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;color:oklch(0.72 0.17 40);margin-bottom:16px">01 — THE LEGEND OF QOGE</div>
@@ -274,7 +288,7 @@ a:hover{color:oklch(0.72 0.17 40)}
 </sc-if>
 <!-- MISSION (news) -->
 <sc-if value="{{ heroD }}" hint-placeholder-val="{{ false }}">
-<section id="mission" data-screen-label="Mission News" style="position:relative;background:linear-gradient(180deg,rgba(14,8,8,.92) 0%,rgba(14,8,8,.78) 60%,rgba(14,8,8,.55) 100%),url(assets/mars-bg.png) 88% bottom/cover no-repeat;color:#f4f0ec;padding:clamp(72px,10vw,140px) clamp(16px,4vw,56px);padding-right:clamp(112px,8vw,140px);display:flex;flex-direction:column;gap:48px;border-bottom:4px solid #141110">
+<section class="q-pr" id="mission" data-screen-label="Mission News" style="position:relative;background:linear-gradient(180deg,rgba(14,8,8,.92) 0%,rgba(14,8,8,.78) 60%,rgba(14,8,8,.55) 100%),url(assets/mars-bg.png) 88% bottom/cover no-repeat;color:#f4f0ec;padding:clamp(72px,10vw,140px) clamp(16px,4vw,56px);padding-right:clamp(112px,8vw,140px);display:flex;flex-direction:column;gap:48px;border-bottom:4px solid #141110">
   <div style="display:flex;flex-direction:column;gap:20px;max-width:980px">
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
       <span style="background:oklch(0.62 0.21 25);color:#f4f0ec;padding:6px 14px;font-weight:900;font-size:14px;text-transform:uppercase;white-space:nowrap;transform:skewX(-8deg)">{{ t.msTag }}</span>
@@ -318,7 +332,7 @@ a:hover{color:oklch(0.72 0.17 40)}
 </sc-if>
 <sc-if value="{{ notNews }}" hint-placeholder-val="{{ true }}">
 <!-- MISSION -->
-<section id="mission" data-screen-label="Mission" style="padding:clamp(80px,12vw,160px) clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px);border-top:1px solid #2a2523;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:clamp(32px,5vw,80px)">
+<section class="q-pr" id="mission" data-screen-label="Mission" style="padding:clamp(80px,12vw,160px) clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px);border-top:1px solid #2a2523;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:clamp(32px,5vw,80px)">
   <div style="display:flex;flex-direction:column;gap:28px">
     <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;color:oklch(0.72 0.17 40)">02 — BUILDING THE ROAD HOME</div>
     <h2 style="margin:0;font-weight:900;font-stretch:115%;font-size:clamp(36px,5vw,72px);line-height:.95;text-transform:uppercase;letter-spacing:-.01em;text-wrap:balance">Red dust. No hydrants. Zero bacon.</h2>
@@ -346,7 +360,7 @@ a:hover{color:oklch(0.72 0.17 40)}
 </sc-if>
 <!-- REST (news) -->
 <sc-if value="{{ heroD }}" hint-placeholder-val="{{ false }}">
-<section id="buy" data-screen-label="Buy News" style="background:#f4f0ec;color:#141110;padding:clamp(72px,10vw,140px) clamp(16px,4vw,56px);padding-right:clamp(112px,8vw,140px);display:flex;flex-direction:column;gap:48px;border-bottom:4px solid #141110">
+<section class="q-pr" id="buy" data-screen-label="Buy News" style="background:#f4f0ec;color:#141110;padding:clamp(72px,10vw,140px) clamp(16px,4vw,56px);padding-right:clamp(112px,8vw,140px);display:flex;flex-direction:column;gap:48px;border-bottom:4px solid #141110">
   
   <div style="display:flex;flex-direction:column;gap:20px;max-width:980px">
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
@@ -374,7 +388,7 @@ a:hover{color:oklch(0.72 0.17 40)}
     <span style="background:#141110;color:oklch(0.88 0.17 95);padding:12px 18px;font-weight:900;font-size:16px;text-transform:uppercase;white-space:nowrap">{{ copyLabel }}</span>
   </button>
 </section>
-<section id="tokenomics" data-screen-label="Tokenomics News" style="background:oklch(0.88 0.17 95);color:#141110;padding:clamp(72px,10vw,140px) clamp(16px,4vw,56px);padding-right:clamp(112px,8vw,140px);display:flex;flex-direction:column;gap:48px;border-bottom:4px solid #141110">
+<section class="q-pr" id="tokenomics" data-screen-label="Tokenomics News" style="background:oklch(0.88 0.17 95);color:#141110;padding:clamp(72px,10vw,140px) clamp(16px,4vw,56px);padding-right:clamp(112px,8vw,140px);display:flex;flex-direction:column;gap:48px;border-bottom:4px solid #141110">
   
   <div style="display:flex;flex-direction:column;gap:20px;max-width:980px">
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
@@ -384,17 +398,18 @@ a:hover{color:oklch(0.72 0.17 40)}
     <h2 style="margin:0;font-weight:900;font-size:clamp(34px,4.8vw,76px);line-height:.95;letter-spacing:-.02em;text-transform:uppercase;text-wrap:balance">{{ t.tkH }}</h2>
   </div>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:24px"><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px"><div style="background:#141110;color:oklch(0.88 0.17 95);border:4px solid #141110;display:flex;flex-direction:column">
-      <span style="background:#f4f0ec;color:#141110;padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;white-space:nowrap">{{ t.k1 }}</span>
-      <span style="padding:18px 14px 22px;font-weight:900;font-size:clamp(22px,2.6vw,40px);line-height:1;font-variant-numeric:tabular-nums;text-transform:uppercase">1B</span></div><div style="background:#141110;color:oklch(0.88 0.17 95);border:4px solid #141110;display:flex;flex-direction:column">
-      <span style="background:#f4f0ec;color:#141110;padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;white-space:nowrap">{{ t.k2 }}</span>
-      <span style="padding:18px 14px 22px;font-weight:900;font-size:clamp(22px,2.6vw,40px);line-height:1;font-variant-numeric:tabular-nums;text-transform:uppercase">0 / 0</span></div></div><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px"><div style="background:#141110;color:oklch(0.88 0.17 95);border:4px solid #141110;display:flex;flex-direction:column">
-      <span style="background:#f4f0ec;color:#141110;padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;white-space:nowrap">{{ t.k3 }}</span>
-      <span style="padding:18px 14px 22px;font-weight:900;font-size:clamp(22px,2.6vw,40px);line-height:1;font-variant-numeric:tabular-nums;text-transform:uppercase">{{ t.v3 }}</span></div><div style="background:#141110;color:oklch(0.88 0.17 95);border:4px solid #141110;display:flex;flex-direction:column">
-      <span style="background:#f4f0ec;color:#141110;padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;white-space:nowrap">{{ t.k4 }}</span>
-      <span style="padding:18px 14px 22px;font-weight:900;font-size:clamp(22px,2.6vw,40px);line-height:1;font-variant-numeric:tabular-nums;text-transform:uppercase">{{ t.v4 }}</span></div></div>
+      <span style="background:#f4f0ec;color:#141110;padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;white-space:nowrap">{{ t.m1 }}</span>
+      <span style="padding:18px 14px 22px;font-weight:900;font-size:clamp(20px,2.2vw,34px);line-height:1.05;font-variant-numeric:tabular-nums;overflow-wrap:anywhere">{{ mCap }}</span></div><div style="background:#141110;color:oklch(0.88 0.17 95);border:4px solid #141110;display:flex;flex-direction:column">
+      <span style="background:#f4f0ec;color:#141110;padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;white-space:nowrap">{{ t.m2 }}</span>
+      <span style="padding:18px 14px 22px;font-weight:900;font-size:clamp(20px,2.2vw,34px);line-height:1.05;font-variant-numeric:tabular-nums;overflow-wrap:anywhere">{{ mPrice }}<small style="display:block;margin-top:6px;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:12px;color:#a59e97">{{ mPriceUsd }}</small></span></div></div><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px"><div style="background:#141110;color:oklch(0.88 0.17 95);border:4px solid #141110;display:flex;flex-direction:column">
+      <span style="background:#f4f0ec;color:#141110;padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;white-space:nowrap">{{ t.m3 }}</span>
+      <span style="padding:18px 14px 22px;font-weight:900;font-size:clamp(20px,2.2vw,34px);line-height:1.05;font-variant-numeric:tabular-nums;overflow-wrap:anywhere">{{ mLiq }}</span></div><div style="background:#141110;color:oklch(0.88 0.17 95);border:4px solid #141110;display:flex;flex-direction:column">
+      <span style="background:#f4f0ec;color:#141110;padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;white-space:nowrap">{{ t.m4 }}</span>
+      <span style="padding:18px 14px 22px;font-weight:900;font-size:clamp(20px,2.2vw,34px);line-height:1.05;font-variant-numeric:tabular-nums;overflow-wrap:anywhere">{{ mHolders }}</span></div></div>
   </div>
+  <a href="{{ mSource }}" target="_blank" rel="noopener" style="align-self:flex-start;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;color:#141110;border-bottom:2px solid #141110;padding-bottom:2px" style-hover="color:oklch(0.62 0.21 25)">● {{ t.mLive }} · {{ t.mUpd }} {{ mUpdated }} ↗</a>
 </section>
-<section id="roadmap" data-screen-label="Roadmap News" style="background:#141110;color:#f4f0ec;padding:clamp(72px,10vw,140px) clamp(16px,4vw,56px);padding-right:clamp(112px,8vw,140px);display:flex;flex-direction:column;gap:48px;border-bottom:4px solid #141110">
+<section class="q-pr" id="roadmap" data-screen-label="Roadmap News" style="background:#141110;color:#f4f0ec;padding:clamp(72px,10vw,140px) clamp(16px,4vw,56px);padding-right:clamp(112px,8vw,140px);display:flex;flex-direction:column;gap:48px;border-bottom:4px solid #141110">
   
   <div style="display:flex;flex-direction:column;gap:20px;max-width:980px">
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
@@ -420,7 +435,7 @@ a:hover{color:oklch(0.72 0.17 40)}
     </sc-for>
   </div>
 </section>
-<section id="faq" data-screen-label="FAQ News" style="background:#f4f0ec;color:#141110;padding:clamp(72px,10vw,140px) clamp(16px,4vw,56px);padding-right:clamp(112px,8vw,140px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:48px;border-bottom:4px solid #141110">
+<section class="q-pr" id="faq" data-screen-label="FAQ News" style="background:#f4f0ec;color:#141110;padding:clamp(72px,10vw,140px) clamp(16px,4vw,56px);padding-right:clamp(112px,8vw,140px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:48px;border-bottom:4px solid #141110">
   
   <div style="display:flex;flex-direction:column;gap:20px;max-width:980px">
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
@@ -438,7 +453,7 @@ a:hover{color:oklch(0.72 0.17 40)}
     </sc-for>
   </div>
 </section>
-<section data-screen-label="Community News" style="background:linear-gradient(180deg,rgba(8,10,20,.35) 0%,rgba(8,10,20,.15) 50%,rgba(8,10,20,.75) 100%),url(assets/earth-bg.png) 88% bottom/cover no-repeat;color:#f4f0ec;min-height:80vh;justify-content:flex-end;padding:clamp(72px,10vw,140px) clamp(16px,4vw,56px);padding-right:clamp(112px,8vw,140px);display:flex;flex-direction:column;gap:40px;border-bottom:4px solid #141110">
+<section class="q-pr" data-screen-label="Community News" style="background:linear-gradient(180deg,rgba(8,10,20,.35) 0%,rgba(8,10,20,.15) 50%,rgba(8,10,20,.75) 100%),url(assets/earth-bg.png) 88% bottom/cover no-repeat;color:#f4f0ec;min-height:80vh;justify-content:flex-end;padding:clamp(72px,10vw,140px) clamp(16px,4vw,56px);padding-right:clamp(112px,8vw,140px);display:flex;flex-direction:column;gap:40px;border-bottom:4px solid #141110">
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:32px;align-items:end">
     <h2 style="margin:0;font-weight:900;font-size:clamp(44px,7vw,112px);line-height:.88;letter-spacing:-.03em;text-transform:uppercase;text-wrap:balance">{{ t.cmH1 }}<br><span style="color:oklch(0.88 0.17 95)">{{ t.cmH2 }}</span></h2>
     <div style="display:flex;align-items:flex-end;gap:16px">
@@ -452,7 +467,7 @@ a:hover{color:oklch(0.72 0.17 40)}
 </sc-if>
 <sc-if value="{{ notNews }}" hint-placeholder-val="{{ true }}">
 <!-- HOW TO BUY -->
-<section id="buy" data-screen-label="How to buy" style="padding:clamp(80px,12vw,160px) clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px);border-top:1px solid #2a2523;display:flex;flex-direction:column;gap:56px">
+<section class="q-pr" id="buy" data-screen-label="How to buy" style="padding:clamp(80px,12vw,160px) clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px);border-top:1px solid #2a2523;display:flex;flex-direction:column;gap:56px">
   <div>
     <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;color:oklch(0.72 0.17 40);margin-bottom:16px">03 — HOW TO BUY</div>
     <h2 style="margin:0;font-weight:900;font-stretch:115%;font-size:clamp(36px,5vw,72px);line-height:.95;text-transform:uppercase;letter-spacing:-.01em">Pre-flight checklist</h2>
@@ -470,7 +485,7 @@ a:hover{color:oklch(0.72 0.17 40)}
 </section>
 
 <!-- TOKENOMICS -->
-<section id="tokenomics" data-screen-label="Tokenomics" style="padding:clamp(80px,12vw,160px) clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px);border-top:1px solid #2a2523;display:flex;flex-direction:column;gap:56px">
+<section class="q-pr" id="tokenomics" data-screen-label="Tokenomics" style="padding:clamp(80px,12vw,160px) clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px);border-top:1px solid #2a2523;display:flex;flex-direction:column;gap:56px">
   <div>
     <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;color:oklch(0.72 0.17 40);margin-bottom:16px">04 — TOKENOMICS</div>
     <h2 style="margin:0;font-weight:900;font-stretch:115%;font-size:clamp(36px,5vw,72px);line-height:.95;text-transform:uppercase;letter-spacing:-.01em">Fuel specs</h2>
@@ -484,7 +499,7 @@ a:hover{color:oklch(0.72 0.17 40)}
 </section>
 
 <!-- ROADMAP -->
-<section id="roadmap" data-screen-label="Roadmap" style="padding:clamp(80px,12vw,160px) clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px);border-top:1px solid #2a2523;display:flex;flex-direction:column;gap:56px">
+<section class="q-pr" id="roadmap" data-screen-label="Roadmap" style="padding:clamp(80px,12vw,160px) clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px);border-top:1px solid #2a2523;display:flex;flex-direction:column;gap:56px">
   <div>
     <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;color:oklch(0.72 0.17 40);margin-bottom:16px">05 — ROADMAP</div>
     <h2 style="margin:0;font-weight:900;font-stretch:115%;font-size:clamp(36px,5vw,72px);line-height:.95;text-transform:uppercase;letter-spacing:-.01em">Mars → Earth</h2>
@@ -505,7 +520,7 @@ a:hover{color:oklch(0.72 0.17 40)}
 </section>
 
 <!-- FAQ -->
-<section id="faq" data-screen-label="FAQ" style="padding:clamp(80px,12vw,160px) clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px);border-top:1px solid #2a2523;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:48px">
+<section class="q-pr" id="faq" data-screen-label="FAQ" style="padding:clamp(80px,12vw,160px) clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px);border-top:1px solid #2a2523;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:48px">
   <div>
     <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;color:oklch(0.72 0.17 40);margin-bottom:16px">06 — FAQ</div>
     <h2 style="margin:0;font-weight:900;font-stretch:115%;font-size:clamp(36px,5vw,72px);line-height:.95;text-transform:uppercase;letter-spacing:-.01em">Ground control, questions</h2>
@@ -521,7 +536,7 @@ a:hover{color:oklch(0.72 0.17 40)}
 </section>
 
 <!-- COMMUNITY -->
-<section data-screen-label="Community" style="padding:clamp(80px,12vw,160px) clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px);border-top:1px solid #2a2523;display:flex;flex-direction:column;gap:48px">
+<section class="q-pr" data-screen-label="Community" style="padding:clamp(80px,12vw,160px) clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px);border-top:1px solid #2a2523;display:flex;flex-direction:column;gap:48px">
   <h2 style="margin:0;font-weight:900;font-stretch:125%;font-size:clamp(44px,8vw,128px);line-height:.88;text-transform:uppercase;letter-spacing:-.02em;text-wrap:balance">Bring him<br><span style="color:oklch(0.72 0.14 230)">home.</span></h2>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:2px;background:#2a2523;border:1px solid #2a2523">
     <a href="https://x.com/QOGEofficial" target="_blank" rel="noopener" style="background:#141110;padding:28px 32px;display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:22px" style-hover="background:#1e1a18">X / Twitter<span style="font-family:'IBM Plex Mono',monospace;color:oklch(0.72 0.17 40)">↗</span></a>
@@ -532,7 +547,7 @@ a:hover{color:oklch(0.72 0.17 40)}
 </section>
 
 </sc-if>
-<footer style="padding:32px clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px);border-top:1px solid #2a2523;display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;color:#8a827b">
+<footer class="q-pr" style="padding:32px clamp(20px,4vw,56px);padding-right:clamp(112px,8vw,140px);border-top:1px solid #2a2523;display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;color:#8a827b">
   <span>{{ t.foot1 }}</span>
   <span>{{ t.foot2 }}</span>
 </footer>
@@ -541,7 +556,7 @@ a:hover{color:oklch(0.72 0.17 40)}
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;heroVariant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Countdown&quot;,&quot;Transmission&quot;,&quot;Meme&quot;,&quot;Breaking News&quot;],&quot;default&quot;:&quot;Breaking News&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Hero&quot;},&quot;buildProgress&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0,&quot;max&quot;:100,&quot;step&quot;:1,&quot;default&quot;:37,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Mission&quot;},&quot;chain&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Quai Network&quot;,&quot;Solana&quot;,&quot;Ethereum&quot;,&quot;Base&quot;,&quot;BNB Chain&quot;,&quot;TON&quot;],&quot;default&quot;:&quot;Quai Network&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Token&quot;},&quot;contractAddress&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;0x0048848cA70eA1560577B4725A84b23B6bC589e2&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Token&quot;}}">
 class Component extends DCLogic {
-  state = { now: Date.now(), copied: false, scroll: 0, progress: 0, openFaq: 0, lang: (typeof localStorage !== 'undefined' && localStorage.getItem('qoge-lang')) || 'en' };
+  state = { now: Date.now(), copied: false, scroll: 0, progress: 0, openFaq: 0, metrics: null, lang: (typeof localStorage !== 'undefined' && localStorage.getItem('qoge-lang')) || 'en' };
   setLang(l) { try { localStorage.setItem('qoge-lang', l); } catch (e) {} document.documentElement.lang = l; this.setState({ lang: l }); }
   dict(chain) {
     const en = {
@@ -567,7 +582,7 @@ class Component extends DCLogic {
       s1b: 'Download Pelagus or another ' + chain + ' wallet. Guard the seed phrase like the last bacon on Mars.', s2b: 'Buy QUAI on an exchange and send it to your wallet.',
       s3b: 'Open a DEX, paste the contract address below and swap. Double-check the CA.', s4b: 'Hop into the community. Every holder is ground control now.',
       caLabel: 'CONTRACT ADDRESS',
-      tkTag: 'By the numbers', tkSub: 'TOKENOMICS', tkH: 'The fuel specs', k1: 'TOTAL SUPPLY', k2: 'BUY / SELL TAX', k3: 'LIQUIDITY', k4: 'CONTRACT', v3: 'Burned', v4: 'Renounced',
+      tkTag: 'By the numbers', tkSub: 'TOKENOMICS', tkH: 'The fuel specs', k1: 'TOTAL SUPPLY', k2: 'BUY / SELL TAX', k3: 'LIQUIDITY', k4: 'CONTRACT', v3: 'Burned', v4: 'Renounced', m1: 'MARKET CAP', m2: 'PRICE', m3: 'LIQUIDITY', m4: 'HOLDERS', mLive: 'LIVE DATA · QUAINANCE', mUpd: 'UPDATED',
       rmTag: 'Coming up next', rmSub: 'ROADMAP · TV GUIDE', rmH1: 'Mars → Earth:', rmH2: 'the schedule', aired: 'AIRED ✓', onAir: '● ON AIR', upNext: 'UP NEXT',
       fqTag: 'Viewer questions', fqH1: 'You asked.', fqH2: 'We barked.',
       cmH1: 'Join the rescue team.', cmH2: 'Bring him home.', bubble: 'pls hurry, i\'m out of bacon',
@@ -601,7 +616,7 @@ class Component extends DCLogic {
       s1b: 'Скачай Pelagus или другой кошелёк ' + chain + '. Храни сид-фразу как последний бекон на Марсе.', s2b: 'Купи QUAI на бирже и отправь на свой кошелёк.',
       s3b: 'Открой DEX, вставь адрес контракта ниже и обменяй. Проверь CA дважды.', s4b: 'Заходи в комьюнити. Теперь каждый холдер — центр управления полётом.',
       caLabel: 'АДРЕС КОНТРАКТА',
-      tkTag: 'В цифрах', tkSub: 'ТОКЕНОМИКА', tkH: 'Характеристики топлива', k1: 'ОБЩИЙ ОБЪЁМ', k2: 'НАЛОГ ПОКУПКА / ПРОДАЖА', k3: 'ЛИКВИДНОСТЬ', k4: 'КОНТРАКТ', v3: 'Сожжена', v4: 'Без владельца',
+      tkTag: 'В цифрах', tkSub: 'ТОКЕНОМИКА', tkH: 'Характеристики топлива', k1: 'ОБЩИЙ ОБЪЁМ', k2: 'НАЛОГ ПОКУПКА / ПРОДАЖА', k3: 'ЛИКВИДНОСТЬ', k4: 'КОНТРАКТ', v3: 'Сожжена', v4: 'Без владельца', m1: 'КАПИТАЛИЗАЦИЯ', m2: 'ЦЕНА', m3: 'ЛИКВИДНОСТЬ', m4: 'ХОЛДЕРЫ', mLive: 'ЖИВЫЕ ДАННЫЕ · QUAINANCE', mUpd: 'ОБНОВЛЕНО',
       rmTag: 'Далее в эфире', rmSub: 'РОАДМАП · ТЕЛЕПРОГРАММА', rmH1: 'Марс → Земля:', rmH2: 'расписание', aired: 'В ЭФИРЕ БЫЛО ✓', onAir: '● В ЭФИРЕ', upNext: 'СКОРО',
       fqTag: 'Вопросы зрителей', fqH1: 'Вы спросили.', fqH2: 'Мы гавкнули.',
       cmH1: 'Вступай в спасательную команду.', cmH2: 'Верни его домой.', bubble: 'поторопитесь, бекон кончился',
@@ -616,6 +631,11 @@ class Component extends DCLogic {
   }
   progressRef = el => { this.progEl = el; if (el && this.io) this.io.observe(el); };
   componentDidMount() {
+    // Live token data (assets/metrics.js sets window.QOGE_METRICS; works on file:// too)
+    const ms = document.createElement('script');
+    ms.src = 'assets/metrics.js?t=' + Math.floor(Date.now() / 60000);
+    ms.onload = () => window.QOGE_METRICS && this.setState({ metrics: window.QOGE_METRICS });
+    document.head.appendChild(ms);
     this.t = setInterval(() => this.setState({ now: Date.now() }), 1000);
     this.onScroll = () => {
       const el = document.scrollingElement || document.documentElement;
@@ -655,6 +675,13 @@ class Component extends DCLogic {
     return {
       heroA: hero === 'Countdown', heroB: hero === 'Transmission', heroC: hero === 'Meme', heroD: hero === 'Breaking News', notNews: hero !== 'Breaking News', stdHeader: hero !== 'Meme' && hero !== 'Breaking News',
       cd, ca, chain,
+      ...(() => {
+        const m = this.state.metrics || {}, dash = '—';
+        const usd = v => v == null ? dash : '$' + (v >= 1e6 ? (v / 1e6).toFixed(2) + 'M' : v >= 1e3 ? (v / 1e3).toFixed(1) + 'K' : v.toFixed(0));
+        const small = v => { if (v == null) return dash; const d = Math.max(2, -Math.floor(Math.log10(v)) + 2); return v.toFixed(Math.min(d, 12)); };
+        const upd = m.updatedAt ? new Date(m.updatedAt).toLocaleString(L === 'ru' ? 'ru-RU' : 'en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : dash;
+        return { mCap: usd(m.marketCapUsd), mPrice: m.priceQuai == null ? dash : small(m.priceQuai) + ' QUAI', mPriceUsd: m.priceUsd == null ? '' : '≈ $' + small(m.priceUsd), mLiq: usd(m.liquidityUsd), mHolders: m.holders == null ? dash : String(m.holders), mUpdated: upd, mSource: m.source || 'https://www.quainance.com/' + ca };
+      })(),
       caShort: ca.slice(0, 6) + '…' + ca.slice(-4),
       copyLabel: this.state.copied ? t.copied : t.copy,
       t, setEn: () => this.setLang('en'), setRu: () => this.setLang('ru'),
