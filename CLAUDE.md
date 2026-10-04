@@ -11,10 +11,12 @@ Context for picking this project up in a new chat.
 
 ## Files
 - `index.html` — all markup, styles and logic (EN/RU dictionary, FAQ, roadmap,
-  ticker). Exported from a design tool; several hero/section variants live in
-  one file, switched by `heroVariant` (default: "Breaking News").
+  ticker). Exported from a design tool. Only the "Breaking News" design is kept;
+  the unused hero/section variants were removed. <head> has title, description,
+  Open Graph / Twitter preview tags (image: assets/og.jpg, 1200x630).
 - `support.js` — generated runtime, loads React from unpkg. Do not edit.
-- `assets/` — mars-bg.png, earth-bg.png, logo.jpg, doge.gif.
+- `assets/` — mars-bg.webp, earth-bg.webp (backgrounds; the .png originals are
+  no longer used), logo.jpg (also favicon), doge.gif, og.jpg (link preview).
 
 ## Live metrics
 - Tokenomics cards (market cap, price, liquidity, holders) + 7-day price chart
@@ -23,6 +25,13 @@ Context for picking this project up in a new chat.
 - `scripts/fetch-metrics.mjs` refreshes it from the Quainance API every 30 min
   in `.github/workflows/pages.yml`. Quainance API has no CORS, so the browser
   can't call it directly.
+- Languages: en, es, pt, ru, zh — dictionaries in dict() (each has `loc` and live
+  headline templates lv*); picker in renderLang() (LANGS list); first visit picks
+  the browser language, choice saved in localStorage 'qoge-lang'.
+- News ticker: `assets/news.js` (window.QOGE_NEWS, 146 puppy headlines per language,
+  same order in every list). renderTicker() shows 8 random ones per hour plus
+  ● live headlines built from metrics (holders, 24h price change, volume, mcap).
+  To add news: append to both arrays in news.js.
 - Mobile layout: `@media (max-width:767px)` block in index.html helmet styles.
 
 ## Links

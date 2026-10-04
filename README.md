@@ -11,7 +11,8 @@ Landing page for **$QOGE** — the very good boy who accidentally colonized Mars
 ```
 index.html     page markup, styles and logic (EN/RU texts, FAQ, roadmap)
 support.js     page runtime (generated — do not edit by hand)
-assets/        images: backgrounds, logo, doge gif
+assets/        images: backgrounds (webp), logo, doge gif, og.jpg link preview
+assets/news.js puppy news headlines for the ticker (EN + RU, edit freely)
 metrics.json   live token data (refreshed by GitHub Actions)
 assets/metrics.js  same data as a script, used by the page (works from file:// too)
 scripts/       fetch-metrics.mjs — pulls data from Quainance
