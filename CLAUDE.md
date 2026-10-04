@@ -5,7 +5,9 @@ Context for picking this project up in a new chat.
 ## Project
 - Landing page for the $QOGE memecoin (doge that colonized Mars).
 - Repo: https://github.com/ThirteenKF/qoge-site (public, branch `main`)
-- Live site: https://thirteenkf.github.io/qoge-site/ (GitHub Pages via Actions workflow)
+- Live site: https://www.qoge.net (Vercel; qoge.net redirects to www). Domain bought at GoDaddy,
+  DNS: A @ 216.198.79.1, CNAME www d29ba9e3571f7c77.vercel-dns-017.com.
+- Backup copy: https://thirteenkf.github.io/qoge-site/ (GitHub Pages via Actions workflow)
 - Local folder on the owner's PC: `C:\Users\0x13kf\Desktop\QOGE SITE\qoge-site`
   (the parent `QOGE SITE` folder holds the original export — do not edit it)
 

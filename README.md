@@ -1,5 +1,7 @@
 # $QOGE — landing page
 
+Live: https://www.qoge.net
+
 Landing page for **$QOGE** — the very good boy who accidentally colonized Mars.
 
 - X / Twitter: https://x.com/QOGEofficial
