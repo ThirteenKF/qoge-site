@@ -31,6 +31,7 @@ Context for picking this project up in a new chat.
 - Contract (Quai Network): 0x0048848cA70eA1560577B4725A84b23B6bC589e2
 - Discord: https://discord.gg/eHVA8rJ2J (replaced the old Chart button)
 - Quainance button (replaced DexScreener — it does not list Quai Network yet)
+- Wallets in how-to-buy: Pelagus https://www.pelaguswallet.io/ , Blip https://blippay.me/
 
 ## How we work
 - Claude cannot push to GitHub directly. Claude edits files in the local folder
