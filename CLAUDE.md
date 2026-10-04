@@ -32,6 +32,10 @@ Context for picking this project up in a new chat.
   same order in every list). renderTicker() shows 8 random ones per hour plus
   ● live headlines built from metrics (holders, 24h price change, volume, mcap).
   To add news: append to both arrays in news.js.
+- Vercel: `api/metrics.js` is a serverless function (GET /api/metrics, edge-cached
+  10 min) with the same JSON as metrics.json; the page fetches it when not on
+  github.io and falls back to assets/metrics.js. `.vercelignore` hides tools/,
+  scripts/, .github/, CLAUDE.md from the deployed site.
 - Mobile layout: `@media (max-width:767px)` block in index.html helmet styles.
 
 ## Links

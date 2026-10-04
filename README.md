@@ -15,6 +15,7 @@ assets/        images: backgrounds (webp), logo, doge gif, og.jpg link preview
 assets/news.js puppy news headlines for the ticker (EN + RU, edit freely)
 metrics.json   live token data (refreshed by GitHub Actions)
 assets/metrics.js  same data as a script, used by the page (works from file:// too)
+api/           metrics.js — Vercel serverless function with live metrics
 scripts/       fetch-metrics.mjs — pulls data from Quainance
 .github/       workflows/pages.yml — build + deploy to GitHub Pages
 ```

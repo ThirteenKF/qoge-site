@@ -1,0 +1,7 @@
+# Not needed on the live site (Vercel)
+tools/
+scripts/
+.github/
+CLAUDE.md
+assets/mars-bg.png
+assets/earth-bg.png
