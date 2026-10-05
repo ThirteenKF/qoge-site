@@ -50,7 +50,7 @@ export default async function handler(req) {
   const rSize = rank.length * (cjk ? 1.9 : 1) > 12 ? 34 : 44;
 
   const allText = [t.tag, t.sub, title, dayTxt, quote, t.sign, rank, streak, rocket, logNo, 'www.qoge.fun', '$QOGE'].join('');
-  const fonts = [];
+  const fonts = []; let fontErr = '';
   try {
     const [bold, black, mono] = await Promise.all([font('Inter:wght@800', allText), font('Inter:wght@900', allText), font('IBM+Plex+Mono:wght@500', allText)]);
     fonts.push({ name: 'Inter', data: bold, weight: 800, style: 'normal' }, { name: 'Inter', data: black, weight: 900, style: 'normal' }, { name: 'Mono', data: mono, weight: 500, style: 'normal' });
@@ -58,7 +58,7 @@ export default async function handler(req) {
       const [sc8, sc9] = await Promise.all([font('Noto+Sans+SC:wght@800', allText), font('Noto+Sans+SC:wght@900', allText)]);
       fonts.push({ name: 'SC', data: sc8, weight: 800, style: 'normal' }, { name: 'SC', data: sc9, weight: 900, style: 'normal' });
     }
-  } catch (e) {}
+  } catch (e) { fontErr = String(e && e.message || e); }
   const SANS = cjk ? 'SC, Inter' : 'Inter', MONO = cjk ? 'Mono, SC' : 'Mono';
 
   const tree = el('div', { width: 1200, height: 675, display: 'flex', position: 'relative', backgroundColor: INK, fontFamily: SANS, color: CREAM },
@@ -86,8 +86,16 @@ export default async function handler(req) {
     el('div', { position: 'absolute', left: 64, bottom: 38, display: 'flex', fontFamily: MONO, fontSize: 26, color: CREAM }, 'www.qoge.fun'),
     el('div', { position: 'absolute', right: 60, bottom: 36, display: 'flex', fontSize: 30, fontWeight: 900, color: YEL }, '$QOGE'));
 
-  return new ImageResponse(tree, {
-    width: 1200, height: 675, fonts: fonts.length ? fonts : undefined,
-    headers: { 'cache-control': 'public, max-age=86400, s-maxage=31536000, immutable' },
-  });
+  // Render fully before answering: a failed render would otherwise stream an empty PNG.
+  try {
+    const png = await new ImageResponse(tree, { width: 1200, height: 675, fonts: fonts.length ? fonts : undefined }).arrayBuffer();
+    if (!png || !png.byteLength) throw new Error('empty image');
+    return new Response(png, { headers: { 'content-type': 'image/png', 'cache-control': 'public, max-age=86400, s-maxage=31536000, immutable' } });
+  } catch (e) {
+    if (q.has('debug')) {
+      return new Response('og render error: ' + (e && (e.stack || e.message) || e) + '\nfonts loaded: ' + fonts.map(f => f.name + ' ' + f.weight + ' ' + f.data.byteLength).join(', ') + '\nfont error: ' + fontErr + '\nentry: ' + entry,
+        { status: 500, headers: { 'content-type': 'text/plain; charset=utf-8', 'cache-control': 'no-store' } });
+    }
+    return Response.redirect(origin + '/assets/og.jpg', 302); // fallback: the regular site preview
+  }
 }
