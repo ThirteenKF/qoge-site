@@ -31,7 +31,12 @@ async function font(family, text) {
   return (await fetch(m[1])).arrayBuffer();
 }
 
-const el = (type, style, ...children) => ({ type, props: { style, children: children.length === 1 ? children[0] : children } });
+// Every element is an explicit flex box (satori requires it for anything with several children)
+const el = (type, style, ...children) => {
+  const props = { style: { display: 'flex', ...style } };
+  if (children.length === 1) props.children = children[0]; else if (children.length > 1) props.children = children;
+  return { type: type === 'span' ? 'div' : type, props };
+};
 
 export default async function handler(req) {
   const url = new URL(req.url), q = url.searchParams, origin = url.origin;

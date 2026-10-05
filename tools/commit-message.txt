@@ -1,4 +1,4 @@
-Card: render fully, fall back to og.jpg, add ?debug diagnostics
+Card: make every element an explicit flex box (satori)
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01MPEqxgPdw2kbhtrFwyPCAH
