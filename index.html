@@ -36,6 +36,7 @@ a:hover{color:oklch(0.72 0.17 40)}
 @keyframes qnnTicker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 /* ---- mobile ---- */
 @media (max-width:767px){
+  .q-daily{grid-template-columns:minmax(0,1fr)!important}
   .q-tracker{display:none!important}
   .q-pr{padding-right:16px!important;padding-left:16px!important}
   .q-nav{display:none!important}
@@ -111,6 +112,10 @@ a:hover{color:oklch(0.72 0.17 40)}
 <div style="border-top:1px solid #2a2523;border-bottom:1px solid #2a2523;padding:16px clamp(20px,4vw,56px);display:flex;gap:40px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:#a59e97;white-space:nowrap">
   <span>NO FIRE HYDRANTS</span><span>·</span><span>NO MAIL SERVICE</span><span>·</span><span>NO BACON</span><span>·</span><span style="color:#f4f0ec">ONE VERY GOOD BOY</span>
 </div>
+
+<!-- DAILY: ship's log + visit streak (no server, localStorage) -->
+
+<section class="q-pr" id="daily" data-screen-label="Daily News" style="background:#141110;color:#f4f0ec;padding:clamp(56px,8vw,112px) clamp(16px,4vw,56px);padding-right:clamp(112px,8vw,140px);border-bottom:4px solid #f4f0ec">{{ dailyBlock }}</section>
 
 <!-- LEGEND (news) -->
 
@@ -341,7 +346,7 @@ a:hover{color:oklch(0.72 0.17 40)}
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;buildProgress&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0,&quot;max&quot;:100,&quot;step&quot;:1,&quot;default&quot;:37,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Mission&quot;},&quot;chain&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Quai Network&quot;,&quot;Solana&quot;,&quot;Ethereum&quot;,&quot;Base&quot;,&quot;BNB Chain&quot;,&quot;TON&quot;],&quot;default&quot;:&quot;Quai Network&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Token&quot;},&quot;contractAddress&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;0x0048848cA70eA1560577B4725A84b23B6bC589e2&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Token&quot;}}">
 class Component extends DCLogic {
-  state = { now: Date.now(), copied: false, scroll: 0, progress: 0, openFaq: 0, langOpen: false, metrics: null, hi: null, lang: (() => { const ok = ['en', 'es', 'pt', 'ru', 'zh']; try { const v = localStorage.getItem('qoge-lang'); if (ok.includes(v)) return v; } catch (e) {} const nav = (typeof navigator !== 'undefined' && navigator.language || 'en').slice(0, 2).toLowerCase(); return ok.includes(nav) ? nav : 'en'; })() };
+  state = { visit: null, now: Date.now(), copied: false, scroll: 0, progress: 0, openFaq: 0, langOpen: false, metrics: null, hi: null, lang: (() => { const ok = ['en', 'es', 'pt', 'ru', 'zh']; try { const v = localStorage.getItem('qoge-lang'); if (ok.includes(v)) return v; } catch (e) {} const nav = (typeof navigator !== 'undefined' && navigator.language || 'en').slice(0, 2).toLowerCase(); return ok.includes(nav) ? nav : 'en'; })() };
   setLang(l) { try { localStorage.setItem('qoge-lang', l); } catch (e) {} document.documentElement.lang = l; this.setState({ lang: l }); }
   dict(chain) {
     const en = {
@@ -368,7 +373,7 @@ class Component extends DCLogic {
       s3b: 'Open $QOGE on Quainance and swap QUAI for it. Check the contract address below in the Quai explorer.', s3go: 'Buy on Quainance', s3ex: 'Check in explorer', s4b: 'Hop into the community. Every holder is ground control now.',
       caLabel: 'CONTRACT ADDRESS',
       tkTag: 'By the numbers', tkSub: 'TOKENOMICS', tkH: 'The fuel specs', m1: 'MARKET CAP', m2: 'PRICE', m3: 'LIQUIDITY', m4: 'HOLDERS', mLive: 'LIVE DATA · QUAINANCE', mUpd: 'UPDATED', chTitle: 'PRICE · 7D', chVol: 'VOL', chNow: 'NOW', chNoData: 'No trades yet',
-      rmTag: 'Coming up next', rmSub: 'ROADMAP · TV GUIDE', rmH1: 'Mars → Earth:', rmH2: 'the schedule', aired: 'AIRED ✓', onAir: '● ON AIR', upNext: 'UP NEXT', rmProg: 'Holders: {n} / {goal}',
+      rmTag: 'Coming up next', rmSub: 'ROADMAP · TV GUIDE', rmH1: 'Mars → Earth:', rmH2: 'the schedule', aired: 'AIRED ✓', onAir: '● ON AIR', upNext: 'UP NEXT', rmProg: 'Holders: {n} / {goal}', dlTag: '● On the radio', dlSub: 'DAILY · GROUND CONTROL', dlTitle: "Ship's log", dlDay: 'day {n}', dlSign: '— Q., stranded on Mars', dlPS: 'P.S. {h} holders in ground control. Fuel price {chg} in 24h.', dlUp: 'up {n}%', dlDown: 'down {n}%', dlFlat: 'steady', dlStreakH: 'Your streak', dlDays: 'days in a row', dlBest: 'Best: {n} · visits: {v}', dlNext: '{n} more days → {rank}', dlMax: 'Top rank. Respect.', shTitle: 'Your mission card', shShare: 'Share the picture', shCopyOpen: 'Copy picture & open X', shDownload: 'Download picture', shHint: 'Picture copied — paste it into your post (Ctrl+V)', shHintFail: "Couldn't copy the picture — download it and attach it to your post", shClose: 'Close', shRocket: 'Rocket built: {pct}%', dlShare: 'Share progress on X', dlShareText: 'I\'m a {rank} of the $QOGE mission: {n} days in a row on the radio with Mars 🚀 Rocket {pct}% built, {h} holders on board. Join ground control:', dlTomorrow: 'Come back tomorrow to keep the streak.', dlSinceH: 'Since your last visit', dlFirst: 'First contact! Come back tomorrow and we will show what changed.', dlHolders: 'Holders', dlPrice: 'Fuel price', dl24h: 'Last 24 hours', dlVol: 'Volume', ranks: ['Cadet', 'Mechanic', 'Pilot', 'Navigator', 'Commander', 'Admiral', 'Mars legend'], dlBadgeTop: '$QOGE · GROUND CONTROL', dlBadgeDays: '{n} days in a row', dlD: 'd',
       fqTag: 'Viewer questions', fqH1: 'You asked.', fqH2: 'We barked.',
       cmH1: 'Join the rescue team.', cmH2: 'Bring him home.', bubble: 'pls hurry, i\'m out of bacon',
       foot1: '© 2026 $QOGE · A MEMECOIN WITH NO INTRINSIC VALUE OR EXPECTATION OF RETURN.', foot2: 'NOT AFFILIATED WITH NASA. JUST A DOG.',
@@ -403,7 +408,7 @@ class Component extends DCLogic {
       s3b: 'Открой $QOGE на Quainance и обменяй QUAI. Сверь адрес контракта ниже в эксплорере Quai.', s3go: 'Купить на Quainance', s3ex: 'Проверить в эксплорере', s4b: 'Заходи в комьюнити. Теперь каждый холдер — центр управления полётом.',
       caLabel: 'АДРЕС КОНТРАКТА',
       tkTag: 'В цифрах', tkSub: 'ТОКЕНОМИКА', tkH: 'Характеристики топлива', m1: 'КАПИТАЛИЗАЦИЯ', m2: 'ЦЕНА', m3: 'ЛИКВИДНОСТЬ', m4: 'ХОЛДЕРЫ', mLive: 'ЖИВЫЕ ДАННЫЕ · QUAINANCE', mUpd: 'ОБНОВЛЕНО', chTitle: 'ЦЕНА · 7 ДНЕЙ', chVol: 'ОБЪЁМ', chNow: 'СЕЙЧАС', chNoData: 'Сделок пока нет',
-      rmTag: 'Далее в эфире', rmSub: 'РОАДМАП · ТЕЛЕПРОГРАММА', rmH1: 'Марс → Земля:', rmH2: 'расписание', aired: 'В ЭФИРЕ БЫЛО ✓', onAir: '● В ЭФИРЕ', upNext: 'СКОРО', rmProg: 'Холдеры: {n} / {goal}',
+      rmTag: 'Далее в эфире', rmSub: 'РОАДМАП · ТЕЛЕПРОГРАММА', rmH1: 'Марс → Земля:', rmH2: 'расписание', aired: 'В ЭФИРЕ БЫЛО ✓', onAir: '● В ЭФИРЕ', upNext: 'СКОРО', rmProg: 'Холдеры: {n} / {goal}', dlTag: '● На связи', dlSub: 'КАЖДЫЙ ДЕНЬ · ЦЕНТР УПРАВЛЕНИЯ', dlTitle: 'Бортовой журнал', dlDay: 'день {n}', dlSign: '— Q., застрял на Марсе', dlPS: 'P.S. В центре управления {h} холдеров. Цена топлива за сутки: {chg}.', dlUp: '+{n}%', dlDown: '−{n}%', dlFlat: 'без изменений', dlStreakH: 'Твоя серия', dlDays: 'дн. подряд', dlBest: 'Рекорд: {n} · визитов: {v}', dlNext: 'Ещё {n} дн. → {rank}', dlMax: 'Высшее звание. Уважение.', shTitle: 'Твоя карточка миссии', shShare: 'Поделиться картинкой', shCopyOpen: 'Скопировать картинку и открыть X', shDownload: 'Скачать картинку', shHint: 'Картинка скопирована — вставь её в пост (Ctrl+V)', shHintFail: 'Не получилось скопировать — скачай картинку и прикрепи к посту', shClose: 'Закрыть', shRocket: 'Ракета собрана: {pct}%', dlShare: 'Поделиться прогрессом в X', dlShareText: 'Я {rank} миссии $QOGE: {n} дн. подряд на связи с Марсом 🚀 Ракета собрана на {pct}%, на борту {h} холдеров. Присоединяйся к центру управления:', dlTomorrow: 'Заходи завтра, чтобы не прервать серию.', dlSinceH: 'С твоего прошлого визита', dlFirst: 'Первый контакт! Заходи завтра — покажем, что изменилось.', dlHolders: 'Холдеры', dlPrice: 'Цена топлива', dl24h: 'За 24 часа', dlVol: 'Объём', ranks: ['Стажёр', 'Механик', 'Пилот', 'Штурман', 'Командир', 'Адмирал', 'Легенда Марса'], dlBadgeTop: '$QOGE · ЦЕНТР УПРАВЛЕНИЯ', dlBadgeDays: '{n} дн. подряд', dlD: 'дн',
       fqTag: 'Вопросы зрителей', fqH1: 'Вы спросили.', fqH2: 'Мы гавкнули.',
       cmH1: 'Вступай в спасательную команду.', cmH2: 'Верни его домой.', bubble: 'поторопитесь, бекон кончился',
       foot1: '© 2026 $QOGE · МЕМКОИН БЕЗ ВНУТРЕННЕЙ ЦЕННОСТИ И ОЖИДАНИЯ ДОХОДА.', foot2: 'НЕ СВЯЗАН С NASA. ПРОСТО СОБАКА.',
@@ -438,7 +443,7 @@ class Component extends DCLogic {
       s3b: 'Abre $QOGE en Quainance y cambia QUAI por él. Comprueba la dirección del contrato de abajo en el explorador de Quai.', s3go: 'Comprar en Quainance', s3ex: 'Ver en el explorador', s4b: 'Únete a la comunidad. Ahora cada holder es el centro de control.',
       caLabel: 'DIRECCIÓN DEL CONTRATO',
       tkTag: 'En cifras', tkSub: 'TOKENÓMICA', tkH: 'Ficha del combustible', m1: 'CAP. DE MERCADO', m2: 'PRECIO', m3: 'LIQUIDEZ', m4: 'HOLDERS', mLive: 'DATOS EN VIVO · QUAINANCE', mUpd: 'ACTUALIZADO', chTitle: 'PRECIO · 7D', chVol: 'VOL', chNow: 'AHORA', chNoData: 'Aún no hay operaciones',
-      rmTag: 'A continuación', rmSub: 'ROADMAP · PROGRAMACIÓN', rmH1: 'Marte → Tierra:', rmH2: 'la programación', aired: 'EMITIDO ✓', onAir: '● EN ANTENA', upNext: 'PRÓXIMAMENTE', rmProg: 'Holders: {n} / {goal}',
+      rmTag: 'A continuación', rmSub: 'ROADMAP · PROGRAMACIÓN', rmH1: 'Marte → Tierra:', rmH2: 'la programación', aired: 'EMITIDO ✓', onAir: '● EN ANTENA', upNext: 'PRÓXIMAMENTE', rmProg: 'Holders: {n} / {goal}', dlTag: '● En la radio', dlSub: 'CADA DÍA · CENTRO DE CONTROL', dlTitle: 'Diario de a bordo', dlDay: 'día {n}', dlSign: '— Q., atrapado en Marte', dlPS: 'P.D. {h} holders en el centro de control. Combustible: {chg} en 24 h.', dlUp: 'sube un {n}%', dlDown: 'baja un {n}%', dlFlat: 'estable', dlStreakH: 'Tu racha', dlDays: 'días seguidos', dlBest: 'Récord: {n} · visitas: {v}', dlNext: '{n} días más → {rank}', dlMax: 'Rango máximo. Respeto.', shTitle: 'Tu tarjeta de misión', shShare: 'Compartir imagen', shCopyOpen: 'Copiar imagen y abrir X', shDownload: 'Descargar imagen', shHint: 'Imagen copiada: pégala en tu post (Ctrl+V)', shHintFail: 'No se pudo copiar: descarga la imagen y adjúntala al post', shClose: 'Cerrar', shRocket: 'Cohete listo: {pct}%', dlShare: 'Compartir progreso en X', dlShareText: 'Soy {rank} de la misión $QOGE: {n} días seguidos en contacto con Marte 🚀 Cohete al {pct}%, {h} holders a bordo. Únete al centro de control:', dlTomorrow: 'Vuelve mañana para no perder la racha.', dlSinceH: 'Desde tu última visita', dlFirst: '¡Primer contacto! Vuelve mañana y verás qué ha cambiado.', dlHolders: 'Holders', dlPrice: 'Precio del combustible', dl24h: 'Últimas 24 horas', dlVol: 'Volumen', ranks: ['Cadete', 'Mecánico', 'Piloto', 'Navegante', 'Comandante', 'Almirante', 'Leyenda de Marte'], dlBadgeTop: '$QOGE · CENTRO DE CONTROL', dlBadgeDays: '{n} días seguidos', dlD: 'd',
       fqTag: 'Preguntas del público', fqH1: 'Preguntasteis.', fqH2: 'Ladramos.',
       cmH1: 'Únete al equipo de rescate.', cmH2: 'Tráelo a casa.', bubble: 'date prisa, me quedé sin beicon',
       foot1: '© 2026 $QOGE · UNA MEMECOIN SIN VALOR INTRÍNSECO NI EXPECTATIVA DE RENTABILIDAD.', foot2: 'SIN RELACIÓN CON LA NASA. SOLO UN PERRO.',
@@ -473,7 +478,7 @@ class Component extends DCLogic {
       s3b: 'Abra $QOGE na Quainance e troque QUAI por ele. Confira o endereço do contrato abaixo no explorador da Quai.', s3go: 'Comprar na Quainance', s3ex: 'Ver no explorador', s4b: 'Entre na comunidade. Agora cada holder é o centro de controle.',
       caLabel: 'ENDEREÇO DO CONTRATO',
       tkTag: 'Em números', tkSub: 'TOKENOMICS', tkH: 'Ficha do combustível', m1: 'VALOR DE MERCADO', m2: 'PREÇO', m3: 'LIQUIDEZ', m4: 'HOLDERS', mLive: 'DADOS AO VIVO · QUAINANCE', mUpd: 'ATUALIZADO', chTitle: 'PREÇO · 7D', chVol: 'VOL', chNow: 'AGORA', chNoData: 'Ainda sem negociações',
-      rmTag: 'A seguir', rmSub: 'ROADMAP · PROGRAMAÇÃO', rmH1: 'Marte → Terra:', rmH2: 'a programação', aired: 'EXIBIDO ✓', onAir: '● NO AR', upNext: 'EM BREVE', rmProg: 'Holders: {n} / {goal}',
+      rmTag: 'A seguir', rmSub: 'ROADMAP · PROGRAMAÇÃO', rmH1: 'Marte → Terra:', rmH2: 'a programação', aired: 'EXIBIDO ✓', onAir: '● NO AR', upNext: 'EM BREVE', rmProg: 'Holders: {n} / {goal}', dlTag: '● No rádio', dlSub: 'TODO DIA · CONTROLE DA MISSÃO', dlTitle: 'Diário de bordo', dlDay: 'dia {n}', dlSign: '— Q., preso em Marte', dlPS: 'P.S. {h} holders no controle da missão. Combustível: {chg} em 24 h.', dlUp: 'subiu {n}%', dlDown: 'caiu {n}%', dlFlat: 'estável', dlStreakH: 'Sua sequência', dlDays: 'dias seguidos', dlBest: 'Recorde: {n} · visitas: {v}', dlNext: 'Mais {n} dias → {rank}', dlMax: 'Patente máxima. Respeito.', shTitle: 'Seu cartão da missão', shShare: 'Compartilhar imagem', shCopyOpen: 'Copiar imagem e abrir o X', shDownload: 'Baixar imagem', shHint: 'Imagem copiada: cole no seu post (Ctrl+V)', shHintFail: 'Não deu para copiar: baixe a imagem e anexe ao post', shClose: 'Fechar', shRocket: 'Foguete pronto: {pct}%', dlShare: 'Compartilhar progresso no X', dlShareText: 'Sou {rank} da missão $QOGE: {n} dias seguidos em contato com Marte 🚀 Foguete {pct}% pronto, {h} holders a bordo. Entre no controle da missão:', dlTomorrow: 'Volte amanhã para manter a sequência.', dlSinceH: 'Desde sua última visita', dlFirst: 'Primeiro contato! Volte amanhã e mostramos o que mudou.', dlHolders: 'Holders', dlPrice: 'Preço do combustível', dl24h: 'Últimas 24 horas', dlVol: 'Volume', ranks: ['Cadete', 'Mecânico', 'Piloto', 'Navegador', 'Comandante', 'Almirante', 'Lenda de Marte'], dlBadgeTop: '$QOGE · CONTROLE DA MISSÃO', dlBadgeDays: '{n} dias seguidos', dlD: 'd',
       fqTag: 'Perguntas dos espectadores', fqH1: 'Vocês perguntaram.', fqH2: 'Nós latimos.',
       cmH1: 'Entre na equipe de resgate.', cmH2: 'Traga ele pra casa.', bubble: 'corre, acabou meu bacon',
       foot1: '© 2026 $QOGE · UMA MEMECOIN SEM VALOR INTRÍNSECO NEM EXPECTATIVA DE RETORNO.', foot2: 'SEM LIGAÇÃO COM A NASA. SÓ UM CACHORRO.',
@@ -508,7 +513,7 @@ class Component extends DCLogic {
       s3b: '在 Quainance 打开 $QOGE，用 QUAI 兑换。请在 Quai 浏览器中核对下方的合约地址。', s3go: '在 Quainance 购买', s3ex: '在浏览器中核对', s4b: '加入社区。现在每位持有者都是地面指挥中心。',
       caLabel: '合约地址',
       tkTag: '数据一览', tkSub: '代币经济', tkH: '燃料参数', m1: '市值', m2: '价格', m3: '流动性', m4: '持有者', mLive: '实时数据 · QUAINANCE', mUpd: '更新于', chTitle: '价格 · 7 天', chVol: '成交量', chNow: '现在', chNoData: '暂无交易',
-      rmTag: '下期预告', rmSub: '路线图 · 节目单', rmH1: '火星 → 地球：', rmH2: '节目单', aired: '已播出 ✓', onAir: '● 直播中', upNext: '即将播出', rmProg: '持有者：{n} / {goal}',
+      rmTag: '下期预告', rmSub: '路线图 · 节目单', rmH1: '火星 → 地球：', rmH2: '节目单', aired: '已播出 ✓', onAir: '● 直播中', upNext: '即将播出', rmProg: '持有者：{n} / {goal}', dlTag: '● 通讯中', dlSub: '每日 · 地面控制', dlTitle: '航行日志', dlDay: '第 {n} 天', dlSign: '—— Q.，被困火星', dlPS: '附：地面控制已有 {h} 位持有者。燃料价格 24 小时：{chg}。', dlUp: '上涨 {n}%', dlDown: '下跌 {n}%', dlFlat: '持平', dlStreakH: '你的连续访问', dlDays: '天连续', dlBest: '最佳：{n} · 访问：{v}', dlNext: '再 {n} 天 → {rank}', dlMax: '最高军衔。致敬。', shTitle: '你的任务卡', shShare: '分享图片', shCopyOpen: '复制图片并打开 X', shDownload: '下载图片', shHint: '图片已复制——粘贴到帖子里（Ctrl+V）', shHintFail: '复制失败——请下载图片并附加到帖子', shClose: '关闭', shRocket: '火箭完成度：{pct}%', dlShare: '在 X 上分享进度', dlShareText: '我是 $QOGE 任务的{rank}：连续 {n} 天与火星保持通讯 🚀 火箭已完成 {pct}%，{h} 位持有者已登船。加入地面控制：', dlTomorrow: '明天再来，保持连续记录。', dlSinceH: '自你上次访问以来', dlFirst: '首次联络！明天再来，看看有什么变化。', dlHolders: '持有者', dlPrice: '燃料价格', dl24h: '过去 24 小时', dlVol: '成交量', ranks: ['学员', '机械师', '飞行员', '领航员', '指挥官', '上将', '火星传奇'], dlBadgeTop: '$QOGE · 地面控制', dlBadgeDays: '连续 {n} 天', dlD: '天',
       fqTag: '观众提问', fqH1: '你们问了。', fqH2: '我们汪了。',
       cmH1: '加入救援队。', cmH2: '带它回家。', bubble: '快点，我的培根吃完了',
       foot1: '© 2026 $QOGE · 一个没有内在价值、不承诺任何回报的 MEMECOIN。', foot2: '与 NASA 无关。只是一只狗。',
@@ -539,13 +544,18 @@ class Component extends DCLogic {
         if (m && m.updatedAt && !m.error) { this.liveMetrics = m; window.QOGE_METRICS = m; this.tickerKey = null; this.setState({ metrics: m }); }
       }).catch(() => {});
     }
+    this.initVisit();
+    const js = document.createElement('script');
+    js.src = 'assets/journal.js?t=' + Math.floor(Date.now() / 3600000);
+    js.onload = () => this.setState({ journalReady: true });
+    document.head.appendChild(js);
     const ns = document.createElement('script');
     ns.src = 'assets/news.js?t=' + Math.floor(Date.now() / 3600000);
     ns.onload = () => this.setState({ newsReady: true });
     document.head.appendChild(ns);
     this.hourTimer = setInterval(() => this.forceUpdate(), 60000);
     this.onDocClick = ev => { if (this.state.langOpen && this.langEl && !this.langEl.contains(ev.target)) this.setState({ langOpen: false }); };
-    this.onKey = ev => { if (ev.key === 'Escape' && this.state.langOpen) this.setState({ langOpen: false }); };
+    this.onKey = ev => { if (ev.key === 'Escape' && this.state.langOpen) this.setState({ langOpen: false }); if (ev.key === 'Escape' && this.state.share) this.closeShare(); };
     document.addEventListener('click', this.onDocClick);
     document.addEventListener('keydown', this.onKey);
     this.t = setInterval(() => this.setState({ now: Date.now() }), 1000);
@@ -571,6 +581,359 @@ class Component extends DCLogic {
   }
   componentWillUnmount() {
     clearInterval(this.t); clearInterval(this.hourTimer); document.removeEventListener('click', this.onDocClick); document.removeEventListener('keydown', this.onKey); window.removeEventListener('scroll', this.onScroll); this.io && this.io.disconnect();
+  }
+  // Rank badges: original space-electronics patches (neon on dark PCB), day count on an LCD strip.
+  // 0 cadet (signal) · 1 mechanic (chip) · 2 pilot (HUD) · 3 navigator (radar)
+  // 4 commander (satellite) · 5 admiral (station) · 6 Mars legend (launch)
+  badgeSvg(i) {
+    const INK = '#141110', BG = '#0c1118', PCB = '#132029', CREAM = '#f4f0ec';
+    const keys = ['cadet', 'mechanic', 'pilot', 'navigator', 'commander', 'admiral', 'legend'];
+    const key = keys[i] || 'legend';
+    const DAYS = [1, 3, 7, 30, 100, 200, 365][i] || 365;
+    const C = { cadet: '#35e0ff', mechanic: '#3dff8f', pilot: '#f5d33a', navigator: '#35e0ff', commander: '#ff6b4a', admiral: '#b39bff', legend: '#f5d33a' }[key];
+    const glow = ' filter="url(#gl)"';
+    const defs = '<defs><filter id="gl" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>' +
+      '<radialGradient id="vg" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="' + PCB + '"/><stop offset="1" stop-color="' + BG + '"/></radialGradient>' +
+      '<linearGradient id="sw" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="' + C + '" stop-opacity="0"/><stop offset="1" stop-color="' + C + '" stop-opacity=".55"/></linearGradient></defs>';
+    const shapes = {
+      circle: 'M60 4 A54 54 0 1 1 59.9 4 Z',
+      hex: 'M60 3 L109 31 V87 L60 115 L11 87 V31 Z',
+      shield: 'M60 4 L107 20 V58 C107 86 87 104 60 115 C33 104 13 86 13 58 V20 Z',
+      oct: 'M37 4 H83 L116 37 V81 L83 114 H37 L4 81 V37 Z',
+      diamond: 'M60 2 L118 60 L60 118 L2 60 Z',
+    };
+    const shape = { cadet: 'circle', mechanic: 'hex', pilot: 'shield', navigator: 'oct', commander: 'circle', admiral: 'diamond', legend: 'circle' }[key];
+    const frame = '<path d="' + shapes[shape] + '" fill="url(#vg)" stroke="' + INK + '" stroke-width="5" stroke-linejoin="round"/>' +
+      '<path d="' + shapes[shape] + '" fill="none" stroke="' + C + '" stroke-width="1.6" stroke-linejoin="round" transform="translate(60 60) scale(.9) translate(-60 -60)"' + glow + '/>';
+    // decorative PCB traces with solder pads
+    const trace = (d, ends) => '<path d="' + d + '" fill="none" stroke="' + C + '" stroke-width="1.3" opacity=".45"/>' +
+      ends.map(([x, y]) => '<circle cx="' + x + '" cy="' + y + '" r="2" fill="' + BG + '" stroke="' + C + '" stroke-width="1.2" opacity=".7"/>').join('');
+    const traces = trace('M20 46 H30 L36 40 H44', [[20, 46], [44, 40]]) + trace('M100 46 H90 L84 52 H78', [[100, 46], [78, 52]]) +
+      trace('M24 74 H34 L40 80', [[24, 74], [40, 80]]) + trace('M96 74 H86 L80 80', [[96, 74], [80, 80]]);
+    const lcd = '<rect x="38" y="95" width="44" height="15" rx="2.5" fill="#05080c" stroke="' + C + '" stroke-width="1.4"/>' +
+      '<text x="60" y="106.5" text-anchor="middle" font-family="IBM Plex Mono, Consolas, monospace" font-weight="700" font-size="11" letter-spacing="1.5" fill="' + C + '"' + glow + '>' + String(DAYS).padStart(3, '0') + '</text>';
+    const led = (x, y, col, blink) => '<circle cx="' + x + '" cy="' + y + '" r="2.6" fill="' + (col || C) + '"' + glow + '>' +
+      (blink ? '<animate attributeName="opacity" values="1;.25;1" dur="' + blink + 's" repeatCount="indefinite"/>' : '') + '</circle>';
+    const stars = (pts) => pts.map(([x, y, r]) => '<circle cx="' + x + '" cy="' + y + '" r="' + (r || .9) + '" fill="' + CREAM + '" opacity=".8"/>').join('');
+    let art = '';
+    if (key === 'cadet') { // radio beacon: first signal home
+      art = stars([[30, 30], [88, 26], [96, 40, 1.2], [24, 58]]) + traces +
+        '<path d="M60 50 L46 88 M60 50 L74 88 M50 77 H70 M53 68 H67 M56 59 H64" stroke="' + CREAM + '" stroke-width="2.4" stroke-linecap="round"/>' +
+        '<path d="M42 88 H78" stroke="' + C + '" stroke-width="2.4" stroke-linecap="round"' + glow + '/>' +
+        [12, 20, 28].map((r, k) => '<path d="M' + (60 - r * .8) + ' ' + (44 - r * .6) + ' A' + r + ' ' + r + ' 0 0 1 ' + (60 + r * .8) + ' ' + (44 - r * .6) + '" fill="none" stroke="' + C + '" stroke-width="2" stroke-linecap="round"' + glow + '>' +
+          '<animate attributeName="opacity" values="0;1;0" dur="2.4s" begin="' + (k * .4) + 's" repeatCount="indefinite"/></path>').join('') +
+        led(60, 47, '#ff4a4a', 1.2);
+    } else if (key === 'mechanic') { // microchip with pins and traces
+      let pins = '';
+      for (let k = 0; k < 4; k++) {
+        const o = 42 + k * 8 + 2;
+        pins += '<rect x="' + (o - 2) + '" y="30" width="4" height="8" fill="' + C + '"/><rect x="' + (o - 2) + '" y="76" width="4" height="8" fill="' + C + '"/>' +
+          '<rect x="34" y="' + (o - 2 - 2) + '" width="8" height="4" fill="' + C + '"/><rect x="78" y="' + (o - 2 - 2) + '" width="8" height="4" fill="' + C + '"/>';
+      }
+      art = stars([[26, 28], [94, 30]]) +
+        trace('M44 30 V20 H30', [[30, 20]]) + trace('M76 30 V22 H90', [[90, 22]]) + trace('M34 50 H22 V62', [[22, 62]]) + trace('M86 62 H98 V50', [[98, 50]]) +
+        trace('M52 84 V90 H40', [[40, 90]]) + trace('M68 84 V90 H80', [[80, 90]]) +
+        pins + '<rect x="40" y="36" width="40" height="40" rx="3" fill="#0a0f14" stroke="' + C + '" stroke-width="2"' + glow + '/>' +
+        '<rect x="48" y="44" width="24" height="24" rx="2" fill="none" stroke="' + C + '" stroke-width="1.2" opacity=".7"/>' +
+        '<path d="M52 56 H56 L58 51 L62 61 L64 56 H68" fill="none" stroke="' + C + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"' + glow + '/>' +
+        '<circle cx="44.5" cy="40.5" r="1.6" fill="' + C + '"/>' + led(92, 80, null, 1.6);
+    } else if (key === 'pilot') { // cockpit HUD reticle
+      let ladder = '';
+      [-16, -8, 8, 16].forEach(dy => { ladder += '<path d="M' + (dy < 0 ? '42 ' : '44 ') + (56 + dy) + ' H52 M68 ' + (56 + dy) + ' H' + (dy < 0 ? 78 : 76) + '" stroke="' + C + '" stroke-width="1.6" opacity=".8"' + (dy > 0 ? ' stroke-dasharray="3 2"' : '') + '/>'; });
+      art = stars([[30, 26], [92, 28], [86, 84]]) +
+        '<circle cx="60" cy="56" r="30" fill="none" stroke="' + C + '" stroke-width="2"' + glow + '/>' +
+        '<circle cx="60" cy="56" r="30" fill="none" stroke="' + C + '" stroke-width="6" stroke-dasharray="1 9.47" opacity=".7"/>' +
+        '<path d="M26 56 H40 M80 56 H94" stroke="' + C + '" stroke-width="2.2"' + glow + '/>' + ladder +
+        '<path d="M48 58 L56 58 L60 63 L64 58 L72 58" fill="none" stroke="' + CREAM + '" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>' +
+        '<circle cx="60" cy="56" r="2" fill="' + CREAM + '"/>' +
+        '<path d="M60 20 L57 26 H63 Z" fill="' + C + '"' + glow + '/>' +
+        '<text x="24" y="40" font-family="IBM Plex Mono, monospace" font-size="6" fill="' + C + '" opacity=".8">ALT</text><text x="86" y="40" font-family="IBM Plex Mono, monospace" font-size="6" fill="' + C + '" opacity=".8">SPD</text>' +
+        led(60, 88, null, 1);
+    } else if (key === 'navigator') { // radar with sweep: Mars → Earth
+      art = '<circle cx="60" cy="56" r="34" fill="#071016" stroke="' + C + '" stroke-width="2"' + glow + '/>' +
+        '<circle cx="60" cy="56" r="23" fill="none" stroke="' + C + '" stroke-width="1" opacity=".5"/><circle cx="60" cy="56" r="12" fill="none" stroke="' + C + '" stroke-width="1" opacity=".5"/>' +
+        '<path d="M26 56 H94 M60 22 V90" stroke="' + C + '" stroke-width="1" opacity=".4"/>' +
+        '<g><path d="M60 56 L94 56 A34 34 0 0 0 84 32 Z" fill="url(#sw)"/>' +
+        '<animateTransform attributeName="transform" type="rotate" from="0 60 56" to="-360 60 56" dur="4s" repeatCount="indefinite"/></g>' +
+        '<path d="M66 64 Q72 48 84 40" fill="none" stroke="' + CREAM + '" stroke-width="1.2" stroke-dasharray="2 2.5"/>' +
+        '<circle cx="66" cy="64" r="4" fill="#d9542f" stroke="' + INK + '" stroke-width="1"/>' +
+        '<circle cx="84" cy="40" r="4" fill="#3b8fe0" stroke="' + INK + '" stroke-width="1"' + glow + '><animate attributeName="r" values="3.5;5;3.5" dur="2s" repeatCount="indefinite"/></circle>' +
+        '<circle cx="42" cy="44" r="1.6" fill="' + C + '"/><circle cx="48" cy="74" r="1.6" fill="' + C + '"/>' +
+        trace('M18 34 H24 L28 30', [[18, 34]]) + trace('M102 82 H96 L92 86', [[102, 82]]);
+    } else if (key === 'commander') { // satellite on orbit
+      const panel = x => '<rect x="' + x + '" y="46" width="24" height="16" fill="#1d3a5c" stroke="' + C + '" stroke-width="1.6"/>' +
+        '<path d="M' + (x + 8) + ' 46 V62 M' + (x + 16) + ' 46 V62 M' + x + ' 54 H' + (x + 24) + '" stroke="' + C + '" stroke-width=".9" opacity=".8"/>';
+      art = stars([[24, 30], [96, 26, 1.2], [20, 70], [100, 78]]) +
+        '<ellipse cx="60" cy="56" rx="48" ry="16" fill="none" stroke="' + C + '" stroke-width="1.2" stroke-dasharray="3 4" opacity=".6" transform="rotate(-16 60 56)"/>' +
+        '<path d="M14 100 Q60 70 106 100" fill="#d9542f" opacity=".35"/>' +
+        '<g><animateTransform attributeName="transform" type="translate" values="0 0;0 -2;0 0" dur="3s" repeatCount="indefinite"/>' +
+        panel(22) + panel(74) + '<path d="M46 54 H50 M70 54 H74" stroke="' + CREAM + '" stroke-width="2"/>' +
+        '<rect x="50" y="42" width="20" height="24" rx="3" fill="' + CREAM + '" stroke="' + INK + '" stroke-width="2"/>' +
+        '<rect x="54" y="47" width="12" height="6" rx="1" fill="#0a0f14"/>' + led(57, 50, C, 1.3) + led(63, 50, '#ff4a4a', .9) +
+        '<path d="M60 42 V34" stroke="' + CREAM + '" stroke-width="2"/><path d="M52 34 Q60 24 68 34 Z" fill="' + CREAM + '" stroke="' + INK + '" stroke-width="1.5"/>' +
+        [8, 14].map((r, k) => '<path d="M' + (60 - r) + ' ' + (26 - r * .3) + ' Q60 ' + (16 - r) + ' ' + (60 + r) + ' ' + (26 - r * .3) + '" fill="none" stroke="' + C + '" stroke-width="1.6"' + glow + '><animate attributeName="opacity" values="0;1;0" dur="1.8s" begin="' + k * .5 + 's" repeatCount="indefinite"/></path>').join('') +
+        '</g>';
+    } else if (key === 'admiral') { // orbital station: ring, spokes, glowing core
+      let mods = '';
+      for (let k = 0; k < 8; k++) { const a = k * Math.PI / 4, x = 60 + 32 * Math.cos(a), y = 58 + 32 * Math.sin(a) * .5;
+        mods += '<rect x="' + (x - 3.5).toFixed(1) + '" y="' + (y - 2.5).toFixed(1) + '" width="7" height="5" rx="1" fill="' + CREAM + '" stroke="' + INK + '" stroke-width="1"/>'; }
+      art = stars([[36, 26], [84, 24, 1.2], [26, 46], [94, 44], [40, 86], [82, 88]]) +
+        '<ellipse cx="60" cy="58" rx="32" ry="16" fill="none" stroke="' + C + '" stroke-width="4"' + glow + '/>' +
+        '<ellipse cx="60" cy="58" rx="32" ry="16" fill="none" stroke="' + INK + '" stroke-width="1.4" stroke-dasharray="2 3"/>' +
+        '<path d="M28 58 H92 M60 42 V74 M38 47 L82 69 M82 47 L38 69" stroke="' + C + '" stroke-width="1.2" opacity=".6"/>' + mods +
+        '<path d="M60 26 V42 M60 74 V84" stroke="' + CREAM + '" stroke-width="3"/>' +
+        '<rect x="52" y="18" width="16" height="9" rx="2" fill="#1d3a5c" stroke="' + C + '" stroke-width="1.4"/>' +
+        '<circle cx="60" cy="58" r="9" fill="' + C + '"' + glow + '><animate attributeName="r" values="8;10;8" dur="2.4s" repeatCount="indefinite"/></circle>' +
+        '<circle cx="60" cy="58" r="4" fill="#fff"/>' + led(60, 86, '#ff4a4a', 1.1);
+    } else { // Mars legend: liftoff from Mars, circuit sun rays
+      let rays = '';
+      for (let k = 0; k < 12; k++) { const a = (-90 + (k - 5.5) * 15) * Math.PI / 180, r1 = 30, r2 = 44 + (k % 2) * 4;
+        rays += '<path d="M' + (60 + r1 * Math.cos(a)).toFixed(1) + ' ' + (62 + r1 * Math.sin(a)).toFixed(1) + ' L' + (60 + r2 * Math.cos(a)).toFixed(1) + ' ' + (62 + r2 * Math.sin(a)).toFixed(1) + '" stroke="' + C + '" stroke-width="1.3" opacity=".55"/>' +
+          '<circle cx="' + (60 + r2 * Math.cos(a)).toFixed(1) + '" cy="' + (62 + r2 * Math.sin(a)).toFixed(1) + '" r="1.8" fill="' + BG + '" stroke="' + C + '" stroke-width="1.1"/>'; }
+      art = rays +
+        '<path d="M8 100 Q60 66 112 100 L112 120 H8 Z" fill="#d9542f" stroke="' + INK + '" stroke-width="2"/>' +
+        '<path d="M8 100 Q60 66 112 100" fill="none" stroke="#ff9a6b" stroke-width="2"' + glow + '/>' +
+        '<circle cx="30" cy="94" r="3" fill="#a83a1f"/><circle cx="92" cy="92" r="2.4" fill="#a83a1f"/>' +
+        '<path d="M60 82 Q50 92 60 100 Q70 92 60 82 Z" fill="#ff6b4a" opacity=".7"' + glow + '><animate attributeName="opacity" values=".4;.9;.4" dur=".6s" repeatCount="indefinite"/></path>' +
+        '<g><animateTransform attributeName="transform" type="translate" values="0 1;0 -1;0 1" dur=".8s" repeatCount="indefinite"/>' +
+        '<path d="M54 78 L56 88 L60 84 L64 88 L66 78 Z" fill="' + C + '"' + glow + '/>' +
+        '<path d="M60 24 C70 34 72 50 70 76 H50 C48 50 50 34 60 24 Z" fill="' + CREAM + '" stroke="' + INK + '" stroke-width="2.4"/>' +
+        '<path d="M50 62 L42 78 L51 74 Z M70 62 L78 78 L69 74 Z" fill="' + C + '" stroke="' + INK + '" stroke-width="1.8" stroke-linejoin="round"/>' +
+        '<circle cx="60" cy="46" r="5.5" fill="#0a0f14" stroke="' + C + '" stroke-width="1.6"' + glow + '/>' +
+        '<path d="M55 58 H58 L60 54 L62 62 L64 58 H66" fill="none" stroke="' + C + '" stroke-width="1.3"/>' + '</g>' +
+        stars([[22, 30], [98, 30, 1.2], [16, 56], [104, 56]]);
+    }
+    const clip = '<clipPath id="cp"><path d="' + shapes[shape] + '" transform="translate(60 60) scale(.955) translate(-60 -60)"/></clipPath>';
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="240" height="240">' + defs + clip + frame +
+      '<g clip-path="url(#cp)">' + art + '</g>' + lcd + '</svg>';
+  }
+  badgeUrl(i) { return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(this.badgeSvg(i)); }
+  // ---- Daily: visit streak (localStorage, per browser; no server) ----
+  dayKey(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  initVisit() {
+    let v = {};
+    try { v = JSON.parse(localStorage.getItem('qoge-visit') || '{}') || {}; } catch (e) { v = {}; }
+    const now = new Date(), today = this.dayKey(now), y = new Date(now); y.setDate(y.getDate() - 1);
+    if (v.day !== today) {
+      const streak = v.day === this.dayKey(y) ? (v.streak || 0) + 1 : 1;
+      v = { ...v, day: today, streak, best: Math.max(v.best || 0, streak), visits: (v.visits || 0) + 1,
+        base: v.lastH != null ? { h: v.lastH, p: v.lastP, at: v.lastAt } : (v.base || null) };
+      try { localStorage.setItem('qoge-visit', JSON.stringify(v)); } catch (e) {}
+    }
+    this.setState({ visit: v });
+  }
+  saveSeen(m) {
+    if (!m || m.holders == null) return;
+    try {
+      const v = JSON.parse(localStorage.getItem('qoge-visit') || '{}') || {};
+      v.lastH = m.holders; v.lastP = m.priceQuai; v.lastAt = Date.now();
+      localStorage.setItem('qoge-visit', JSON.stringify(v));
+    } catch (e) {}
+  }
+  componentDidUpdate(pp, ps) { if (this.state.metrics && this.state.metrics !== ps.metrics) this.saveSeen(this.state.metrics); }
+  rankInfo(t, streak) {
+    const AT = [1, 3, 7, 30, 100, 200, 365];
+    let i = 0; AT.forEach((a, k) => { if (streak >= a) i = k; });
+    const next = AT[i + 1];
+    return { idx: i, at: AT, name: t.ranks[i], next: next ? t.ranks[i + 1] : null, left: next ? next - streak : 0,
+      pct: next ? Math.round((streak - AT[i]) / (next - AT[i]) * 100) : 100 };
+  }
+  // Daily block: ship's log entry of the day + streak card + changes since last visit / 24h.
+  renderDaily(t, L) {
+    const e = React.createElement, INK = '#141110', CREAM = '#f4f0ec', YEL = 'oklch(0.88 0.17 95)', RED = 'oklch(0.62 0.21 25)', GREEN = 'oklch(0.78 0.17 150)';
+    const mono = "'IBM Plex Mono',monospace";
+    const START = new Date(2026, 9, 4); // log day 1 = site launch
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const dayN = Math.max(1, Math.round((today - START) / 86400000) + 1);
+    const log = (window.QOGE_LOG && (window.QOGE_LOG[L] || window.QOGE_LOG.en)) || [];
+    const entry = log.length ? log[(dayN - 1) % log.length] : '…';
+    const m = this.state.metrics || {}, v = this.state.visit || { streak: 1, best: 1, visits: 1 };
+    const fmtPct = n => (n > 0 ? '+' : n < 0 ? '−' : '') + Math.abs(n).toFixed(Math.abs(n) < 10 ? 1 : 0) + '%';
+    const c = m.candles || [];
+    let chg24 = null, vol24 = null;
+    if (c.length > 24) {
+      const p0 = c[c.length - 25][1], p1 = c[c.length - 1][1];
+      if (p0) chg24 = (p1 / p0 - 1) * 100;
+      vol24 = c.slice(-24).reduce((a, k) => a + (k[2] || 0), 0);
+    }
+    const chgWord = chg24 == null ? '—' : Math.abs(chg24) < 0.05 ? t.dlFlat : (chg24 > 0 ? t.dlUp : t.dlDown).replace('{n}', Math.abs(chg24).toFixed(1));
+    const ps = m.holders != null ? t.dlPS.replace('{h}', m.holders).replace('{chg}', chgWord) : '';
+    const streak = v.streak || 1, rk = this.rankInfo(t, streak);
+    const shareText = t.dlShareText.replace('{rank}', rk.name).replace('{n}', streak).replace('{pct}', this.livePct || 0).replace('{h}', m.holders == null ? '—' : m.holders);
+    const shareUrl = 'https://x.com/intent/post?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent('https://www.qoge.fun/');
+    const tag = (txt, bg, fg) => e('span', { style: { background: bg, color: fg, padding: '6px 14px', fontWeight: 900, fontSize: 14, textTransform: 'uppercase', whiteSpace: 'nowrap', transform: 'skewX(-8deg)', display: 'inline-block' } }, txt);
+    const label = (txt, col) => e('div', { style: { fontFamily: mono, fontSize: 12, letterSpacing: '.12em', textTransform: 'uppercase', color: col } }, txt);
+    const row = (k, val, col) => e('div', { key: k, style: { display: 'flex', justifyContent: 'space-between', gap: 12, padding: '10px 0', borderTop: '1px solid #3a3431', fontWeight: 700, fontSize: 15 } },
+      e('span', { style: { color: '#cfc8c1' } }, k), e('span', { style: { fontWeight: 900, color: col || CREAM, fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' } }, val));
+    const base = v.base;
+    let since;
+    if (!base || m.holders == null) {
+      since = e('div', { style: { color: '#cfc8c1', fontSize: 15, lineHeight: 1.45, padding: '10px 0', borderTop: '1px solid #3a3431' } }, t.dlFirst);
+    } else {
+      const dh = m.holders - base.h, dp = base.p ? (m.priceQuai / base.p - 1) * 100 : null;
+      since = e('div', null,
+        row(t.dlHolders, (dh > 0 ? '+' : dh < 0 ? '−' : '±') + Math.abs(dh), dh > 0 ? GREEN : dh < 0 ? RED : CREAM),
+        row(t.dlPrice, dp == null ? '—' : fmtPct(dp), dp > 0 ? GREEN : dp < 0 ? RED : CREAM));
+    }
+    const dateStr = today.toLocaleDateString(t.loc, { day: '2-digit', month: '2-digit', year: 'numeric' });
+    return e('div', { style: { display: 'flex', flexDirection: 'column', gap: 32 } },
+      this.renderShareModal(t),
+      e('div', { style: { display: 'flex', flexDirection: 'column', gap: 16 } },
+        e('div', { style: { display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' } },
+          tag(t.dlTag, RED, CREAM), e('span', { style: { fontFamily: mono, fontSize: 12, letterSpacing: '.1em', color: '#cfc8c1' } }, t.dlSub)),
+        e('h2', { style: { margin: 0, fontWeight: 900, fontSize: 'clamp(34px,4.8vw,76px)', lineHeight: .95, letterSpacing: '-.02em', textTransform: 'uppercase' } },
+          t.dlTitle + ' · ', e('span', { style: { color: YEL } }, t.dlDay.replace('{n}', dayN)))),
+      e('div', { className: 'q-daily', style: { display: 'grid', gridTemplateColumns: 'minmax(0,1.5fr) minmax(0,1fr)', gap: 28, alignItems: 'start' } },
+        e('div', { style: { display: 'flex', flexDirection: 'column', gap: 28 } },
+          // journal card
+          e('div', { style: { background: CREAM, color: INK, border: '4px solid ' + INK, boxShadow: '8px 8px 0 ' + RED, display: 'flex', flexDirection: 'column' } },
+            e('div', { style: { display: 'flex', justifyContent: 'space-between', background: INK, color: CREAM, fontFamily: mono, fontSize: 12, letterSpacing: '.08em' } },
+              e('span', { style: { background: RED, padding: '10px 14px', fontWeight: 500 } }, 'LOG #' + String(dayN).padStart(3, '0')),
+              e('span', { style: { padding: '10px 14px' } }, dateStr)),
+            e('p', { style: { margin: 0, padding: '28px 28px 16px', fontWeight: 800, fontSize: 'clamp(22px,2.4vw,32px)', lineHeight: 1.22 } }, '“' + entry + '”'),
+            e('div', { style: { padding: '0 28px 20px', fontFamily: mono, fontSize: 13, color: '#6b635d' } }, t.dlSign),
+            ps && e('div', { style: { margin: '0 28px 24px', paddingTop: 14, borderTop: '2px solid ' + INK, fontSize: 15, fontWeight: 700, lineHeight: 1.45 } }, ps)),
+  // since last visit + last 24h
+            e('div', { style: { border: '3px solid ' + CREAM, padding: 24, display: 'flex', flexDirection: 'column', gap: 6 } },
+              label(t.dlSinceH, YEL), since,
+              e('div', { style: { height: 10 } }),
+              label(t.dl24h, YEL),
+              row(t.dlPrice, chg24 == null ? '—' : fmtPct(chg24), chg24 > 0 ? GREEN : chg24 < 0 ? RED : CREAM),
+              row(t.dlVol, vol24 == null ? '—' : Math.round(vol24).toLocaleString(t.loc) + ' QUAI'))),
+        e('div', { style: { display: 'flex', flexDirection: 'column', gap: 24 } },
+          // streak card
+          e('div', { style: { background: YEL, color: INK, border: '4px solid ' + INK, padding: 24, display: 'flex', flexDirection: 'column', gap: 12 } },
+            label(t.dlStreakH, INK),
+            e('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 } },
+              e('div', { style: { display: 'flex', flexDirection: 'column', gap: 10, minWidth: 0 } },
+                e('div', { style: { display: 'flex', alignItems: 'baseline', gap: 10, flexWrap: 'wrap' } },
+                  e('span', { style: { fontWeight: 900, fontSize: 'clamp(64px,7vw,96px)', lineHeight: .85, fontVariantNumeric: 'tabular-nums' } }, streak),
+                  e('span', { style: { fontWeight: 900, fontSize: 16, textTransform: 'uppercase' } }, t.dlDays)),
+                e('div', null, e('span', { style: { display: 'inline-block', whiteSpace: 'nowrap', background: INK, color: YEL, padding: '4px 10px', fontWeight: 900, fontSize: 14, textTransform: 'uppercase' } }, '★ ' + rk.name))),
+              e('img', { src: this.badgeUrl(rk.idx), alt: rk.name, width: 120, height: 120, style: { flex: '0 0 auto', width: 'clamp(88px,9vw,120px)', height: 'auto', filter: 'drop-shadow(4px 4px 0 ' + INK + ')' } })),
+            e('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(7,minmax(0,1fr))', gap: 4 } },
+              t.ranks.map((name, k) => e('div', { key: k, title: name + ' · ' + rk.at[k], style: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, opacity: k <= rk.idx ? 1 : .35, filter: k <= rk.idx ? 'none' : 'grayscale(1)' } },
+                e('img', { src: this.badgeUrl(k), alt: name, width: 44, height: 44, style: { width: '100%', maxWidth: 48, height: 'auto' } }),
+                e('span', { style: { fontFamily: mono, fontSize: 10, fontWeight: 500 } }, (k <= rk.idx ? '✓ ' : '') + rk.at[k] + (t.dlD || 'd'))))),
+            e('div', { style: { height: 12, border: '3px solid ' + INK, background: CREAM, position: 'relative' } },
+              e('div', { style: { position: 'absolute', inset: '0 auto 0 0', width: rk.pct + '%', background: INK } })),
+            e('div', { style: { fontWeight: 700, fontSize: 14 } }, rk.next ? t.dlNext.replace('{n}', rk.left).replace('{rank}', rk.next) : t.dlMax),
+            e('div', { style: { fontFamily: mono, fontSize: 12, lineHeight: 1.5 } }, t.dlBest.replace('{n}', v.best || 1).replace('{v}', v.visits || 1) + ' · ' + t.dlTomorrow),
+            e('button', { type: 'button', onClick: () => this.openShare(t, L, { dayN, entry, date: dateStr, rankIdx: rk.idx, rank: rk.name, streak, pct: this.livePct || 0, text: shareText, intent: shareUrl }),
+              style: { marginTop: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, background: INK, color: CREAM, border: 0, padding: '14px 16px', fontFamily: "'Archivo',sans-serif", fontWeight: 900, fontSize: 15, textTransform: 'uppercase', cursor: 'pointer' } },
+              t.dlShare + ' ↗')))));
+  }
+  // ---- Share card: 1200×675 PNG with today's log entry + rank badge (canvas, no server) ----
+  wrapLines(x, text, maxW, cjk) {
+    const units = cjk ? Array.from(text) : text.split(' ');
+    const lines = []; let cur = '';
+    units.forEach(u => {
+      const next = cur ? cur + (cjk ? '' : ' ') + u : u;
+      if (x.measureText(next).width > maxW && cur) { lines.push(cur); cur = u; } else cur = next;
+    });
+    if (cur) lines.push(cur);
+    return lines;
+  }
+  async makeShareCard(t, L, d) {
+    try { await Promise.all([document.fonts.load("900 60px 'Archivo'"), document.fonts.load("800 34px 'Archivo'"), document.fonts.load("500 22px 'IBM Plex Mono'")]); } catch (e) {}
+    const W = 1200, H = 675, c = document.createElement('canvas'); c.width = W; c.height = H;
+    const x = c.getContext('2d'), INK = '#141110', CREAM = '#f4f0ec', YEL = '#f5d33a', RED = '#e8473f', GREY = '#a59e97';
+    const cjk = L === 'zh';
+    const A = (w, s) => w + ' ' + s + "px 'Archivo', 'Noto Sans SC', 'Microsoft YaHei', sans-serif";
+    const M = s => '500 ' + s + "px 'IBM Plex Mono', 'Noto Sans SC', monospace";
+    x.fillStyle = INK; x.fillRect(0, 0, W, H);
+    // faint stars
+    for (let k = 0; k < 70; k++) { const sx = (k * 997) % W, sy = (k * 571) % H; x.fillStyle = 'rgba(244,240,236,' + (0.08 + (k % 5) * 0.05) + ')'; x.fillRect(sx, sy, 2, 2); }
+    x.fillStyle = RED; x.fillRect(0, 0, 16, H);
+    x.fillStyle = YEL; x.fillRect(16, H - 14, W - 16, 14);
+    // tag
+    x.save(); x.translate(64, 44); x.transform(1, 0, -0.14, 1, 0, 0); x.fillStyle = RED;
+    x.font = A(900, 22); const tagW = x.measureText(t.dlTag.toUpperCase()).width + 32; x.fillRect(0, 0, tagW, 40);
+    x.fillStyle = CREAM; x.textBaseline = 'middle'; x.fillText(t.dlTag.toUpperCase(), 16, 21); x.restore();
+    x.textBaseline = 'alphabetic';
+    x.font = M(18); x.fillStyle = GREY; x.fillText(t.dlBadgeTop, 64 + tagW + 20, 70);
+    // title
+    const t1 = (t.dlTitle + ' · ').toUpperCase(), t2 = t.dlDay.replace('{n}', d.dayN).toUpperCase();
+    let fs = 60; x.font = A(900, fs);
+    while (x.measureText(t1 + t2).width > 700 && fs > 34) { fs -= 2; x.font = A(900, fs); }
+    x.fillStyle = CREAM; x.fillText(t1, 64, 150); x.fillStyle = YEL; x.fillText(t2, 64 + x.measureText(t1).width, 150);
+    // journal card
+    const cx = 64, cy = 186, cw = 700, ch = 380;
+    x.fillStyle = RED; x.fillRect(cx + 12, cy + 12, cw, ch);
+    x.fillStyle = CREAM; x.fillRect(cx, cy, cw, ch);
+    x.strokeStyle = INK; x.lineWidth = 6; x.strokeRect(cx, cy, cw, ch);
+    x.fillStyle = INK; x.fillRect(cx, cy, cw, 44);
+    x.fillStyle = RED; x.fillRect(cx, cy, 150, 44);
+    x.font = M(18); x.fillStyle = CREAM; x.fillText('LOG #' + String(d.dayN).padStart(3, '0'), cx + 18, cy + 29);
+    x.fillStyle = CREAM; x.textAlign = 'right'; x.fillText(d.date, cx + cw - 18, cy + 29); x.textAlign = 'left';
+    let qs = 50, lines;
+    const quote = '“' + d.entry + '”';
+    for (;;) { x.font = A(800, qs); lines = this.wrapLines(x, quote, cw - 64, cjk); if (lines.length * qs * 1.22 <= ch - 140 || qs <= 24) break; qs -= 2; }
+    x.fillStyle = INK; lines.forEach((ln, k) => x.fillText(ln, cx + 32, cy + 44 + 30 + qs + k * qs * 1.22));
+    x.font = M(20); x.fillStyle = '#6b635d'; x.fillText(t.dlSign, cx + 32, cy + ch - 34);
+    // badge + rank (right column)
+    const img = await new Promise(res => { const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = this.badgeUrl(d.rankIdx); });
+    if (img) x.drawImage(img, 840, 120, 300, 300);
+    x.textAlign = 'center';
+    let rs = 46; x.font = A(900, rs); while (x.measureText(d.rank.toUpperCase()).width > 330 && rs > 26) { rs -= 2; x.font = A(900, rs); }
+    x.fillStyle = YEL; x.fillText('★ ' + d.rank.toUpperCase(), 990, 470);
+    x.font = A(900, 30); x.fillStyle = CREAM; x.fillText(t.dlBadgeDays.replace('{n}', d.streak).toUpperCase(), 990, 515);
+    x.font = M(20); x.fillStyle = GREY; x.fillText(t.shRocket.replace('{pct}', d.pct), 990, 552);
+    x.textAlign = 'left';
+    // footer
+    x.font = M(26); x.fillStyle = CREAM; x.fillText('www.qoge.fun', 64, 626);
+    x.font = A(900, 30); x.fillStyle = YEL; x.textAlign = 'right'; x.fillText('$QOGE', W - 60, 628); x.textAlign = 'left';
+    return await new Promise(res => c.toBlob(res, 'image/png'));
+  }
+  async openShare(t, L, d) {
+    if (this.state.share && this.state.share.url) URL.revokeObjectURL(this.state.share.url);
+    this.setState({ share: { busy: true, d } });
+    let blob = null;
+    try { blob = await this.makeShareCard(t, L, d); } catch (e) {}
+    if (!blob) { this.setState({ share: { error: true, d } }); return; }
+    const file = new File([blob], 'qoge-day-' + d.dayN + '.png', { type: 'image/png' });
+    let canFiles = false;
+    try { canFiles = !!(navigator.canShare && navigator.canShare({ files: [file] })) && matchMedia('(pointer: coarse)').matches; } catch (e) {}
+    this.setState({ share: { d, blob, file, url: URL.createObjectURL(blob), canFiles, status: '' } });
+  }
+  shareNative(t) {
+    const s = this.state.share; if (!s) return;
+    navigator.share({ files: [s.file], text: s.d.text + ' https://www.qoge.fun/' }).catch(() => {});
+  }
+  shareCopyOpen(t) {
+    const s = this.state.share; if (!s) return;
+    let p = null;
+    try { p = navigator.clipboard && window.ClipboardItem ? navigator.clipboard.write([new ClipboardItem({ 'image/png': s.blob })]) : null; } catch (e) { p = null; }
+    window.open(s.d.intent, '_blank', 'noopener');
+    if (!p) { this.setState({ share: { ...s, status: 'fail' } }); return; }
+    p.then(() => this.setState({ share: { ...this.state.share, status: 'ok' } }), () => this.setState({ share: { ...this.state.share, status: 'fail' } }));
+  }
+  closeShare() {
+    const s = this.state.share; if (s && s.url) URL.revokeObjectURL(s.url);
+    this.setState({ share: null });
+  }
+  renderShareModal(t) {
+    const s = this.state.share; if (!s) return null;
+    const e = React.createElement, INK = '#141110', CREAM = '#f4f0ec', YEL = 'oklch(0.88 0.17 95)', RED = 'oklch(0.62 0.21 25)';
+    const btn = (label, onClick, primary, href, download) => e(href ? 'a' : 'button', {
+      type: href ? undefined : 'button', onClick, href, download,
+      style: { display: 'block', width: '100%', textAlign: 'center', boxSizing: 'border-box', background: primary ? YEL : 'transparent', color: primary ? INK : CREAM, border: '3px solid ' + (primary ? YEL : CREAM), padding: '14px 16px', fontFamily: "'Archivo',sans-serif", fontWeight: 900, fontSize: 15, textTransform: 'uppercase', cursor: 'pointer', textDecoration: 'none' } }, label);
+    let body;
+    if (s.busy) body = e('div', { style: { padding: 40, textAlign: 'center', fontFamily: "'IBM Plex Mono',monospace" } }, '…');
+    else if (s.error) body = e('div', { style: { padding: 24 } }, t.shHintFail);
+    else body = e('div', { style: { display: 'flex', flexDirection: 'column', gap: 12 } },
+      e('img', { src: s.url, alt: '', style: { width: '100%', height: 'auto', display: 'block', border: '3px solid ' + CREAM } }),
+      s.canFiles ? btn(t.shShare + ' ↗', () => this.shareNative(t), true) : btn(t.shCopyOpen + ' ↗', () => this.shareCopyOpen(t), true),
+      s.status === 'ok' && e('div', { style: { background: '#1e3a24', color: '#9ff0b4', padding: '10px 12px', fontWeight: 700, fontSize: 14 } }, '✓ ' + t.shHint),
+      s.status === 'fail' && e('div', { style: { background: '#3a1e1e', color: '#ffb4a8', padding: '10px 12px', fontWeight: 700, fontSize: 14 } }, t.shHintFail),
+      btn(t.shDownload + ' ↓', null, false, s.url, 'qoge-day-' + s.d.dayN + '.png'));
+    return e('div', { role: 'dialog', 'aria-modal': true, onClick: ev => { if (ev.target === ev.currentTarget) this.closeShare(); },
+      style: { position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(10,8,8,.82)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 } },
+      e('div', { style: { background: INK, color: CREAM, border: '4px solid ' + CREAM, boxShadow: '10px 10px 0 ' + RED, width: 'min(640px,100%)', maxHeight: '92vh', overflow: 'auto', padding: 20, display: 'flex', flexDirection: 'column', gap: 14 } },
+        e('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 } },
+          e('span', { style: { fontWeight: 900, fontSize: 20, textTransform: 'uppercase' } }, t.shTitle),
+          e('button', { type: 'button', 'aria-label': t.shClose, onClick: () => this.closeShare(), style: { background: 'transparent', color: CREAM, border: '2px solid ' + CREAM, width: 36, height: 36, fontSize: 18, cursor: 'pointer' } }, '✕')),
+        body));
   }
   // Language picker: one button with a dropdown (add more languages to LANGS + dict()).
   renderLang(L) {
@@ -710,7 +1073,7 @@ class Component extends DCLogic {
       })(),
       caShort: ca.slice(0, 6) + '…' + ca.slice(-4),
       copyLabel: this.state.copied ? t.copied : t.copy,
-      t, langPicker: this.renderLang(L),
+      t, langPicker: this.renderLang(L), dailyBlock: this.renderDaily(t, L),
       copyCA: () => {
         navigator.clipboard && navigator.clipboard.writeText(ca).catch(() => {});
         this.setState({ copied: true });
