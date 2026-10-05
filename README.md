@@ -1,6 +1,6 @@
 # $QOGE — landing page
 
-Live: https://www.qoge.net
+Live: https://www.qoge.fun
 
 Landing page for **$QOGE** — the very good boy who accidentally colonized Mars.
 

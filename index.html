@@ -12,15 +12,15 @@
 <meta property="og:site_name" content="$QOGE">
 <meta property="og:title" content="$QOGE — Local puppy accidentally colonizes Mars">
 <meta property="og:description" content="Community memecoin on Quai Network. The first dog on Mars needs fuel to get home.">
-<meta property="og:url" content="https://www.qoge.net/">
-<meta property="og:image" content="https://www.qoge.net/assets/og.jpg">
+<meta property="og:url" content="https://www.qoge.fun/">
+<meta property="og:image" content="https://www.qoge.fun/assets/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@QOGEofficial">
 <meta name="twitter:title" content="$QOGE — Local puppy accidentally colonizes Mars">
 <meta name="twitter:description" content="Community memecoin on Quai Network. The first dog on Mars needs fuel to get home.">
-<meta name="twitter:image" content="https://www.qoge.net/assets/og.jpg">
+<meta name="twitter:image" content="https://www.qoge.fun/assets/og.jpg">
 <script src="./support.js"></script>
 </head>
 <body>
@@ -197,7 +197,7 @@ a:hover{color:oklch(0.72 0.17 40)}
     <div ref="{{ progressRef }}" style="background:#f4f0ec;color:#141110;border:4px solid #141110;box-shadow:8px 8px 0 oklch(0.62 0.21 25);display:flex;flex-direction:column">
       <div style="display:flex;justify-content:space-between;align-items:stretch;background:#141110;color:#f4f0ec;font-weight:900;text-transform:uppercase;font-size:14px">
         <span style="background:oklch(0.62 0.21 25);padding:10px 14px;white-space:nowrap">{{ t.tracker }}</span>
-        <span style="padding:10px 14px;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:12px;display:flex;align-items:center;white-space:nowrap">{{ partsDone }} / {{ partsTotal }} {{ t.parts }}</span>
+        <span style="padding:10px 14px;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:12px;display:flex;align-items:center;white-space:nowrap">{{ partsLabel }}</span>
       </div>
       <div style="padding:24px 24px 8px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">
         <div style="font-weight:900;font-size:clamp(72px,9vw,128px);line-height:.82;letter-spacing:-.03em;font-variant-numeric:tabular-nums">{{ progressShown }}<span style="color:oklch(0.62 0.21 25)">%</span></div>
@@ -288,6 +288,10 @@ a:hover{color:oklch(0.72 0.17 40)}
         <div class="q-rm-body" style="padding:18px 20px;display:flex;flex-direction:column;gap:6px;min-width:0">
           <span style="font-weight:900;font-size:clamp(22px,2.4vw,30px);text-transform:uppercase;line-height:1">{{ ph.title }}</span>
           <span style="color:#cfc8c1;font-size:15px;line-height:1.45">{{ ph.itemsText }}</span>
+          <sc-if value="{{ ph.hasProg }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:12px;margin-top:6px;flex-wrap:wrap">
+            <div style="flex:1 1 160px;max-width:320px;height:10px;border:2px solid #f4f0ec;position:relative"><div style="position:absolute;left:0;top:0;bottom:0;width:{{ ph.progWidth }};background:oklch(0.88 0.17 95)"></div></div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.06em;color:#f4f0ec;white-space:nowrap">{{ ph.progText }}</span>
+          </div></sc-if>
         </div>
         <div class="q-rm-badge" style="display:flex;align-items:center;padding:0 18px">
           <sc-if value="{{ ph.isDone }}" hint-placeholder-val="{{ false }}"><span style="background:oklch(0.88 0.17 95);color:#141110;padding:6px 10px;font-weight:900;font-size:12px;white-space:nowrap">{{ t.aired }}</span></sc-if>
@@ -364,13 +368,13 @@ class Component extends DCLogic {
       s3b: 'Open $QOGE on Quainance and swap QUAI for it. Check the contract address below in the Quai explorer.', s3go: 'Buy on Quainance', s3ex: 'Check in explorer', s4b: 'Hop into the community. Every holder is ground control now.',
       caLabel: 'CONTRACT ADDRESS',
       tkTag: 'By the numbers', tkSub: 'TOKENOMICS', tkH: 'The fuel specs', m1: 'MARKET CAP', m2: 'PRICE', m3: 'LIQUIDITY', m4: 'HOLDERS', mLive: 'LIVE DATA · QUAINANCE', mUpd: 'UPDATED', chTitle: 'PRICE · 7D', chVol: 'VOL', chNow: 'NOW', chNoData: 'No trades yet',
-      rmTag: 'Coming up next', rmSub: 'ROADMAP · TV GUIDE', rmH1: 'Mars → Earth:', rmH2: 'the schedule', aired: 'AIRED ✓', onAir: '● ON AIR', upNext: 'UP NEXT',
+      rmTag: 'Coming up next', rmSub: 'ROADMAP · TV GUIDE', rmH1: 'Mars → Earth:', rmH2: 'the schedule', aired: 'AIRED ✓', onAir: '● ON AIR', upNext: 'UP NEXT', rmProg: 'Holders: {n} / {goal}',
       fqTag: 'Viewer questions', fqH1: 'You asked.', fqH2: 'We barked.',
       cmH1: 'Join the rescue team.', cmH2: 'Bring him home.', bubble: 'pls hurry, i\'m out of bacon',
       foot1: '© 2026 $QOGE · A MEMECOIN WITH NO INTRINSIC VALUE OR EXPECTATION OF RETURN.', foot2: 'NOT AFFILIATED WITH NASA. JUST A DOG.',
       copy: 'COPY', copied: 'COPIED ✓', awaiting: 'AWAITING FUEL', at: 'AT ',
       partNames: ['Hull plating (ex-rover chassis)', 'Navigation computer', 'Landing legs', 'Heat shield', 'Main thrusters', 'Fuel tanks ($QOGE)'],
-      phase: 'PHASE', phases: [['Salvage', ['Fair launch', 'Website + socials live', 'First 1,000 holders']], ['Assembly', ['DexScreener + CoinGecko listings', 'Meme contests', 'Community raids']], ['Fueling', ['CEX listings', 'Partnerships', '10,000 holders']], ['Homecoming', ['Liftoff from Mars', 'Earth re-entry', 'Unlimited bacon']]],
+      phase: 'PHASE', phases: [['Salvage', ['Fair launch ✓', 'Website + socials ✓', '500 holders']], ['Assembly', ['1,000 holders', '1,000 members on Telegram & X', 'Meme contests + raids with $QOGE prizes', 'CoinGecko & CoinMarketCap applications']], ['Fueling', ['2,500 holders', 'Deeper liquidity on Quainance', 'Collabs with Quai projects', 'QOGE sticker & meme pack']], ['Homecoming', ['5,000 holders', 'CoinGecko / CMC listing', 'DexScreener once it supports Quai', 'Unlimited bacon 🥓']]],
       ticker: ['NASA declines to comment', 'Mars hydrant shortage hits 100%', 'Dog requests bacon via radio', '$QOGE holders form ground control'],
       faqs: [['What is $QOGE?', 'A community memecoin telling the story of the first dog on Mars. Every holder is fuel for his rocket home.'], ['Is there a team allocation?', 'No. Fair launch, no presale, no team tokens. The pack owns the rocket.'], ['Which chain is it on?', '$QOGE lives on ' + chain + '. Always verify the contract address on this site before swapping.'], ['Is this investment advice?', 'No. $QOGE is a meme with no intrinsic value or expected financial return. Only use what you can afford to lose.'], ['When does he get home?', 'When the rocket is built. Watch the build status above.']],
       lvHold: '{n} holders now in ground control', lvSteady: 'Fuel price steady, dog keeps building', lvUp: 'Fuel price up {n}% in 24h', lvDown: 'Fuel {n}% cheaper in 24h, building continues', lvVol: '{n} QUAI of fuel moved in 24h', lvBudget: 'Mission budget: ${n}'
@@ -399,13 +403,13 @@ class Component extends DCLogic {
       s3b: 'Открой $QOGE на Quainance и обменяй QUAI. Сверь адрес контракта ниже в эксплорере Quai.', s3go: 'Купить на Quainance', s3ex: 'Проверить в эксплорере', s4b: 'Заходи в комьюнити. Теперь каждый холдер — центр управления полётом.',
       caLabel: 'АДРЕС КОНТРАКТА',
       tkTag: 'В цифрах', tkSub: 'ТОКЕНОМИКА', tkH: 'Характеристики топлива', m1: 'КАПИТАЛИЗАЦИЯ', m2: 'ЦЕНА', m3: 'ЛИКВИДНОСТЬ', m4: 'ХОЛДЕРЫ', mLive: 'ЖИВЫЕ ДАННЫЕ · QUAINANCE', mUpd: 'ОБНОВЛЕНО', chTitle: 'ЦЕНА · 7 ДНЕЙ', chVol: 'ОБЪЁМ', chNow: 'СЕЙЧАС', chNoData: 'Сделок пока нет',
-      rmTag: 'Далее в эфире', rmSub: 'РОАДМАП · ТЕЛЕПРОГРАММА', rmH1: 'Марс → Земля:', rmH2: 'расписание', aired: 'В ЭФИРЕ БЫЛО ✓', onAir: '● В ЭФИРЕ', upNext: 'СКОРО',
+      rmTag: 'Далее в эфире', rmSub: 'РОАДМАП · ТЕЛЕПРОГРАММА', rmH1: 'Марс → Земля:', rmH2: 'расписание', aired: 'В ЭФИРЕ БЫЛО ✓', onAir: '● В ЭФИРЕ', upNext: 'СКОРО', rmProg: 'Холдеры: {n} / {goal}',
       fqTag: 'Вопросы зрителей', fqH1: 'Вы спросили.', fqH2: 'Мы гавкнули.',
       cmH1: 'Вступай в спасательную команду.', cmH2: 'Верни его домой.', bubble: 'поторопитесь, бекон кончился',
       foot1: '© 2026 $QOGE · МЕМКОИН БЕЗ ВНУТРЕННЕЙ ЦЕННОСТИ И ОЖИДАНИЯ ДОХОДА.', foot2: 'НЕ СВЯЗАН С NASA. ПРОСТО СОБАКА.',
       copy: 'КОПИРОВАТЬ', copied: 'СКОПИРОВАНО ✓', awaiting: 'ЖДЁТ ТОПЛИВА', at: 'НА ',
       partNames: ['Обшивка (бывшее шасси марсохода)', 'Навигационный компьютер', 'Посадочные опоры', 'Теплозащитный экран', 'Главные двигатели', 'Топливные баки ($QOGE)'],
-      phase: 'ЭТАП', phases: [['Сбор запчастей', ['Честный запуск', 'Сайт и соцсети', 'Первые 1 000 холдеров']], ['Сборка', ['Листинг на DexScreener и CoinGecko', 'Мем-конкурсы', 'Рейды комьюнити']], ['Заправка', ['Листинги на CEX', 'Партнёрства', '10 000 холдеров']], ['Возвращение', ['Старт с Марса', 'Вход в атмосферу Земли', 'Бекон без ограничений']]],
+      phase: 'ЭТАП', phases: [['Сбор запчастей', ['Честный запуск ✓', 'Сайт и соцсети ✓', '500 холдеров']], ['Сборка', ['1 000 холдеров', '1 000 участников в Telegram и X', 'Мем-конкурсы и рейды с призами в $QOGE', 'Заявки на CoinGecko и CoinMarketCap']], ['Заправка', ['2 500 холдеров', 'Рост ликвидности на Quainance', 'Коллаборации с проектами на Quai', 'Стикеры и мем-пак QOGE']], ['Возвращение', ['5 000 холдеров', 'Листинг на CoinGecko / CMC', 'DexScreener, когда он поддержит Quai', 'Бекон без ограничений 🥓']]],
       ticker: ['NASA отказывается от комментариев', 'Дефицит гидрантов на Марсе — 100%', 'Пёс запросил бекон по радио', 'Холдеры $QOGE стали центром управления полётом'],
       faqs: [['Что такое $QOGE?', 'Комьюнити-мемкоин с историей первой собаки на Марсе. Каждый холдер — топливо для его ракеты домой.'], ['Есть ли доля команды?', 'Нет. Честный запуск, без пресейла и токенов команды. Ракета принадлежит стае.'], ['В какой сети?', '$QOGE живёт в сети ' + chain + '. Всегда сверяй адрес контракта с этим сайтом перед обменом.'], ['Это инвестиционный совет?', 'Нет. $QOGE — мем без внутренней ценности и ожидаемой доходности. Вкладывай только то, что не жалко потерять.'], ['Когда он вернётся домой?', 'Когда ракета будет построена. Следи за статусом постройки выше.']],
       lvHold: 'Холдеров в ЦУП: {n}', lvSteady: 'Цена топлива стабильна, пёс продолжает стройку', lvUp: 'Топливо подорожало на {n}% за сутки', lvDown: 'Топливо подешевело на {n}% за сутки, стройка идёт', lvVol: 'За сутки перекачано {n} QUAI топлива', lvBudget: 'Бюджет миссии: ${n}'
@@ -434,13 +438,13 @@ class Component extends DCLogic {
       s3b: 'Abre $QOGE en Quainance y cambia QUAI por él. Comprueba la dirección del contrato de abajo en el explorador de Quai.', s3go: 'Comprar en Quainance', s3ex: 'Ver en el explorador', s4b: 'Únete a la comunidad. Ahora cada holder es el centro de control.',
       caLabel: 'DIRECCIÓN DEL CONTRATO',
       tkTag: 'En cifras', tkSub: 'TOKENÓMICA', tkH: 'Ficha del combustible', m1: 'CAP. DE MERCADO', m2: 'PRECIO', m3: 'LIQUIDEZ', m4: 'HOLDERS', mLive: 'DATOS EN VIVO · QUAINANCE', mUpd: 'ACTUALIZADO', chTitle: 'PRECIO · 7D', chVol: 'VOL', chNow: 'AHORA', chNoData: 'Aún no hay operaciones',
-      rmTag: 'A continuación', rmSub: 'ROADMAP · PROGRAMACIÓN', rmH1: 'Marte → Tierra:', rmH2: 'la programación', aired: 'EMITIDO ✓', onAir: '● EN ANTENA', upNext: 'PRÓXIMAMENTE',
+      rmTag: 'A continuación', rmSub: 'ROADMAP · PROGRAMACIÓN', rmH1: 'Marte → Tierra:', rmH2: 'la programación', aired: 'EMITIDO ✓', onAir: '● EN ANTENA', upNext: 'PRÓXIMAMENTE', rmProg: 'Holders: {n} / {goal}',
       fqTag: 'Preguntas del público', fqH1: 'Preguntasteis.', fqH2: 'Ladramos.',
       cmH1: 'Únete al equipo de rescate.', cmH2: 'Tráelo a casa.', bubble: 'date prisa, me quedé sin beicon',
       foot1: '© 2026 $QOGE · UNA MEMECOIN SIN VALOR INTRÍNSECO NI EXPECTATIVA DE RENTABILIDAD.', foot2: 'SIN RELACIÓN CON LA NASA. SOLO UN PERRO.',
       copy: 'COPIAR', copied: 'COPIADO ✓', awaiting: 'ESPERANDO COMBUSTIBLE', at: 'AL ',
       partNames: ['Blindaje del casco (chasis del rover)', 'Ordenador de navegación', 'Patas de aterrizaje', 'Escudo térmico', 'Motores principales', 'Tanques de combustible ($QOGE)'],
-      phase: 'FASE', phases: [['Rescate de piezas', ['Lanzamiento justo', 'Web y redes activas', 'Primeros 1.000 holders']], ['Montaje', ['Listado en DexScreener y CoinGecko', 'Concursos de memes', 'Raids de la comunidad']], ['Repostaje', ['Listados en CEX', 'Alianzas', '10.000 holders']], ['Vuelta a casa', ['Despegue desde Marte', 'Reentrada en la Tierra', 'Beicon ilimitado']]],
+      phase: 'FASE', phases: [['Rescate de piezas', ['Lanzamiento justo ✓', 'Web y redes ✓', '500 holders']], ['Montaje', ['1.000 holders', '1.000 miembros en Telegram y X', 'Concursos de memes y raids con premios en $QOGE', 'Solicitudes a CoinGecko y CoinMarketCap']], ['Repostaje', ['2.500 holders', 'Más liquidez en Quainance', 'Colaboraciones con proyectos de Quai', 'Pack de stickers y memes de QOGE']], ['Vuelta a casa', ['5.000 holders', 'Listado en CoinGecko / CMC', 'DexScreener cuando soporte Quai', 'Beicon ilimitado 🥓']]],
       ticker: ['La NASA declina hacer comentarios', 'Escasez de bocas de incendio en Marte: 100%', 'El perro pide beicon por radio', 'Los holders de $QOGE forman el centro de control'],
       faqs: [['¿Qué es $QOGE?', 'Una memecoin comunitaria que cuenta la historia del primer perro en Marte. Cada holder es combustible para su cohete de vuelta.'], ['¿Hay asignación para el equipo?', 'No. Lanzamiento justo, sin preventa, sin tokens del equipo. La manada es dueña del cohete.'], ['¿En qué red está?', '$QOGE vive en ' + chain + '. Comprueba siempre la dirección del contrato en esta web antes de cambiar.'], ['¿Es un consejo de inversión?', 'No. $QOGE es un meme sin valor intrínseco ni rentabilidad esperada. Usa solo lo que puedas permitirte perder.'], ['¿Cuándo vuelve a casa?', 'Cuando el cohete esté construido. Sigue el estado de la construcción más arriba.']],
       lvHold: 'Holders en el centro de control: {n}', lvSteady: 'Precio del combustible estable, el perro sigue construyendo', lvUp: 'El combustible sube un {n}% en 24 h', lvDown: 'El combustible baja un {n}% en 24 h, la obra sigue', lvVol: '{n} QUAI de combustible movidos en 24 h', lvBudget: 'Presupuesto de la misión: ${n}'
@@ -469,13 +473,13 @@ class Component extends DCLogic {
       s3b: 'Abra $QOGE na Quainance e troque QUAI por ele. Confira o endereço do contrato abaixo no explorador da Quai.', s3go: 'Comprar na Quainance', s3ex: 'Ver no explorador', s4b: 'Entre na comunidade. Agora cada holder é o centro de controle.',
       caLabel: 'ENDEREÇO DO CONTRATO',
       tkTag: 'Em números', tkSub: 'TOKENOMICS', tkH: 'Ficha do combustível', m1: 'VALOR DE MERCADO', m2: 'PREÇO', m3: 'LIQUIDEZ', m4: 'HOLDERS', mLive: 'DADOS AO VIVO · QUAINANCE', mUpd: 'ATUALIZADO', chTitle: 'PREÇO · 7D', chVol: 'VOL', chNow: 'AGORA', chNoData: 'Ainda sem negociações',
-      rmTag: 'A seguir', rmSub: 'ROADMAP · PROGRAMAÇÃO', rmH1: 'Marte → Terra:', rmH2: 'a programação', aired: 'EXIBIDO ✓', onAir: '● NO AR', upNext: 'EM BREVE',
+      rmTag: 'A seguir', rmSub: 'ROADMAP · PROGRAMAÇÃO', rmH1: 'Marte → Terra:', rmH2: 'a programação', aired: 'EXIBIDO ✓', onAir: '● NO AR', upNext: 'EM BREVE', rmProg: 'Holders: {n} / {goal}',
       fqTag: 'Perguntas dos espectadores', fqH1: 'Vocês perguntaram.', fqH2: 'Nós latimos.',
       cmH1: 'Entre na equipe de resgate.', cmH2: 'Traga ele pra casa.', bubble: 'corre, acabou meu bacon',
       foot1: '© 2026 $QOGE · UMA MEMECOIN SEM VALOR INTRÍNSECO NEM EXPECTATIVA DE RETORNO.', foot2: 'SEM LIGAÇÃO COM A NASA. SÓ UM CACHORRO.',
       copy: 'COPIAR', copied: 'COPIADO ✓', awaiting: 'AGUARDANDO COMBUSTÍVEL', at: 'EM ',
       partNames: ['Blindagem do casco (chassi do rover)', 'Computador de navegação', 'Pernas de pouso', 'Escudo térmico', 'Motores principais', 'Tanques de combustível ($QOGE)'],
-      phase: 'FASE', phases: [['Sucata', ['Lançamento justo', 'Site e redes no ar', 'Primeiros 1.000 holders']], ['Montagem', ['Listagem na DexScreener e CoinGecko', 'Concursos de memes', 'Raids da comunidade']], ['Abastecimento', ['Listagens em CEX', 'Parcerias', '10.000 holders']], ['Volta pra casa', ['Decolagem de Marte', 'Reentrada na Terra', 'Bacon ilimitado']]],
+      phase: 'FASE', phases: [['Sucata', ['Lançamento justo ✓', 'Site e redes ✓', '500 holders']], ['Montagem', ['1.000 holders', '1.000 membros no Telegram e X', 'Concursos de memes e raids com prêmios em $QOGE', 'Pedidos à CoinGecko e CoinMarketCap']], ['Abastecimento', ['2.500 holders', 'Mais liquidez na Quainance', 'Collabs com projetos da Quai', 'Pacote de stickers e memes QOGE']], ['Volta pra casa', ['5.000 holders', 'Listagem na CoinGecko / CMC', 'DexScreener quando suportar Quai', 'Bacon ilimitado 🥓']]],
       ticker: ['A NASA não comenta', 'Falta de hidrantes em Marte chega a 100%', 'Cachorro pede bacon pelo rádio', 'Holders de $QOGE formam o centro de controle'],
       faqs: [['O que é $QOGE?', 'Uma memecoin da comunidade que conta a história do primeiro cachorro em Marte. Cada holder é combustível para o foguete de volta.'], ['Existe alocação para a equipe?', 'Não. Lançamento justo, sem pré-venda, sem tokens da equipe. A matilha é dona do foguete.'], ['Em qual rede está?', '$QOGE vive na ' + chain + '. Sempre confira o endereço do contrato neste site antes de trocar.'], ['Isso é recomendação de investimento?', 'Não. $QOGE é um meme sem valor intrínseco nem retorno financeiro esperado. Use só o que você pode perder.'], ['Quando ele volta pra casa?', 'Quando o foguete ficar pronto. Acompanhe o status da construção acima.']],
       lvHold: 'Holders no centro de controle: {n}', lvSteady: 'Preço do combustível estável, o cachorro segue construindo', lvUp: 'Combustível sobe {n}% em 24 h', lvDown: 'Combustível cai {n}% em 24 h, a obra continua', lvVol: '{n} QUAI de combustível movimentados em 24 h', lvBudget: 'Orçamento da missão: ${n}'
@@ -504,13 +508,13 @@ class Component extends DCLogic {
       s3b: '在 Quainance 打开 $QOGE，用 QUAI 兑换。请在 Quai 浏览器中核对下方的合约地址。', s3go: '在 Quainance 购买', s3ex: '在浏览器中核对', s4b: '加入社区。现在每位持有者都是地面指挥中心。',
       caLabel: '合约地址',
       tkTag: '数据一览', tkSub: '代币经济', tkH: '燃料参数', m1: '市值', m2: '价格', m3: '流动性', m4: '持有者', mLive: '实时数据 · QUAINANCE', mUpd: '更新于', chTitle: '价格 · 7 天', chVol: '成交量', chNow: '现在', chNoData: '暂无交易',
-      rmTag: '下期预告', rmSub: '路线图 · 节目单', rmH1: '火星 → 地球：', rmH2: '节目单', aired: '已播出 ✓', onAir: '● 直播中', upNext: '即将播出',
+      rmTag: '下期预告', rmSub: '路线图 · 节目单', rmH1: '火星 → 地球：', rmH2: '节目单', aired: '已播出 ✓', onAir: '● 直播中', upNext: '即将播出', rmProg: '持有者：{n} / {goal}',
       fqTag: '观众提问', fqH1: '你们问了。', fqH2: '我们汪了。',
       cmH1: '加入救援队。', cmH2: '带它回家。', bubble: '快点，我的培根吃完了',
       foot1: '© 2026 $QOGE · 一个没有内在价值、不承诺任何回报的 MEMECOIN。', foot2: '与 NASA 无关。只是一只狗。',
       copy: '复制', copied: '已复制 ✓', awaiting: '等待燃料', at: '达到 ',
       partNames: ['船体装甲（原火星车底盘）', '导航电脑', '着陆支架', '隔热罩', '主发动机', '燃料箱（$QOGE）'],
-      phase: '阶段', phases: [['拾荒', ['公平发射', '网站和社媒上线', '首批 1,000 位持有者']], ['组装', ['上线 DexScreener 和 CoinGecko', '表情包大赛', '社区出击']], ['加油', ['上线中心化交易所', '合作伙伴', '10,000 位持有者']], ['回家', ['从火星起飞', '重返地球', '无限培根']]],
+      phase: '阶段', phases: [['拾荒', ['公平发射 ✓', '网站和社媒 ✓', '500 位持有者']], ['组装', ['1,000 位持有者', 'Telegram 和 X 达到 1,000 名成员', '表情包大赛和社区出击，奖励 $QOGE', '申请 CoinGecko 和 CoinMarketCap']], ['加油', ['2,500 位持有者', '提升 Quainance 流动性', '与 Quai 项目联名合作', 'QOGE 贴纸和表情包']], ['回家', ['5,000 位持有者', '上线 CoinGecko / CMC', 'DexScreener 支持 Quai 后上线', '无限培根 🥓']]],
       ticker: ['NASA 拒绝置评', '火星消防栓短缺率达 100%', '狗狗通过无线电要培根', '$QOGE 持有者组成地面指挥中心'],
       faqs: [['$QOGE 是什么？', '一个社区 memecoin，讲述第一只登上火星的狗的故事。每位持有者都是它回家火箭的燃料。'], ['团队有预留份额吗？', '没有。公平发射，无预售，无团队代币。火箭属于整个狗群。'], ['在哪条链上？', '$QOGE 运行在 ' + chain + ' 上。兑换前请务必在本网站核对合约地址。'], ['这是投资建议吗？', '不是。$QOGE 是一个没有内在价值、也没有预期收益的 meme。只投入你亏得起的钱。'], ['它什么时候能回家？', '等火箭造好的时候。请关注上方的建造进度。']],
       lvHold: '地面指挥中心持有者：{n}', lvSteady: '燃料价格平稳，狗狗继续施工', lvUp: '燃料 24 小时上涨 {n}%', lvDown: '燃料 24 小时下跌 {n}%，施工继续', lvVol: '24 小时内流转 {n} QUAI 燃料', lvBudget: '任务预算：${n}'
@@ -552,15 +556,14 @@ class Component extends DCLogic {
     };
     window.addEventListener('scroll', this.onScroll, { passive: true });
     this.onScroll();
-    const target = this.props.buildProgress ?? 37;
     this.io = new IntersectionObserver(es => {
       if (!es[0].isIntersecting || this.animated) return;
       this.animated = true;
       const t0 = performance.now();
       const step = t => {
         const k = Math.min(1, (t - t0) / 1600), e = 1 - Math.pow(1 - k, 3);
-        this.setState({ progress: Math.round(target * e) });
-        if (k < 1) requestAnimationFrame(step);
+        this.setState({ progress: Math.round((this.livePct || 0) * e) });
+        if (k < 1) requestAnimationFrame(step); else this.setState({ animDone: true });
       };
       requestAnimationFrame(step);
     }, { threshold: 0.3 });
@@ -680,10 +683,19 @@ class Component extends DCLogic {
     const pad = n => String(n).padStart(2, '0');
     let diff = Math.max(0, new Date('2026-12-31T00:00:00Z').getTime() - this.state.now) / 1000;
     const cd = { d: pad(Math.floor(diff / 86400)), h: pad(Math.floor(diff % 86400 / 3600)), m: pad(Math.floor(diff % 3600 / 60)), s: pad(Math.floor(diff % 60)) };
-    const pct = this.props.buildProgress ?? 37;
     const t = this.dict(chain), L = this.state.lang;
-    const names = [0, 0, 5, 40, 60, 100].map((at, i) => [t.partNames[i], at]);
-    const parts = names.map(([name, at]) => ({ name, done: pct >= at && at < 100 && at <= pct, pending: !(pct >= at && at < 100), need: at >= 100 ? t.awaiting : t.at + at + '%' }));
+    // Live rocket tracker, aligned with the roadmap: parts install at holder milestones,
+    // rocket is fully built at 5,000 holders (phase 04 "Homecoming").
+    // 500 / 1000 / 2500 / 5000 = roadmap phase goals.
+    const PART_AT = [50, 250, 500, 1000, 2500, 5000];
+    const holders = Number((this.state.metrics || {}).holders) || 0;
+    const parts = PART_AT.map((at, i) => {
+      const k = Math.min(1, holders / at);
+      return { name: t.partNames[i], k, done: k >= 1, pending: k < 1, need: holders.toLocaleString(t.loc) + ' / ' + at.toLocaleString(t.loc) };
+    });
+    const livePct = Math.round(parts.reduce((a, p) => a + p.k, 0) / parts.length * 100);
+    this.livePct = livePct;
+    const pct = this.state.animDone ? livePct : this.state.progress;
     const hero = this.props.heroVariant || 'Breaking News';
     return {
       heroA: hero === 'Countdown', heroB: hero === 'Transmission', heroC: hero === 'Meme', heroD: hero === 'Breaking News', notNews: hero !== 'Breaking News', stdHeader: hero !== 'Meme' && hero !== 'Breaking News',
@@ -706,10 +718,24 @@ class Component extends DCLogic {
       },
       markerTop: (this.state.scroll * 100).toFixed(1) + '%',
       distance: Math.round(225 * (1 - this.state.scroll)),
-      progressShown: this.state.progress,
-      progressWidth: this.state.progress + '%',
+      progressShown: pct,
+      progressWidth: pct + '%',
       partsDone: parts.filter(p => p.done).length, partsTotal: parts.length, parts,
-      phases: ['COMPLETE', 'IN PROGRESS', 'QUEUED', 'QUEUED'].map((status, i) => ({ n: t.phase + ' 0' + (i + 1), status, title: t.phases[i][0], items: t.phases[i][1] }))
+      partsLabel: parts.filter(p => p.done).length + ' / ' + parts.length + ' ' + t.parts,
+      phases: (() => {
+        // Each phase completes automatically at its holder goal (live count from metrics).
+        const GOALS = [500, 1000, 2500, 5000];
+        const h = (this.state.metrics || {}).holders;
+        const known = typeof h === 'number';
+        const cur = known ? GOALS.findIndex(g => h < g) : 0; // -1 = all done
+        return GOALS.map((goal, i) => {
+          const status = cur === -1 || i < cur ? 'COMPLETE' : i === cur ? 'IN PROGRESS' : 'QUEUED';
+          const pct = known ? Math.min(100, Math.round(h / goal * 100)) : 0;
+          return { n: t.phase + ' 0' + (i + 1), status, title: t.phases[i][0], items: t.phases[i][1],
+            hasProg: known && status === 'IN PROGRESS',
+            progText: (t.rmProg || '{n} / {goal}').replace('{n}', h).replace('{goal}', goal.toLocaleString(t.loc)), progWidth: pct + '%' };
+        });
+      })()
       .map(p => ({ ...p, isDone: p.status === 'COMPLETE', isLive: p.status === 'IN PROGRESS', isQueued: p.status === 'QUEUED', itemsText: p.items.join(' · ') })),
       faqs: t.faqs.map(([q, a], i) => ({ q, a, open: this.state.openFaq === i, sign: this.state.openFaq === i ? '−' : '+', toggle: () => this.setState(s => ({ openFaq: s.openFaq === i ? -1 : i })) })),
       progressRef: this.progressRef,
