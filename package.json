@@ -1,0 +1,8 @@
+{
+  "name": "qoge-site",
+  "private": true,
+  "description": "Dependencies for the Vercel functions in api/ (the site itself is static, no build step).",
+  "dependencies": {
+    "@vercel/og": "^0.6.0"
+  }
+}

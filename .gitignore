@@ -13,5 +13,5 @@ desktop.ini
 backup/
 *.backup.html
 
-# Commit message drafts for tools/publish.bat
-tools/commit-message.txt
+# Vercel function dependencies (installed by Vercel on deploy)
+node_modules/

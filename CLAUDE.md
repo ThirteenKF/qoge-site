@@ -41,9 +41,11 @@ Context for picking this project up in a new chat.
   scripts/, .github/, CLAUDE.md from the deployed site.
 - Daily block (#daily, renderDaily()): ship's log entry of the day from `assets/journal.js`
   (window.QOGE_LOG, 365 entries per language = one year story, same order; day 1 = 2026-10-04, day 365 = liftoff), visit streak (7 ranks at 1/3/7/30/100/200/365 days) +
-  ranks with original neon space-electronics SVG badges (badgeSvg(): beacon, chip, HUD, radar, satellite, station, liftoff; LCD day counter) + "Share progress on X": makeShareCard() draws a 1200x675 PNG (log entry + badge + rank) on canvas,
-  modal shows it; phones use navigator.share(files), desktop copies the image to the clipboard and
-  opens x.com/intent/post with text (paste with Ctrl+V); "download picture" fallback, and "since your last visit" / last-24h deltas.
+  ranks with original neon space-electronics SVG badges (badgeSvg(): beacon, chip, HUD, radar, satellite, station, liftoff; LCD day counter) + "Share progress on X": the post links to /m?d=&r=&s=&l=&p= (vercel.json rewrite -> api/share.js,
+  a page with og/twitter tags) whose og:image is api/og.js (Edge, @vercel/og) — X shows the card with
+  the log entry + badge automatically. Badges for the card: assets/badges/rank-0..6.png (static renders
+  of badgeSvg()). package.json only lists @vercel/og for the functions; the site has no build step.
+  "Download picture" link still makes the same card in the browser (makeShareCard(), canvas)., and "since your last visit" / last-24h deltas.
   No server: streak lives in localStorage 'qoge-visit'. To add log entries: append to every list.
 - Roadmap phases auto-complete at 500/1000/2500/5000 holders; rocket tracker parts install at
   50/250/500/1000/2500/5000 holders (PART_AT in renderVals()).

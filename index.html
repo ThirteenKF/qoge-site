@@ -555,7 +555,7 @@ class Component extends DCLogic {
     document.head.appendChild(ns);
     this.hourTimer = setInterval(() => this.forceUpdate(), 60000);
     this.onDocClick = ev => { if (this.state.langOpen && this.langEl && !this.langEl.contains(ev.target)) this.setState({ langOpen: false }); };
-    this.onKey = ev => { if (ev.key === 'Escape' && this.state.langOpen) this.setState({ langOpen: false }); if (ev.key === 'Escape' && this.state.share) this.closeShare(); };
+    this.onKey = ev => { if (ev.key === 'Escape' && this.state.langOpen) this.setState({ langOpen: false }); };
     document.addEventListener('click', this.onDocClick);
     document.addEventListener('keydown', this.onKey);
     this.t = setInterval(() => this.setState({ now: Date.now() }), 1000);
@@ -738,6 +738,12 @@ class Component extends DCLogic {
     return { idx: i, at: AT, name: t.ranks[i], next: next ? t.ranks[i + 1] : null, left: next ? next - streak : 0,
       pct: next ? Math.round((streak - AT[i]) / (next - AT[i]) * 100) : 100 };
   }
+  // Singular "1 day" for en/es/pt (ru uses the "дн." abbreviation, zh has no plural)
+  oneDay(str, n) {
+    if (n !== 1) return str;
+    return str.replace(/\b1 days\b/g, '1 day').replace(/days in a row/gi, m => m[0] === 'D' ? 'DAY IN A ROW' : 'day in a row')
+      .replace(/días seguidos/gi, m => m[0] === 'D' ? 'DÍA SEGUIDO' : 'día seguido').replace(/dias seguidos/gi, m => m[0] === 'D' ? 'DIA SEGUIDO' : 'dia seguido');
+  }
   // Daily block: ship's log entry of the day + streak card + changes since last visit / 24h.
   renderDaily(t, L) {
     const e = React.createElement, INK = '#141110', CREAM = '#f4f0ec', YEL = 'oklch(0.88 0.17 95)', RED = 'oklch(0.62 0.21 25)', GREEN = 'oklch(0.78 0.17 150)';
@@ -759,8 +765,11 @@ class Component extends DCLogic {
     const chgWord = chg24 == null ? '—' : Math.abs(chg24) < 0.05 ? t.dlFlat : (chg24 > 0 ? t.dlUp : t.dlDown).replace('{n}', Math.abs(chg24).toFixed(1));
     const ps = m.holders != null ? t.dlPS.replace('{h}', m.holders).replace('{chg}', chgWord) : '';
     const streak = v.streak || 1, rk = this.rankInfo(t, streak);
-    const shareText = t.dlShareText.replace('{rank}', rk.name).replace('{n}', streak).replace('{pct}', this.livePct || 0).replace('{h}', m.holders == null ? '—' : m.holders);
-    const shareUrl = 'https://x.com/intent/post?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent('https://www.qoge.fun/');
+    const shareText = this.oneDay(t.dlShareText, streak).replace('{rank}', rk.name).replace('{n}', streak).replace('{pct}', this.livePct || 0).replace('{h}', m.holders == null ? '—' : m.holders);
+    const host = typeof location !== 'undefined' ? location.hostname : '';
+    const siteBase = /(^|\.)qoge\.fun$|\.vercel\.app$/.test(host) ? location.origin : 'https://www.qoge.fun';
+    const cardLink = siteBase + '/m?d=' + dayN + '&r=' + rk.idx + '&s=' + streak + '&l=' + L + '&p=' + (this.livePct || 0);
+    const shareUrl = 'https://x.com/intent/post?text=' + encodeURIComponent(shareText) + '&url=' + encodeURIComponent(cardLink);
     const tag = (txt, bg, fg) => e('span', { style: { background: bg, color: fg, padding: '6px 14px', fontWeight: 900, fontSize: 14, textTransform: 'uppercase', whiteSpace: 'nowrap', transform: 'skewX(-8deg)', display: 'inline-block' } }, txt);
     const label = (txt, col) => e('div', { style: { fontFamily: mono, fontSize: 12, letterSpacing: '.12em', textTransform: 'uppercase', color: col } }, txt);
     const row = (k, val, col) => e('div', { key: k, style: { display: 'flex', justifyContent: 'space-between', gap: 12, padding: '10px 0', borderTop: '1px solid #3a3431', fontWeight: 700, fontSize: 15 } },
@@ -777,7 +786,6 @@ class Component extends DCLogic {
     }
     const dateStr = today.toLocaleDateString(t.loc, { day: '2-digit', month: '2-digit', year: 'numeric' });
     return e('div', { style: { display: 'flex', flexDirection: 'column', gap: 32 } },
-      this.renderShareModal(t),
       e('div', { style: { display: 'flex', flexDirection: 'column', gap: 16 } },
         e('div', { style: { display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' } },
           tag(t.dlTag, RED, CREAM), e('span', { style: { fontFamily: mono, fontSize: 12, letterSpacing: '.1em', color: '#cfc8c1' } }, t.dlSub)),
@@ -808,7 +816,7 @@ class Component extends DCLogic {
               e('div', { style: { display: 'flex', flexDirection: 'column', gap: 10, minWidth: 0 } },
                 e('div', { style: { display: 'flex', alignItems: 'baseline', gap: 10, flexWrap: 'wrap' } },
                   e('span', { style: { fontWeight: 900, fontSize: 'clamp(64px,7vw,96px)', lineHeight: .85, fontVariantNumeric: 'tabular-nums' } }, streak),
-                  e('span', { style: { fontWeight: 900, fontSize: 16, textTransform: 'uppercase' } }, t.dlDays)),
+                  e('span', { style: { fontWeight: 900, fontSize: 16, textTransform: 'uppercase' } }, this.oneDay(t.dlDays, streak))),
                 e('div', null, e('span', { style: { display: 'inline-block', whiteSpace: 'nowrap', background: INK, color: YEL, padding: '4px 10px', fontWeight: 900, fontSize: 14, textTransform: 'uppercase' } }, '★ ' + rk.name))),
               e('img', { src: this.badgeUrl(rk.idx), alt: rk.name, width: 120, height: 120, style: { flex: '0 0 auto', width: 'clamp(88px,9vw,120px)', height: 'auto', filter: 'drop-shadow(4px 4px 0 ' + INK + ')' } })),
             e('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(7,minmax(0,1fr))', gap: 4 } },
@@ -819,9 +827,11 @@ class Component extends DCLogic {
               e('div', { style: { position: 'absolute', inset: '0 auto 0 0', width: rk.pct + '%', background: INK } })),
             e('div', { style: { fontWeight: 700, fontSize: 14 } }, rk.next ? t.dlNext.replace('{n}', rk.left).replace('{rank}', rk.next) : t.dlMax),
             e('div', { style: { fontFamily: mono, fontSize: 12, lineHeight: 1.5 } }, t.dlBest.replace('{n}', v.best || 1).replace('{v}', v.visits || 1) + ' · ' + t.dlTomorrow),
-            e('button', { type: 'button', onClick: () => this.openShare(t, L, { dayN, entry, date: dateStr, rankIdx: rk.idx, rank: rk.name, streak, pct: this.livePct || 0, text: shareText, intent: shareUrl }),
-              style: { marginTop: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, background: INK, color: CREAM, border: 0, padding: '14px 16px', fontFamily: "'Archivo',sans-serif", fontWeight: 900, fontSize: 15, textTransform: 'uppercase', cursor: 'pointer' } },
-              t.dlShare + ' ↗')))));
+            e('a', { href: shareUrl, target: '_blank', rel: 'noopener noreferrer',
+              style: { marginTop: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, background: INK, color: CREAM, padding: '14px 16px', fontFamily: "'Archivo',sans-serif", fontWeight: 900, fontSize: 15, textTransform: 'uppercase', textDecoration: 'none' } },
+              t.dlShare + ' ↗'),
+            e('button', { type: 'button', onClick: () => this.downloadCard(t, L, { dayN, entry, date: dateStr, rankIdx: rk.idx, rank: rk.name, streak, pct: this.livePct || 0 }),
+              style: { background: 'transparent', border: 0, padding: 0, color: INK, fontFamily: "'IBM Plex Mono',monospace", fontSize: 12, textDecoration: 'underline', cursor: 'pointer', alignSelf: 'center' } }, t.shDownload + ' ↓')))));
   }
   // ---- Share card: 1200×675 PNG with today's log entry + rank badge (canvas, no server) ----
   wrapLines(x, text, maxW, cjk) {
@@ -877,7 +887,7 @@ class Component extends DCLogic {
     x.textAlign = 'center';
     let rs = 46; x.font = A(900, rs); while (x.measureText(d.rank.toUpperCase()).width > 330 && rs > 26) { rs -= 2; x.font = A(900, rs); }
     x.fillStyle = YEL; x.fillText('★ ' + d.rank.toUpperCase(), 990, 470);
-    x.font = A(900, 30); x.fillStyle = CREAM; x.fillText(t.dlBadgeDays.replace('{n}', d.streak).toUpperCase(), 990, 515);
+    x.font = A(900, 30); x.fillStyle = CREAM; x.fillText(this.oneDay(t.dlBadgeDays.replace('{n}', d.streak), d.streak).toUpperCase(), 990, 515);
     x.font = M(20); x.fillStyle = GREY; x.fillText(t.shRocket.replace('{pct}', d.pct), 990, 552);
     x.textAlign = 'left';
     // footer
@@ -885,55 +895,13 @@ class Component extends DCLogic {
     x.font = A(900, 30); x.fillStyle = YEL; x.textAlign = 'right'; x.fillText('$QOGE', W - 60, 628); x.textAlign = 'left';
     return await new Promise(res => c.toBlob(res, 'image/png'));
   }
-  async openShare(t, L, d) {
-    if (this.state.share && this.state.share.url) URL.revokeObjectURL(this.state.share.url);
-    this.setState({ share: { busy: true, d } });
+  async downloadCard(t, L, d) {
     let blob = null;
     try { blob = await this.makeShareCard(t, L, d); } catch (e) {}
-    if (!blob) { this.setState({ share: { error: true, d } }); return; }
-    const file = new File([blob], 'qoge-day-' + d.dayN + '.png', { type: 'image/png' });
-    let canFiles = false;
-    try { canFiles = !!(navigator.canShare && navigator.canShare({ files: [file] })) && matchMedia('(pointer: coarse)').matches; } catch (e) {}
-    this.setState({ share: { d, blob, file, url: URL.createObjectURL(blob), canFiles, status: '' } });
-  }
-  shareNative(t) {
-    const s = this.state.share; if (!s) return;
-    navigator.share({ files: [s.file], text: s.d.text + ' https://www.qoge.fun/' }).catch(() => {});
-  }
-  shareCopyOpen(t) {
-    const s = this.state.share; if (!s) return;
-    let p = null;
-    try { p = navigator.clipboard && window.ClipboardItem ? navigator.clipboard.write([new ClipboardItem({ 'image/png': s.blob })]) : null; } catch (e) { p = null; }
-    window.open(s.d.intent, '_blank', 'noopener');
-    if (!p) { this.setState({ share: { ...s, status: 'fail' } }); return; }
-    p.then(() => this.setState({ share: { ...this.state.share, status: 'ok' } }), () => this.setState({ share: { ...this.state.share, status: 'fail' } }));
-  }
-  closeShare() {
-    const s = this.state.share; if (s && s.url) URL.revokeObjectURL(s.url);
-    this.setState({ share: null });
-  }
-  renderShareModal(t) {
-    const s = this.state.share; if (!s) return null;
-    const e = React.createElement, INK = '#141110', CREAM = '#f4f0ec', YEL = 'oklch(0.88 0.17 95)', RED = 'oklch(0.62 0.21 25)';
-    const btn = (label, onClick, primary, href, download) => e(href ? 'a' : 'button', {
-      type: href ? undefined : 'button', onClick, href, download,
-      style: { display: 'block', width: '100%', textAlign: 'center', boxSizing: 'border-box', background: primary ? YEL : 'transparent', color: primary ? INK : CREAM, border: '3px solid ' + (primary ? YEL : CREAM), padding: '14px 16px', fontFamily: "'Archivo',sans-serif", fontWeight: 900, fontSize: 15, textTransform: 'uppercase', cursor: 'pointer', textDecoration: 'none' } }, label);
-    let body;
-    if (s.busy) body = e('div', { style: { padding: 40, textAlign: 'center', fontFamily: "'IBM Plex Mono',monospace" } }, '…');
-    else if (s.error) body = e('div', { style: { padding: 24 } }, t.shHintFail);
-    else body = e('div', { style: { display: 'flex', flexDirection: 'column', gap: 12 } },
-      e('img', { src: s.url, alt: '', style: { width: '100%', height: 'auto', display: 'block', border: '3px solid ' + CREAM } }),
-      s.canFiles ? btn(t.shShare + ' ↗', () => this.shareNative(t), true) : btn(t.shCopyOpen + ' ↗', () => this.shareCopyOpen(t), true),
-      s.status === 'ok' && e('div', { style: { background: '#1e3a24', color: '#9ff0b4', padding: '10px 12px', fontWeight: 700, fontSize: 14 } }, '✓ ' + t.shHint),
-      s.status === 'fail' && e('div', { style: { background: '#3a1e1e', color: '#ffb4a8', padding: '10px 12px', fontWeight: 700, fontSize: 14 } }, t.shHintFail),
-      btn(t.shDownload + ' ↓', null, false, s.url, 'qoge-day-' + s.d.dayN + '.png'));
-    return e('div', { role: 'dialog', 'aria-modal': true, onClick: ev => { if (ev.target === ev.currentTarget) this.closeShare(); },
-      style: { position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(10,8,8,.82)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 } },
-      e('div', { style: { background: INK, color: CREAM, border: '4px solid ' + CREAM, boxShadow: '10px 10px 0 ' + RED, width: 'min(640px,100%)', maxHeight: '92vh', overflow: 'auto', padding: 20, display: 'flex', flexDirection: 'column', gap: 14 } },
-        e('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 } },
-          e('span', { style: { fontWeight: 900, fontSize: 20, textTransform: 'uppercase' } }, t.shTitle),
-          e('button', { type: 'button', 'aria-label': t.shClose, onClick: () => this.closeShare(), style: { background: 'transparent', color: CREAM, border: '2px solid ' + CREAM, width: 36, height: 36, fontSize: 18, cursor: 'pointer' } }, '✕')),
-        body));
+    if (!blob) return;
+    const url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = 'qoge-day-' + d.dayN + '.png'; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
   }
   // Language picker: one button with a dropdown (add more languages to LANGS + dict()).
   renderLang(L) {

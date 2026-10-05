@@ -1,0 +1,9 @@
+Share to X with an automatic picture card (api/og + /m share page)
+
+- api/og.js: Edge function draws a 1200x675 card (log entry + rank badge)
+- api/share.js + vercel.json rewrite /m: page with og/twitter tags for X
+- package.json: @vercel/og for the functions
+- assets/badges: static PNG rank badges for the card
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01MPEqxgPdw2kbhtrFwyPCAH
