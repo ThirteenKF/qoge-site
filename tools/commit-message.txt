@@ -1,4 +1,0 @@
-Hero: keep the dog frame proportional at every width; Mars Gum banner + clearer how-to-buy
-
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
-Claude-Session: https://claude.ai/code/session_01MPEqxgPdw2kbhtrFwyPCAH
