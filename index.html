@@ -113,6 +113,21 @@ a:hover{color:oklch(0.72 0.17 40)}
   <span>NO FIRE HYDRANTS</span><span>·</span><span>NO MAIL SERVICE</span><span>·</span><span>NO BACON</span><span>·</span><span style="color:#f4f0ec">ONE VERY GOOD BOY</span>
 </div>
 
+<!-- NFT: QOGE Mars Gum teaser banner -->
+<section class="q-pr" id="nft" data-screen-label="NFT Banner" style="background:radial-gradient(circle at 75% 45%,#3a1f4a 0%,#140a18 70%);color:#f4f0ec;padding:clamp(40px,6vw,80px) clamp(16px,4vw,56px);padding-right:clamp(112px,8vw,140px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:clamp(24px,4vw,56px);align-items:center;border-top:4px solid oklch(0.88 0.17 95);border-bottom:4px solid #f4f0ec">
+  <div style="display:flex;flex-direction:column;gap:18px">
+    <div style="align-self:flex-start;background:oklch(0.62 0.21 25);color:#f4f0ec;padding:6px 14px;font-weight:900;font-size:15px;text-transform:uppercase;transform:skewX(-8deg)">{{ t.ngTag }}</div>
+    <h2 style="margin:0;font-weight:900;font-stretch:125%;font-size:clamp(36px,5vw,72px);line-height:.95;text-transform:uppercase;color:oklch(0.88 0.17 95)">{{ t.ngTitle }}</h2>
+    <p style="margin:0;max-width:520px;font-size:18px;line-height:1.45;color:#cfc8c1;text-wrap:pretty">{{ t.ngText }}</p>
+    <div style="display:flex;align-items:center;gap:10px;font-family:'IBM Plex Mono',monospace;font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:#f4f0ec"><span style="width:10px;height:10px;border-radius:50%;background:#5ad19a;box-shadow:0 0 12px #5ad19a"></span>{{ t.ngSoon }}</div>
+    <div class="q-ctas" style="display:flex;flex-wrap:wrap;gap:12px;margin-top:6px">
+      <a href="https://discord.gg/eHVA8rJ2J" target="_blank" rel="noopener" style="background:oklch(0.88 0.17 95);color:#141110;padding:16px 22px;font-weight:900;font-size:15px;text-transform:uppercase;border:3px solid oklch(0.88 0.17 95)" style-hover="background:transparent;color:oklch(0.88 0.17 95)">{{ t.ngDiscord }} ↗</a>
+      <a href="https://x.com/QOGEofficial" target="_blank" rel="noopener" style="background:transparent;color:#f4f0ec;padding:16px 22px;font-weight:900;font-size:15px;text-transform:uppercase;border:3px solid #f4f0ec" style-hover="background:#f4f0ec;color:#141110">{{ t.ngX }} ↗</a>
+    </div>
+  </div>
+  <div style="display:flex;justify-content:center"><img src="assets/mars-gum-pack.webp" alt="QOGE Mars Gum: sealed Pioneer Pack" width="720" height="720" loading="lazy" style="width:min(calc(100% - 12px),520px);height:auto;display:block;border:4px solid #f4f0ec;box-shadow:12px 12px 0 oklch(0.62 0.21 25)"></div>
+</section>
+
 <!-- DAILY: ship's log + visit streak (no server, localStorage) -->
 
 <section class="q-pr" id="daily" data-screen-label="Daily News" style="background:#141110;color:#f4f0ec;padding:clamp(56px,8vw,112px) clamp(16px,4vw,56px);padding-right:clamp(112px,8vw,140px);border-bottom:4px solid #f4f0ec">{{ dailyBlock }}</section>
@@ -351,6 +366,7 @@ class Component extends DCLogic {
   dict(chain) {
     const en = {
       loc: 'en-GB', c4tag: 'Exclusive · Family', c4live: '● LIVE', c4stamp: 'T−?? · EARTH · PACKING', c4ch: 'Big brother suits up: “I’m going to get him”', c4b: 'Big brother Doge took a three-day astronaut course (reward: one sausage), squeezed into a spacesuit two sizes too big and is recruiting a rescue crew. Requirement #1: don’t eat the onboard bacon.', c4q: '“He was always curious. I told him not to sniff rockets.” — big brother, 4 y/o, Earth', c4note: 'PARODY. NOT AFFILIATED WITH DOGECOIN, NASA OR ANY REAL PERSON.', live: '● LIVE FROM MARS', nav1: 'The scandal', nav2: 'Rocket', nav3: 'Numbers', nav4: 'Q&A', buyCta: 'Buy $QOGE',
+      ngTag: 'New · NFT drop', ngTitle: 'QOGE Mars Gum', ngText: 'Our first NFT collection: 100 sealed packs, 100 cards with real Mars rovers. 10 Legendary cards are still classified.', ngSoon: 'Minting soon on Quai mainnet', ngX: 'See the post on X', ngDiscord: 'Details in Discord',
       breaking: 'Breaking', h1a: 'Local puppy accidentally colonizes', h1b: 'Mars',
       heroP: 'Snuck into a NASA rocket "just to sniff around." Now building a spaceship out of rover parts. Experts say he\'s "a very good boy" and "genuinely stuck."',
       fund: 'Fund the rescue', exclusive: 'EXCLUSIVE', heroQuote: '"I just wanted to see the cables" — Q. Oge, 2 y/o, Mars', justIn: 'Just in',
@@ -386,6 +402,7 @@ class Component extends DCLogic {
     };
     const ru = {
       loc: 'ru-RU', c4tag: 'Эксклюзив · Семья', c4live: '● ПРЯМОЙ ЭФИР', c4stamp: 'T−?? · ЗЕМЛЯ · СБОРЫ', c4ch: 'Старший брат надел скафандр: «Я лечу за ним»', c4b: 'Старший брат Доге прошёл трёхдневные курсы астронавтов (награда — одна сосиска), влез в скафандр на два размера больше и набирает спасательный экипаж. Требование №1: не есть бортовой бекон.', c4q: '«Он всегда был любопытным. Я говорил ему не нюхать ракеты» — старший брат, 4 года, Земля', c4note: 'ПАРОДИЯ. НЕ СВЯЗАНО С DOGECOIN, NASA ИЛИ РЕАЛЬНЫМИ ЛЮДЬМИ.', live: '● ПРЯМОЙ ЭФИР С МАРСА', nav1: 'Скандал', nav2: 'Ракета', nav3: 'Цифры', nav4: 'Вопросы', buyCta: 'Купить $QOGE',
+      ngTag: 'Новинка · NFT', ngTitle: 'QOGE Mars Gum', ngText: 'Наша первая NFT-коллекция: 100 запечатанных пачек, 100 вкладышей с настоящими марсоходами. 10 легендарных пока засекречены.', ngSoon: 'Скоро минт в основной сети Quai', ngX: 'Пост в X', ngDiscord: 'Подробности в Discord',
       breaking: 'Срочно', h1a: 'Обычный щенок случайно колонизировал', h1b: 'Марс',
       heroP: 'Залез в ракету NASA «просто понюхать». Теперь строит корабль из запчастей марсохода. Эксперты называют его «очень хорошим мальчиком» и «реально застрявшим».',
       fund: 'Спасти пса', exclusive: 'ЭКСКЛЮЗИВ', heroQuote: '«Я просто хотел посмотреть на провода» — К. Оге, 2 года, Марс', justIn: 'Только что',
@@ -421,6 +438,7 @@ class Component extends DCLogic {
     };
     const es = {
       loc: 'es-ES', c4tag: 'Exclusiva · Familia', c4live: '● EN DIRECTO', c4stamp: 'T−?? · TIERRA · MALETAS', c4ch: 'El hermano mayor se pone el traje: «Voy a por él»', c4b: 'El hermano mayor Doge hizo un curso de astronauta de tres días (premio: una salchicha), se metió en un traje dos tallas más grande y busca tripulación de rescate. Requisito n.º 1: no comerse el beicon de a bordo.', c4q: '«Siempre fue muy curioso. Le dije que no olfateara cohetes» — hermano mayor, 4 años, Tierra', c4note: 'PARODIA. SIN RELACIÓN CON DOGECOIN, LA NASA NI PERSONAS REALES.', live: '● EN DIRECTO DESDE MARTE', nav1: 'El escándalo', nav2: 'Cohete', nav3: 'Cifras', nav4: 'Preguntas', buyCta: 'Comprar $QOGE',
+      ngTag: 'Nuevo · NFT', ngTitle: 'QOGE Mars Gum', ngText: 'Nuestra primera colección NFT: 100 paquetes sellados, 100 cromos con rovers reales de Marte. 10 legendarios siguen en secreto.', ngSoon: 'Mint muy pronto en la mainnet de Quai', ngX: 'Ver el post en X', ngDiscord: 'Detalles en Discord',
       breaking: 'Última hora', h1a: 'Un cachorro coloniza por accidente', h1b: 'Marte',
       heroP: 'Se coló en un cohete de la NASA «solo para olfatear». Ahora construye una nave con piezas de un rover. Los expertos dicen que es «un perro muy bueno» y que está «atrapado de verdad».',
       fund: 'Financia el rescate', exclusive: 'EXCLUSIVA', heroQuote: '«Solo quería ver los cables» — Q. Oge, 2 años, Marte', justIn: 'Último minuto',
@@ -456,6 +474,7 @@ class Component extends DCLogic {
     };
     const pt = {
       loc: 'pt-BR', c4tag: 'Exclusivo · Família', c4live: '● AO VIVO', c4stamp: 'T−?? · TERRA · ARRUMANDO MALAS', c4ch: 'Irmão mais velho veste o traje: “Vou buscar ele”', c4b: 'O irmão mais velho Doge fez um curso de astronauta de três dias (prêmio: uma salsicha), entrou num traje dois números maior e está recrutando a equipe de resgate. Requisito nº 1: não comer o bacon de bordo.', c4q: '“Ele sempre foi curioso. Eu falei pra ele não cheirar foguete” — irmão mais velho, 4 anos, Terra', c4note: 'PARÓDIA. SEM LIGAÇÃO COM DOGECOIN, NASA OU PESSOAS REAIS.', live: '● AO VIVO DE MARTE', nav1: 'O escândalo', nav2: 'Foguete', nav3: 'Números', nav4: 'Perguntas', buyCta: 'Comprar $QOGE',
+      ngTag: 'Novo · NFT', ngTitle: 'QOGE Mars Gum', ngText: 'Nossa primeira coleção NFT: 100 pacotes lacrados, 100 cards com rovers reais de Marte. 10 lendários continuam em segredo.', ngSoon: 'Mint em breve na mainnet da Quai', ngX: 'Ver o post no X', ngDiscord: 'Detalhes no Discord',
       breaking: 'Urgente', h1a: 'Filhote coloniza sem querer', h1b: 'Marte',
       heroP: 'Entrou escondido num foguete da NASA “só pra dar uma cheiradinha”. Agora está montando uma nave com peças de um rover. Especialistas dizem que ele é “um cachorro muito bonzinho” e que está “preso de verdade”.',
       fund: 'Financie o resgate', exclusive: 'EXCLUSIVO', heroQuote: '“Eu só queria ver os cabos” — Q. Oge, 2 anos, Marte', justIn: 'Agora',
@@ -491,6 +510,7 @@ class Component extends DCLogic {
     };
     const zh = {
       loc: 'zh-CN', c4tag: '独家 · 家人', c4live: '● 直播', c4stamp: 'T−?? · 地球 · 收拾行李', c4ch: '哥哥穿上宇航服：“我去接它回来”', c4b: '哥哥 Doge 上完三天宇航员速成班（奖励：一根香肠），穿上大两号的宇航服，正在招募救援队。第一条要求：不许偷吃船上的培根。', c4q: '“它从小就好奇。我早说过别去闻火箭。” —— 哥哥，4 岁，地球', c4note: '恶搞内容。与 Dogecoin、NASA 或任何真实人物无关。', live: '● 火星现场直播', nav1: '丑闻', nav2: '火箭', nav3: '数据', nav4: '问答', buyCta: '购买 $QOGE',
+      ngTag: '新品 · NFT', ngTitle: 'QOGE 火星泡泡糖', ngText: '我们的首个 NFT 系列：100 包密封泡泡糖，100 张真实火星车卡片。10 张传奇卡仍属机密。', ngSoon: '即将在 Quai 主网铸造', ngX: '查看 X 帖子', ngDiscord: '在 Discord 了解详情',
       breaking: '突发', h1a: '小狗意外殖民了', h1b: '火星',
       heroP: '它钻进 NASA 的火箭，说是“只想闻一闻”。现在正用火星车零件造飞船。专家称它是“一只非常乖的狗狗”，而且“真的回不来了”。',
       fund: '资助救援', exclusive: '独家', heroQuote: '“我只是想看看那些电线” —— Q. Oge，2 岁，火星', justIn: '最新',

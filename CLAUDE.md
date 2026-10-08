@@ -47,6 +47,9 @@ Context for picking this project up in a new chat.
   of badgeSvg()). package.json only lists @vercel/og for the functions; the site has no build step.
   "Download picture" link still makes the same card in the browser (makeShareCard(), canvas)., and "since your last visit" / last-24h deltas.
   No server: streak lives in localStorage 'qoge-visit'. To add log entries: append to every list.
+- NFT teaser banner (#nft, between the ticker strip and #daily): QOGE Mars Gum collection (100 rover cards,
+  files in `QOGE SITE\nft\mars-gum`), image assets/mars-gum-pack.webp, texts ng* in every language.
+  Links: Discord + x.com/QOGEofficial. Update when the mint goes live on BAZARR Launch.
 - Roadmap phases auto-complete at 500/1000/2500/5000 holders; rocket tracker parts install at
   50/250/500/1000/2500/5000 holders (PART_AT in renderVals()).
 - Mobile layout: `@media (max-width:767px)` block in index.html helmet styles.
