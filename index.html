@@ -364,8 +364,19 @@ a:hover{color:oklch(0.72 0.17 40)}
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;buildProgress&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0,&quot;max&quot;:100,&quot;step&quot;:1,&quot;default&quot;:37,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Mission&quot;},&quot;chain&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Quai Network&quot;,&quot;Solana&quot;,&quot;Ethereum&quot;,&quot;Base&quot;,&quot;BNB Chain&quot;,&quot;TON&quot;],&quot;default&quot;:&quot;Quai Network&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Token&quot;},&quot;contractAddress&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;0x0048848cA70eA1560577B4725A84b23B6bC589e2&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Token&quot;}}">
+// ---- On-chain streak (QogeStreak on Quai Network, contracts/QogeStreak.sol) ----
+// Empty `contract` hides the feature. After deploying, paste the address here
+// and redeploy the site. Selectors: checkIn()=0x183ff085, streakOf(address)=0x4fc1854a.
+const QOGE_STREAK = {
+  contract: '', // e.g. '0x…' — QogeStreak address (Quai mainnet, Cyprus-1)
+  rpc: 'https://rpc.quai.network/cyprus1',
+  explorer: 'https://explorer.qu.ai/tx/',
+  genesisDay: 20730, // 2026-10-04 UTC — must match QogeStreak.GENESIS_DAY
+  sel: { checkIn: '0x183ff085', streakOf: '0x4fc1854a' },
+};
+
 class Component extends DCLogic {
-  state = { visit: null, now: Date.now(), copied: false, scroll: 0, progress: 0, openFaq: 0, langOpen: false, metrics: null, hi: null, lang: (() => { const ok = ['en', 'es', 'pt', 'ru', 'zh']; try { const v = localStorage.getItem('qoge-lang'); if (ok.includes(v)) return v; } catch (e) {} const nav = (typeof navigator !== 'undefined' && navigator.language || 'en').slice(0, 2).toLowerCase(); return ok.includes(nav) ? nav : 'en'; })() };
+  state = { visit: null, now: Date.now(), copied: false, scroll: 0, progress: 0, openFaq: 0, langOpen: false, metrics: null, hi: null, chain: { addr: null, lastDay: 0, streak: null, best: null, holder: null, tx: null, busy: 0, err: '' }, lang: (() => { const ok = ['en', 'es', 'pt', 'ru', 'zh']; try { const v = localStorage.getItem('qoge-lang'); if (ok.includes(v)) return v; } catch (e) {} const nav = (typeof navigator !== 'undefined' && navigator.language || 'en').slice(0, 2).toLowerCase(); return ok.includes(nav) ? nav : 'en'; })() };
   setLang(l) { try { localStorage.setItem('qoge-lang', l); } catch (e) {} document.documentElement.lang = l; this.setState({ lang: l }); }
   dict(chain) {
     const en = {
@@ -394,7 +405,7 @@ class Component extends DCLogic {
       s3b: 'Open $QOGE on Quainance, connect your wallet and press Swap: QUAI → $QOGE. Check the contract address below in the Quai explorer.', s3go: 'Buy on Quainance', s3ex: 'Check in explorer', s4b: 'Join our Discord and connect your wallet in #connect-wallet. You get the QOGE Holder role and every crew channel opens up.',
       caLabel: 'CONTRACT ADDRESS',
       tkTag: 'By the numbers', tkSub: 'TOKENOMICS', tkH: 'The fuel specs', m1: 'MARKET CAP', m2: 'PRICE', m3: 'LIQUIDITY', m4: 'HOLDERS', mLive: 'LIVE DATA · QUAINANCE', mUpd: 'UPDATED', chTitle: 'PRICE · 7D', chVol: 'VOL', chNow: 'NOW', chNoData: 'No trades yet',
-      rmTag: 'Coming up next', rmSub: 'ROADMAP · TV GUIDE', rmH1: 'Mars → Earth:', rmH2: 'the schedule', aired: 'AIRED ✓', onAir: '● ON AIR', upNext: 'UP NEXT', rmProg: 'Holders: {n} / {goal}', dlTag: '● On the radio', dlSub: 'DAILY · GROUND CONTROL', dlTitle: "Ship's log", dlDay: 'day {n}', dlSign: '— Q., stranded on Mars', dlPS: 'P.S. {h} holders in ground control. Fuel price {chg} in 24h.', dlUp: 'up {n}%', dlDown: 'down {n}%', dlFlat: 'steady', dlStreakH: 'Your streak', dlDays: 'days in a row', dlBest: 'Best: {n} · visits: {v}', dlNext: '{n} more days → {rank}', dlMax: 'Top rank. Respect.', shTitle: 'Your mission card', shShare: 'Share the picture', shCopyOpen: 'Copy picture & open X', shDownload: 'Download picture', shHint: 'Picture copied — paste it into your post (Ctrl+V)', shHintFail: "Couldn't copy the picture — download it and attach it to your post", shClose: 'Close', shRocket: 'Rocket built: {pct}%', dlShare: 'Share progress on X', dlShareText: 'I\'m a {rank} of the $QOGE mission: {n} days in a row on the radio with Mars 🚀 Rocket {pct}% built, {h} holders on board. Join ground control:', dlTomorrow: 'Come back tomorrow to keep the streak.', dlSinceH: 'Since your last visit', dlFirst: 'First contact! Come back tomorrow and we will show what changed.', dlHolders: 'Holders', dlPrice: 'Fuel price', dl24h: 'Last 24 hours', dlVol: 'Volume', ranks: ['Cadet', 'Mechanic', 'Pilot', 'Navigator', 'Commander', 'Admiral', 'Mars legend'], dlBadgeTop: '$QOGE · GROUND CONTROL', dlBadgeDays: '{n} days in a row', dlD: 'd',
+      rmTag: 'Coming up next', rmSub: 'ROADMAP · TV GUIDE', rmH1: 'Mars → Earth:', rmH2: 'the schedule', aired: 'AIRED ✓', onAir: '● ON AIR', upNext: 'UP NEXT', rmProg: 'Holders: {n} / {goal}', dlTag: '● On the radio', dlSub: 'DAILY · GROUND CONTROL', dlTitle: "Ship's log", dlDay: 'day {n}', dlSign: '— Q., stranded on Mars', dlPS: 'P.S. {h} holders in ground control. Fuel price {chg} in 24h.', dlUp: 'up {n}%', dlDown: 'down {n}%', dlFlat: 'steady', dlStreakH: 'Your streak', dlDays: 'days in a row', dlBest: 'Best: {n} · visits: {v}', dlNext: '{n} more days → {rank}', dlMax: 'Top rank. Respect.', shTitle: 'Your mission card', shShare: 'Share the picture', shCopyOpen: 'Copy picture & open X', shDownload: 'Download picture', shHint: 'Picture copied — paste it into your post (Ctrl+V)', shHintFail: "Couldn't copy the picture — download it and attach it to your post", shClose: 'Close', shRocket: 'Rocket built: {pct}%', dlShare: 'Share progress on X', dlShareText: 'I\'m a {rank} of the $QOGE mission: {n} days in a row on the radio with Mars 🚀 Rocket {pct}% built, {h} holders on board. Join ground control:', dlTomorrow: 'Come back tomorrow to keep the streak.', dlSinceH: 'Since your last visit', dlFirst: 'First contact! Come back tomorrow and we will show what changed.', dlHolders: 'Holders', dlPrice: 'Fuel price', dl24h: 'Last 24 hours', dlVol: 'Volume', ranks: ['Cadet', 'Mechanic', 'Pilot', 'Navigator', 'Commander', 'Admiral', 'Mars legend'], dlBadgeTop: '$QOGE · GROUND CONTROL', dlBadgeDays: '{n} days in a row', dlD: 'd', ocH: 'ON-CHAIN CREW', ocBtn: 'Verify on-chain', ocCheckIn: 'Check in on-chain', ocBusy1: 'Waiting for wallet…', ocBusy2: 'Confirm in wallet…', ocBusy3: 'On its way…', ocDone: '✓ day {n} is on-chain', ocStreak: 'on-chain streak: {n} d', ocHolder: '$QOGE holder', ocNoHold: 'no $QOGE', ocHint: 'one tiny QUAI for gas', ocFail: 'Failed: {e}', ocTx: 'view tx', ocNoWallet: 'Needs a Quai wallet',
       fqTag: 'Viewer questions', fqH1: 'You asked.', fqH2: 'We barked.',
       cmH1: 'Join the rescue team.', cmH2: 'Bring him home.', bubble: 'pls hurry, i\'m out of bacon',
       foot1: '© 2026 $QOGE · A MEMECOIN WITH NO INTRINSIC VALUE OR EXPECTATION OF RETURN.', foot2: 'NOT AFFILIATED WITH NASA. JUST A DOG.',
@@ -431,7 +442,7 @@ class Component extends DCLogic {
       s3b: 'Открой $QOGE на Quainance, подключи кошелёк и нажми Swap: QUAI → $QOGE. Сверь адрес контракта ниже в эксплорере Quai.', s3go: 'Купить на Quainance', s3ex: 'Проверить в эксплорере', s4b: 'Зайди в наш Discord и подключи кошелёк в канале #connect-wallet. Получишь роль QOGE Holder, и откроются все каналы экипажа.',
       caLabel: 'АДРЕС КОНТРАКТА',
       tkTag: 'В цифрах', tkSub: 'ТОКЕНОМИКА', tkH: 'Характеристики топлива', m1: 'КАПИТАЛИЗАЦИЯ', m2: 'ЦЕНА', m3: 'ЛИКВИДНОСТЬ', m4: 'ХОЛДЕРЫ', mLive: 'ЖИВЫЕ ДАННЫЕ · QUAINANCE', mUpd: 'ОБНОВЛЕНО', chTitle: 'ЦЕНА · 7 ДНЕЙ', chVol: 'ОБЪЁМ', chNow: 'СЕЙЧАС', chNoData: 'Сделок пока нет',
-      rmTag: 'Далее в эфире', rmSub: 'РОАДМАП · ТЕЛЕПРОГРАММА', rmH1: 'Марс → Земля:', rmH2: 'расписание', aired: 'В ЭФИРЕ БЫЛО ✓', onAir: '● В ЭФИРЕ', upNext: 'СКОРО', rmProg: 'Холдеры: {n} / {goal}', dlTag: '● На связи', dlSub: 'КАЖДЫЙ ДЕНЬ · ЦЕНТР УПРАВЛЕНИЯ', dlTitle: 'Бортовой журнал', dlDay: 'день {n}', dlSign: '— Q., застрял на Марсе', dlPS: 'P.S. В центре управления {h} холдеров. Цена топлива за сутки: {chg}.', dlUp: '+{n}%', dlDown: '−{n}%', dlFlat: 'без изменений', dlStreakH: 'Твоя серия', dlDays: 'дн. подряд', dlBest: 'Рекорд: {n} · визитов: {v}', dlNext: 'Ещё {n} дн. → {rank}', dlMax: 'Высшее звание. Уважение.', shTitle: 'Твоя карточка миссии', shShare: 'Поделиться картинкой', shCopyOpen: 'Скопировать картинку и открыть X', shDownload: 'Скачать картинку', shHint: 'Картинка скопирована — вставь её в пост (Ctrl+V)', shHintFail: 'Не получилось скопировать — скачай картинку и прикрепи к посту', shClose: 'Закрыть', shRocket: 'Ракета собрана: {pct}%', dlShare: 'Поделиться прогрессом в X', dlShareText: 'Я {rank} миссии $QOGE: {n} дн. подряд на связи с Марсом 🚀 Ракета собрана на {pct}%, на борту {h} холдеров. Присоединяйся к центру управления:', dlTomorrow: 'Заходи завтра, чтобы не прервать серию.', dlSinceH: 'С твоего прошлого визита', dlFirst: 'Первый контакт! Заходи завтра — покажем, что изменилось.', dlHolders: 'Холдеры', dlPrice: 'Цена топлива', dl24h: 'За 24 часа', dlVol: 'Объём', ranks: ['Стажёр', 'Механик', 'Пилот', 'Штурман', 'Командир', 'Адмирал', 'Легенда Марса'], dlBadgeTop: '$QOGE · ЦЕНТР УПРАВЛЕНИЯ', dlBadgeDays: '{n} дн. подряд', dlD: 'дн',
+      rmTag: 'Далее в эфире', rmSub: 'РОАДМАП · ТЕЛЕПРОГРАММА', rmH1: 'Марс → Земля:', rmH2: 'расписание', aired: 'В ЭФИРЕ БЫЛО ✓', onAir: '● В ЭФИРЕ', upNext: 'СКОРО', rmProg: 'Холдеры: {n} / {goal}', dlTag: '● На связи', dlSub: 'КАЖДЫЙ ДЕНЬ · ЦЕНТР УПРАВЛЕНИЯ', dlTitle: 'Бортовой журнал', dlDay: 'день {n}', dlSign: '— Q., застрял на Марсе', dlPS: 'P.S. В центре управления {h} холдеров. Цена топлива за сутки: {chg}.', dlUp: '+{n}%', dlDown: '−{n}%', dlFlat: 'без изменений', dlStreakH: 'Твоя серия', dlDays: 'дн. подряд', dlBest: 'Рекорд: {n} · визитов: {v}', dlNext: 'Ещё {n} дн. → {rank}', dlMax: 'Высшее звание. Уважение.', shTitle: 'Твоя карточка миссии', shShare: 'Поделиться картинкой', shCopyOpen: 'Скопировать картинку и открыть X', shDownload: 'Скачать картинку', shHint: 'Картинка скопирована — вставь её в пост (Ctrl+V)', shHintFail: 'Не получилось скопировать — скачай картинку и прикрепи к посту', shClose: 'Закрыть', shRocket: 'Ракета собрана: {pct}%', dlShare: 'Поделиться прогрессом в X', dlShareText: 'Я {rank} миссии $QOGE: {n} дн. подряд на связи с Марсом 🚀 Ракета собрана на {pct}%, на борту {h} холдеров. Присоединяйся к центру управления:', dlTomorrow: 'Заходи завтра, чтобы не прервать серию.', dlSinceH: 'С твоего прошлого визита', dlFirst: 'Первый контакт! Заходи завтра — покажем, что изменилось.', dlHolders: 'Холдеры', dlPrice: 'Цена топлива', dl24h: 'За 24 часа', dlVol: 'Объём', ranks: ['Стажёр', 'Механик', 'Пилот', 'Штурман', 'Командир', 'Адмирал', 'Легенда Марса'], dlBadgeTop: '$QOGE · ЦЕНТР УПРАВЛЕНИЯ', dlBadgeDays: '{n} дн. подряд', dlD: 'дн', ocH: 'ОНЧЕЙН-ЭКИПАЖ', ocBtn: 'Подтвердить в блокчейне', ocCheckIn: 'Записать день в блокчейн', ocBusy1: 'Ждём кошелёк…', ocBusy2: 'Подтверди в кошельке…', ocBusy3: 'В пути…', ocDone: '✓ день {n} записан в блокчейне', ocStreak: 'ончейн-серия: {n} дн.', ocHolder: 'холдер $QOGE', ocNoHold: 'без $QOGE', ocHint: 'чуть-чуть QUAI за газ', ocFail: 'Не вышло: {e}', ocTx: 'транзакция', ocNoWallet: 'Нужен Quai-кошелёк',
       fqTag: 'Вопросы зрителей', fqH1: 'Вы спросили.', fqH2: 'Мы гавкнули.',
       cmH1: 'Вступай в спасательную команду.', cmH2: 'Верни его домой.', bubble: 'поторопитесь, бекон кончился',
       foot1: '© 2026 $QOGE · МЕМКОИН БЕЗ ВНУТРЕННЕЙ ЦЕННОСТИ И ОЖИДАНИЯ ДОХОДА.', foot2: 'НЕ СВЯЗАН С NASA. ПРОСТО СОБАКА.',
@@ -468,7 +479,7 @@ class Component extends DCLogic {
       s3b: 'Abre $QOGE en Quainance, conecta tu wallet y pulsa Swap: QUAI → $QOGE. Comprueba la dirección del contrato de abajo en el explorador de Quai.', s3go: 'Comprar en Quainance', s3ex: 'Ver en el explorador', s4b: 'Entra en nuestro Discord y conecta tu wallet en #connect-wallet. Recibes el rol QOGE Holder y se abren todos los canales de la tripulación.',
       caLabel: 'DIRECCIÓN DEL CONTRATO',
       tkTag: 'En cifras', tkSub: 'TOKENÓMICA', tkH: 'Ficha del combustible', m1: 'CAP. DE MERCADO', m2: 'PRECIO', m3: 'LIQUIDEZ', m4: 'HOLDERS', mLive: 'DATOS EN VIVO · QUAINANCE', mUpd: 'ACTUALIZADO', chTitle: 'PRECIO · 7D', chVol: 'VOL', chNow: 'AHORA', chNoData: 'Aún no hay operaciones',
-      rmTag: 'A continuación', rmSub: 'ROADMAP · PROGRAMACIÓN', rmH1: 'Marte → Tierra:', rmH2: 'la programación', aired: 'EMITIDO ✓', onAir: '● EN ANTENA', upNext: 'PRÓXIMAMENTE', rmProg: 'Holders: {n} / {goal}', dlTag: '● En la radio', dlSub: 'CADA DÍA · CENTRO DE CONTROL', dlTitle: 'Diario de a bordo', dlDay: 'día {n}', dlSign: '— Q., atrapado en Marte', dlPS: 'P.D. {h} holders en el centro de control. Combustible: {chg} en 24 h.', dlUp: 'sube un {n}%', dlDown: 'baja un {n}%', dlFlat: 'estable', dlStreakH: 'Tu racha', dlDays: 'días seguidos', dlBest: 'Récord: {n} · visitas: {v}', dlNext: '{n} días más → {rank}', dlMax: 'Rango máximo. Respeto.', shTitle: 'Tu tarjeta de misión', shShare: 'Compartir imagen', shCopyOpen: 'Copiar imagen y abrir X', shDownload: 'Descargar imagen', shHint: 'Imagen copiada: pégala en tu post (Ctrl+V)', shHintFail: 'No se pudo copiar: descarga la imagen y adjúntala al post', shClose: 'Cerrar', shRocket: 'Cohete listo: {pct}%', dlShare: 'Compartir progreso en X', dlShareText: 'Soy {rank} de la misión $QOGE: {n} días seguidos en contacto con Marte 🚀 Cohete al {pct}%, {h} holders a bordo. Únete al centro de control:', dlTomorrow: 'Vuelve mañana para no perder la racha.', dlSinceH: 'Desde tu última visita', dlFirst: '¡Primer contacto! Vuelve mañana y verás qué ha cambiado.', dlHolders: 'Holders', dlPrice: 'Precio del combustible', dl24h: 'Últimas 24 horas', dlVol: 'Volumen', ranks: ['Cadete', 'Mecánico', 'Piloto', 'Navegante', 'Comandante', 'Almirante', 'Leyenda de Marte'], dlBadgeTop: '$QOGE · CENTRO DE CONTROL', dlBadgeDays: '{n} días seguidos', dlD: 'd',
+      rmTag: 'A continuación', rmSub: 'ROADMAP · PROGRAMACIÓN', rmH1: 'Marte → Tierra:', rmH2: 'la programación', aired: 'EMITIDO ✓', onAir: '● EN ANTENA', upNext: 'PRÓXIMAMENTE', rmProg: 'Holders: {n} / {goal}', dlTag: '● En la radio', dlSub: 'CADA DÍA · CENTRO DE CONTROL', dlTitle: 'Diario de a bordo', dlDay: 'día {n}', dlSign: '— Q., atrapado en Marte', dlPS: 'P.D. {h} holders en el centro de control. Combustible: {chg} en 24 h.', dlUp: 'sube un {n}%', dlDown: 'baja un {n}%', dlFlat: 'estable', dlStreakH: 'Tu racha', dlDays: 'días seguidos', dlBest: 'Récord: {n} · visitas: {v}', dlNext: '{n} días más → {rank}', dlMax: 'Rango máximo. Respeto.', shTitle: 'Tu tarjeta de misión', shShare: 'Compartir imagen', shCopyOpen: 'Copiar imagen y abrir X', shDownload: 'Descargar imagen', shHint: 'Imagen copiada: pégala en tu post (Ctrl+V)', shHintFail: 'No se pudo copiar: descarga la imagen y adjúntala al post', shClose: 'Cerrar', shRocket: 'Cohete listo: {pct}%', dlShare: 'Compartir progreso en X', dlShareText: 'Soy {rank} de la misión $QOGE: {n} días seguidos en contacto con Marte 🚀 Cohete al {pct}%, {h} holders a bordo. Únete al centro de control:', dlTomorrow: 'Vuelve mañana para no perder la racha.', dlSinceH: 'Desde tu última visita', dlFirst: '¡Primer contacto! Vuelve mañana y verás qué ha cambiado.', dlHolders: 'Holders', dlPrice: 'Precio del combustible', dl24h: 'Últimas 24 horas', dlVol: 'Volumen', ranks: ['Cadete', 'Mecánico', 'Piloto', 'Navegante', 'Comandante', 'Almirante', 'Leyenda de Marte'], dlBadgeTop: '$QOGE · CENTRO DE CONTROL', dlBadgeDays: '{n} días seguidos', dlD: 'd', ocH: 'TRIPULACIÓN ON-CHAIN', ocBtn: 'Verificar on-chain', ocCheckIn: 'Firmar el día on-chain', ocBusy1: 'Esperando el wallet…', ocBusy2: 'Confirma en el wallet…', ocBusy3: 'En camino…', ocDone: '✓ día {n} firmado on-chain', ocStreak: 'racha on-chain: {n} d', ocHolder: 'holder de $QOGE', ocNoHold: 'sin $QOGE', ocHint: 'un poco de QUAI de gas', ocFail: 'Falló: {e}', ocTx: 'ver tx', ocNoWallet: 'Necesitas un wallet de Quai',
       fqTag: 'Preguntas del público', fqH1: 'Preguntasteis.', fqH2: 'Ladramos.',
       cmH1: 'Únete al equipo de rescate.', cmH2: 'Tráelo a casa.', bubble: 'date prisa, me quedé sin beicon',
       foot1: '© 2026 $QOGE · UNA MEMECOIN SIN VALOR INTRÍNSECO NI EXPECTATIVA DE RENTABILIDAD.', foot2: 'SIN RELACIÓN CON LA NASA. SOLO UN PERRO.',
@@ -505,7 +516,7 @@ class Component extends DCLogic {
       s3b: 'Abra $QOGE na Quainance, conecte sua carteira e clique em Swap: QUAI → $QOGE. Confira o endereço do contrato abaixo no explorador da Quai.', s3go: 'Comprar na Quainance', s3ex: 'Ver no explorador', s4b: 'Entre no nosso Discord e conecte sua carteira em #connect-wallet. Você recebe o cargo QOGE Holder e todos os canais da tripulação se abrem.',
       caLabel: 'ENDEREÇO DO CONTRATO',
       tkTag: 'Em números', tkSub: 'TOKENOMICS', tkH: 'Ficha do combustível', m1: 'VALOR DE MERCADO', m2: 'PREÇO', m3: 'LIQUIDEZ', m4: 'HOLDERS', mLive: 'DADOS AO VIVO · QUAINANCE', mUpd: 'ATUALIZADO', chTitle: 'PREÇO · 7D', chVol: 'VOL', chNow: 'AGORA', chNoData: 'Ainda sem negociações',
-      rmTag: 'A seguir', rmSub: 'ROADMAP · PROGRAMAÇÃO', rmH1: 'Marte → Terra:', rmH2: 'a programação', aired: 'EXIBIDO ✓', onAir: '● NO AR', upNext: 'EM BREVE', rmProg: 'Holders: {n} / {goal}', dlTag: '● No rádio', dlSub: 'TODO DIA · CONTROLE DA MISSÃO', dlTitle: 'Diário de bordo', dlDay: 'dia {n}', dlSign: '— Q., preso em Marte', dlPS: 'P.S. {h} holders no controle da missão. Combustível: {chg} em 24 h.', dlUp: 'subiu {n}%', dlDown: 'caiu {n}%', dlFlat: 'estável', dlStreakH: 'Sua sequência', dlDays: 'dias seguidos', dlBest: 'Recorde: {n} · visitas: {v}', dlNext: 'Mais {n} dias → {rank}', dlMax: 'Patente máxima. Respeito.', shTitle: 'Seu cartão da missão', shShare: 'Compartilhar imagem', shCopyOpen: 'Copiar imagem e abrir o X', shDownload: 'Baixar imagem', shHint: 'Imagem copiada: cole no seu post (Ctrl+V)', shHintFail: 'Não deu para copiar: baixe a imagem e anexe ao post', shClose: 'Fechar', shRocket: 'Foguete pronto: {pct}%', dlShare: 'Compartilhar progresso no X', dlShareText: 'Sou {rank} da missão $QOGE: {n} dias seguidos em contato com Marte 🚀 Foguete {pct}% pronto, {h} holders a bordo. Entre no controle da missão:', dlTomorrow: 'Volte amanhã para manter a sequência.', dlSinceH: 'Desde sua última visita', dlFirst: 'Primeiro contato! Volte amanhã e mostramos o que mudou.', dlHolders: 'Holders', dlPrice: 'Preço do combustível', dl24h: 'Últimas 24 horas', dlVol: 'Volume', ranks: ['Cadete', 'Mecânico', 'Piloto', 'Navegador', 'Comandante', 'Almirante', 'Lenda de Marte'], dlBadgeTop: '$QOGE · CONTROLE DA MISSÃO', dlBadgeDays: '{n} dias seguidos', dlD: 'd',
+      rmTag: 'A seguir', rmSub: 'ROADMAP · PROGRAMAÇÃO', rmH1: 'Marte → Terra:', rmH2: 'a programação', aired: 'EXIBIDO ✓', onAir: '● NO AR', upNext: 'EM BREVE', rmProg: 'Holders: {n} / {goal}', dlTag: '● No rádio', dlSub: 'TODO DIA · CONTROLE DA MISSÃO', dlTitle: 'Diário de bordo', dlDay: 'dia {n}', dlSign: '— Q., preso em Marte', dlPS: 'P.S. {h} holders no controle da missão. Combustível: {chg} em 24 h.', dlUp: 'subiu {n}%', dlDown: 'caiu {n}%', dlFlat: 'estável', dlStreakH: 'Sua sequência', dlDays: 'dias seguidos', dlBest: 'Recorde: {n} · visitas: {v}', dlNext: 'Mais {n} dias → {rank}', dlMax: 'Patente máxima. Respeito.', shTitle: 'Seu cartão da missão', shShare: 'Compartilhar imagem', shCopyOpen: 'Copiar imagem e abrir o X', shDownload: 'Baixar imagem', shHint: 'Imagem copiada: cole no seu post (Ctrl+V)', shHintFail: 'Não deu para copiar: baixe a imagem e anexe ao post', shClose: 'Fechar', shRocket: 'Foguete pronto: {pct}%', dlShare: 'Compartilhar progresso no X', dlShareText: 'Sou {rank} da missão $QOGE: {n} dias seguidos em contato com Marte 🚀 Foguete {pct}% pronto, {h} holders a bordo. Entre no controle da missão:', dlTomorrow: 'Volte amanhã para manter a sequência.', dlSinceH: 'Desde sua última visita', dlFirst: 'Primeiro contato! Volte amanhã e mostramos o que mudou.', dlHolders: 'Holders', dlPrice: 'Preço do combustível', dl24h: 'Últimas 24 horas', dlVol: 'Volume', ranks: ['Cadete', 'Mecânico', 'Piloto', 'Navegador', 'Comandante', 'Almirante', 'Lenda de Marte'], dlBadgeTop: '$QOGE · CONTROLE DA MISSÃO', dlBadgeDays: '{n} dias seguidos', dlD: 'd', ocH: 'TRIPULAÇÃO ON-CHAIN', ocBtn: 'Verificar on-chain', ocCheckIn: 'Registrar o dia on-chain', ocBusy1: 'Esperando a carteira…', ocBusy2: 'Confirme na carteira…', ocBusy3: 'A caminho…', ocDone: '✓ dia {n} registrado on-chain', ocStreak: 'sequência on-chain: {n} d', ocHolder: 'holder de $QOGE', ocNoHold: 'sem $QOGE', ocHint: 'um pouco de QUAI de gás', ocFail: 'Falhou: {e}', ocTx: 'ver tx', ocNoWallet: 'Precisa de uma carteira Quai',
       fqTag: 'Perguntas dos espectadores', fqH1: 'Vocês perguntaram.', fqH2: 'Nós latimos.',
       cmH1: 'Entre na equipe de resgate.', cmH2: 'Traga ele pra casa.', bubble: 'corre, acabou meu bacon',
       foot1: '© 2026 $QOGE · UMA MEMECOIN SEM VALOR INTRÍNSECO NEM EXPECTATIVA DE RETORNO.', foot2: 'SEM LIGAÇÃO COM A NASA. SÓ UM CACHORRO.',
@@ -542,7 +553,7 @@ class Component extends DCLogic {
       s3b: '在 Quainance 打开 $QOGE，连接钱包并点击 Swap：QUAI → $QOGE。请在 Quai 浏览器中核对下方的合约地址。', s3go: '在 Quainance 购买', s3ex: '在浏览器中核对', s4b: '加入我们的 Discord，在 #connect-wallet 频道连接钱包。你将获得 QOGE Holder 身份组，并解锁所有机组频道。',
       caLabel: '合约地址',
       tkTag: '数据一览', tkSub: '代币经济', tkH: '燃料参数', m1: '市值', m2: '价格', m3: '流动性', m4: '持有者', mLive: '实时数据 · QUAINANCE', mUpd: '更新于', chTitle: '价格 · 7 天', chVol: '成交量', chNow: '现在', chNoData: '暂无交易',
-      rmTag: '下期预告', rmSub: '路线图 · 节目单', rmH1: '火星 → 地球：', rmH2: '节目单', aired: '已播出 ✓', onAir: '● 直播中', upNext: '即将播出', rmProg: '持有者：{n} / {goal}', dlTag: '● 通讯中', dlSub: '每日 · 地面控制', dlTitle: '航行日志', dlDay: '第 {n} 天', dlSign: '—— Q.，被困火星', dlPS: '附：地面控制已有 {h} 位持有者。燃料价格 24 小时：{chg}。', dlUp: '上涨 {n}%', dlDown: '下跌 {n}%', dlFlat: '持平', dlStreakH: '你的连续访问', dlDays: '天连续', dlBest: '最佳：{n} · 访问：{v}', dlNext: '再 {n} 天 → {rank}', dlMax: '最高军衔。致敬。', shTitle: '你的任务卡', shShare: '分享图片', shCopyOpen: '复制图片并打开 X', shDownload: '下载图片', shHint: '图片已复制——粘贴到帖子里（Ctrl+V）', shHintFail: '复制失败——请下载图片并附加到帖子', shClose: '关闭', shRocket: '火箭完成度：{pct}%', dlShare: '在 X 上分享进度', dlShareText: '我是 $QOGE 任务的{rank}：连续 {n} 天与火星保持通讯 🚀 火箭已完成 {pct}%，{h} 位持有者已登船。加入地面控制：', dlTomorrow: '明天再来，保持连续记录。', dlSinceH: '自你上次访问以来', dlFirst: '首次联络！明天再来，看看有什么变化。', dlHolders: '持有者', dlPrice: '燃料价格', dl24h: '过去 24 小时', dlVol: '成交量', ranks: ['学员', '机械师', '飞行员', '领航员', '指挥官', '上将', '火星传奇'], dlBadgeTop: '$QOGE · 地面控制', dlBadgeDays: '连续 {n} 天', dlD: '天',
+      rmTag: '下期预告', rmSub: '路线图 · 节目单', rmH1: '火星 → 地球：', rmH2: '节目单', aired: '已播出 ✓', onAir: '● 直播中', upNext: '即将播出', rmProg: '持有者：{n} / {goal}', dlTag: '● 通讯中', dlSub: '每日 · 地面控制', dlTitle: '航行日志', dlDay: '第 {n} 天', dlSign: '—— Q.，被困火星', dlPS: '附：地面控制已有 {h} 位持有者。燃料价格 24 小时：{chg}。', dlUp: '上涨 {n}%', dlDown: '下跌 {n}%', dlFlat: '持平', dlStreakH: '你的连续访问', dlDays: '天连续', dlBest: '最佳：{n} · 访问：{v}', dlNext: '再 {n} 天 → {rank}', dlMax: '最高军衔。致敬。', shTitle: '你的任务卡', shShare: '分享图片', shCopyOpen: '复制图片并打开 X', shDownload: '下载图片', shHint: '图片已复制——粘贴到帖子里（Ctrl+V）', shHintFail: '复制失败——请下载图片并附加到帖子', shClose: '关闭', shRocket: '火箭完成度：{pct}%', dlShare: '在 X 上分享进度', dlShareText: '我是 $QOGE 任务的{rank}：连续 {n} 天与火星保持通讯 🚀 火箭已完成 {pct}%，{h} 位持有者已登船。加入地面控制：', dlTomorrow: '明天再来，保持连续记录。', dlSinceH: '自你上次访问以来', dlFirst: '首次联络！明天再来，看看有什么变化。', dlHolders: '持有者', dlPrice: '燃料价格', dl24h: '过去 24 小时', dlVol: '成交量', ranks: ['学员', '机械师', '飞行员', '领航员', '指挥官', '上将', '火星传奇'], dlBadgeTop: '$QOGE · 地面控制', dlBadgeDays: '连续 {n} 天', dlD: '天', ocH: '链上船员', ocBtn: '链上验证', ocCheckIn: '在链上记录今天', ocBusy1: '等待钱包…', ocBusy2: '请在钱包中确认…', ocBusy3: '发送中…', ocDone: '✓ 第 {n} 天已上链', ocStreak: '链上连续：{n} 天', ocHolder: '$QOGE 持有者', ocNoHold: '无 $QOGE', ocHint: '需要少量 QUAI 燃料费', ocFail: '失败：{e}', ocTx: '查看交易', ocNoWallet: '需要 Quai 钱包',
       fqTag: '观众提问', fqH1: '你们问了。', fqH2: '我们汪了。',
       cmH1: '加入救援队。', cmH2: '带它回家。', bubble: '快点，我的培根吃完了',
       foot1: '© 2026 $QOGE · 一个没有内在价值、不承诺任何回报的 MEMECOIN。', foot2: '与 NASA 无关。只是一只狗。',
@@ -559,6 +570,21 @@ class Component extends DCLogic {
   progressRef = el => { this.progEl = el; if (el && this.io) this.io.observe(el); };
   componentDidMount() {
     document.documentElement.lang = this.state.lang;
+    // On-chain streak: silently restore a previously connected wallet
+    if (QOGE_STREAK.contract) {
+      let saved = null;
+      try { saved = JSON.parse(localStorage.getItem('qoge-chain') || 'null'); } catch (e) {}
+      if (saved && saved.addr) { this.setState({ chain: { ...this.state.chain, addr: saved.addr } }); this.qgLoad(saved.addr); }
+      // wallets usually inject before the page runs; re-check for late injectors
+      if (!this.qgProvider()) {
+        let tries = 0;
+        const iv = setInterval(() => {
+          const ok = !!this.qgProvider();
+          if (ok || ++tries > 30) clearInterval(iv);
+          if (ok) this.forceUpdate();
+        }, 1000);
+      }
+    }
     // Live token data (assets/metrics.js sets window.QOGE_METRICS; works on file:// too)
     const ms = document.createElement('script');
     ms.src = 'assets/metrics.js?t=' + Math.floor(Date.now() / 60000);
@@ -760,6 +786,60 @@ class Component extends DCLogic {
     } catch (e) {}
   }
   componentDidUpdate(pp, ps) { if (this.state.metrics && this.state.metrics !== ps.metrics) this.saveSeen(this.state.metrics); }
+  // ---- On-chain streak: Pelagus / Blip (EIP-1193) + QogeStreak.checkIn() ----
+  qgDay() { return Math.floor(Date.now() / 864e5) - QOGE_STREAK.genesisDay + 1; } // ship's-log day, UTC
+  qgProvider() { try { return window.pelagus || window.ethel || window.blip || null; } catch (e) { return null; } }
+  qgRpc(method, params) {
+    return fetch(QOGE_STREAK.rpc, { method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: method, params: params }) })
+      .then(r => r.json());
+  }
+  async qgConnect() {
+    const p = this.qgProvider();
+    if (!p) return;
+    this.setState({ chain: { ...this.state.chain, busy: 1, err: '' } });
+    try {
+      let addr;
+      try { addr = (await p.request({ method: 'quai_requestAccounts' }))[0]; }
+      catch (e) { addr = (await p.request({ method: 'eth_requestAccounts' }))[0]; }
+      addr = String(addr || '').toLowerCase();
+      try { localStorage.setItem('qoge-chain', JSON.stringify({ addr: addr })); } catch (e) {}
+      this.setState({ chain: { ...this.state.chain, addr: addr, busy: 0, err: '' } });
+      this.qgLoad(addr);
+    } catch (e) { this.setState({ chain: { ...this.state.chain, busy: 0, err: String(e && e.message || e).slice(0, 140) } }); }
+  }
+  async qgLoad(addr) {
+    const a = String(addr || this.state.chain.addr || '').toLowerCase();
+    if (!a || !QOGE_STREAK.contract) return;
+    try {
+      const j = await this.qgRpc('eth_call', [{ to: QOGE_STREAK.contract, data: QOGE_STREAK.sel.streakOf + '000000000000000000000000' + a.slice(2) }, 'latest']);
+      const h = String((j && j.result) || '').slice(2);
+      if (h.length >= 320) {
+        const w = i => parseInt(h.substr(i * 64, 64), 16); // lastDay, streak, best, checks, holder
+        this.setState({ chain: { ...this.state.chain, addr: a, lastDay: w(0), streak: w(1), best: w(2), holder: w(4) === 1, busy: 0 } });
+      }
+    } catch (e) { /* read-only RPC hiccup: keep what we have */ }
+  }
+  async qgCheckIn() {
+    const p = this.qgProvider(), c = this.state.chain;
+    if (!QOGE_STREAK.contract) return;
+    if (!p || !c.addr) return this.qgConnect();
+    this.setState({ chain: { ...c, busy: 2, err: '' } });
+    try {
+      const tx = await p.request({ method: 'eth_sendTransaction', params: [{ from: c.addr, to: QOGE_STREAK.contract, value: '0x0', data: QOGE_STREAK.sel.checkIn }] });
+      this.setState({ chain: { ...this.state.chain, tx: tx, busy: 3 } });
+      for (let k = 0; k < 30; k++) { // wait for the receipt, then refresh the streak
+        await new Promise(r => setTimeout(r, 3000));
+        let mined = false;
+        try { const j = await this.qgRpc('eth_getTransactionReceipt', [tx]); mined = !!(j && j.result && j.result.blockNumber); } catch (e) {}
+        if (mined) break;
+      }
+      this.qgLoad();
+      this.setState(st => ({ chain: { ...st.chain, busy: 0 } }));
+    } catch (e) {
+      this.setState({ chain: { ...this.state.chain, busy: 0, err: String(e && e.message || e).slice(0, 140) } });
+    }
+  }
   rankInfo(t, streak) {
     const AT = [1, 3, 7, 30, 100, 200, 365];
     let i = 0; AT.forEach((a, k) => { if (streak >= a) i = k; });
@@ -814,6 +894,24 @@ class Component extends DCLogic {
         row(t.dlPrice, dp == null ? '—' : fmtPct(dp), dp > 0 ? GREEN : dp < 0 ? RED : CREAM));
     }
     const dateStr = today.toLocaleDateString(t.loc, { day: '2-digit', month: '2-digit', year: 'numeric' });
+    // On-chain streak strip (hidden until QOGE_STREAK.contract is configured)
+    const ch = this.state.chain || {}, ocBtnStyle = { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: INK, color: CREAM, border: 0, padding: '10px 14px', fontFamily: "'Archivo',sans-serif", fontWeight: 900, fontSize: 13, textTransform: 'uppercase', cursor: 'pointer', opacity: ch.busy ? .6 : 1 };
+    const ocBox = !QOGE_STREAK.contract ? null : e('div', { style: { marginTop: 8, borderTop: '3px dashed ' + INK, paddingTop: 12, display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'stretch' } },
+      label(t.ocH, INK),
+      !ch.addr
+        ? (!this.qgProvider()
+          ? e('div', { style: { fontFamily: mono, fontSize: 12, lineHeight: 1.5 } }, t.ocNoWallet + ' — ', e('a', { href: 'https://pelaguswallet.io/', target: '_blank', rel: 'noopener noreferrer', style: { textDecoration: 'underline' } }, 'Pelagus'))
+          : e('button', { type: 'button', onClick: () => this.qgConnect(), style: ocBtnStyle }, t.ocBtn))
+        : e('div', { style: { display: 'flex', flexDirection: 'column', gap: 8 } },
+          ch.streak != null && e('div', { style: { display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' } },
+            e('span', { style: { fontWeight: 900, fontSize: 15, textTransform: 'uppercase' } }, t.ocStreak.replace('{n}', ch.streak)),
+            e('span', { style: { background: ch.holder ? INK : 'transparent', color: ch.holder ? YEL : '#6b635d', border: ch.holder ? 'none' : '2px solid #6b635d', padding: '2px 8px', fontWeight: 900, fontSize: 11, textTransform: 'uppercase', whiteSpace: 'nowrap' } }, ch.holder ? '★ ' + t.ocHolder : t.ocNoHold)),
+          ch.lastDay >= this.qgDay()
+            ? e('div', { style: { fontFamily: mono, fontSize: 12, fontWeight: 500 } }, t.ocDone.replace('{n}', ch.lastDay))
+            : e('button', { type: 'button', onClick: () => this.qgCheckIn(), disabled: !!ch.busy, style: ocBtnStyle }, ch.busy === 3 ? t.ocBusy3 : ch.busy === 2 ? t.ocBusy2 : ch.busy === 1 ? t.ocBusy1 : t.ocCheckIn),
+          ch.tx && e('a', { href: QOGE_STREAK.explorer + ch.tx, target: '_blank', rel: 'noopener noreferrer', style: { fontFamily: mono, fontSize: 12, textDecoration: 'underline' } }, t.ocTx + ' ↗'),
+          !ch.busy && !ch.tx && !ch.err && e('div', { style: { fontFamily: mono, fontSize: 11, color: '#6b635d' } }, t.ocHint),
+          ch.err && e('div', { style: { fontFamily: mono, fontSize: 11, color: RED, wordBreak: 'break-word' } }, t.ocFail.replace('{e}', ch.err))));
     return e('div', { style: { display: 'flex', flexDirection: 'column', gap: 32 } },
       e('div', { style: { display: 'flex', flexDirection: 'column', gap: 16 } },
         e('div', { style: { display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' } },
@@ -860,7 +958,7 @@ class Component extends DCLogic {
               style: { marginTop: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, background: INK, color: CREAM, padding: '14px 16px', fontFamily: "'Archivo',sans-serif", fontWeight: 900, fontSize: 15, textTransform: 'uppercase', textDecoration: 'none' } },
               t.dlShare + ' ↗'),
             e('button', { type: 'button', onClick: () => this.downloadCard(t, L, { dayN, entry, date: dateStr, rankIdx: rk.idx, rank: rk.name, streak, pct: this.livePct || 0 }),
-              style: { background: 'transparent', border: 0, padding: 0, color: INK, fontFamily: "'IBM Plex Mono',monospace", fontSize: 12, textDecoration: 'underline', cursor: 'pointer', alignSelf: 'center' } }, t.shDownload + ' ↓')))));
+              style: { background: 'transparent', border: 0, padding: 0, color: INK, fontFamily: "'IBM Plex Mono',monospace", fontSize: 12, textDecoration: 'underline', cursor: 'pointer', alignSelf: 'center' } }, t.shDownload + ' ↓'), ocBox))));
   }
   // ---- Share card: 1200×675 PNG with today's log entry + rank badge (canvas, no server) ----
   wrapLines(x, text, maxW, cjk) {
