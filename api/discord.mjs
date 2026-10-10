@@ -166,18 +166,15 @@ export async function POST(request) {
 const COMMANDS = [
   {
     name: 'whitelist', type: 1, contexts: [0],
-    description: 'Join the Mars Gum mint whitelist (QOGE Holders)',
-    description_localizations: { ru: 'Записаться в whitelist минта Mars Gum (для QOGE Holder)' },
+    description: 'Записаться в whitelist Mars Gum / Join the Mars Gum whitelist (QOGE Holder)',
     options: [{
       type: 3, name: 'address', required: true, min_length: 42, max_length: 42,
-      description: 'Your Pelagus wallet address (0x00…)',
-      description_localizations: { ru: 'Адрес твоего Pelagus-кошелька (0x00…)' },
+      description: 'Адрес Pelagus-кошелька / Your Pelagus wallet address (0x00…)',
     }],
   },
   {
     name: 'whitelist-me', type: 1, contexts: [0],
-    description: 'Show your whitelisted wallet',
-    description_localizations: { ru: 'Показать мой кошелёк в whitelist' },
+    description: 'Мой кошелёк в whitelist / Show my whitelisted wallet',
   },
   {
     name: 'wl-admin', type: 1, contexts: [0], default_member_permissions: MANAGE_GUILD,
