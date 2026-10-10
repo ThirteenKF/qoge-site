@@ -50,11 +50,11 @@ const T = {
     noRole: '🔒 Сначала получи роль **QOGE Holder**: купи $QOGE и подтверди кошелёк в <#1557426345305186334>.',
     bad: '❌ Это не похоже на Quai-адрес. Нужен адрес Pelagus-кошелька: `0x00…`, 42 символа.',
     closed: '⏸ Запись сейчас закрыта. Следи за <#1557418787693924415> — скоро следующая волна.',
-    same: (a, w) => `✅ Этот кошелёк уже в whitelist (Волна ${w}):\n\`${a}\``,
+    same: (w) => `✅ Этот кошелёк уже в whitelist (Волна ${w}).`,
     taken: '⚠️ Этот адрес уже записан другим участником. Один кошелёк — один аккаунт.',
-    added: (a, w) => `✅ Готово! Ты в whitelist Mars Gum, Волна ${w}:\n\`${a}\`\nДержи $QOGE на этом кошельке до минта.`,
-    replaced: (o, a) => `🔁 Кошелёк заменён.\nБыло: \`${o}\`\nСтало: \`${a}\``,
-    me: (a, w) => `🎟 Твой кошелёк в whitelist (Волна ${w}):\n\`${a}\``,
+    added: (w) => `✅ Готово! Ты в whitelist Mars Gum, Волна ${w}. Держи $QOGE на этом кошельке до минта.`,
+    replaced: () => '🔁 Кошелёк заменён (старый адрес удалён из списка).',
+    me: (w) => `🎟 Твой кошелёк в whitelist (Волна ${w}):`,
     meNone: 'Тебя пока нет в whitelist. Запишись: `/whitelist address: 0x00…`',
     oops: '⚠️ Что-то пошло не так, попробуй через минуту.',
   },
@@ -62,15 +62,26 @@ const T = {
     noRole: '🔒 Get the **QOGE Holder** role first: buy $QOGE and verify your wallet in <#1557426345305186334>.',
     bad: "❌ That doesn't look like a Quai address. Use your Pelagus wallet address: `0x00…`, 42 characters.",
     closed: '⏸ Registration is closed right now. Watch <#1557418787693924415> — the next wave is coming.',
-    same: (a, w) => `✅ This wallet is already on the whitelist (Wave ${w}):\n\`${a}\``,
+    same: (w) => `✅ This wallet is already on the whitelist (Wave ${w}).`,
     taken: '⚠️ This address is already registered by another member. One wallet = one account.',
-    added: (a, w) => `✅ Done! You're on the Mars Gum whitelist, Wave ${w}:\n\`${a}\`\nKeep $QOGE on this wallet until mint.`,
-    replaced: (o, a) => `🔁 Wallet replaced.\nOld: \`${o}\`\nNew: \`${a}\``,
-    me: (a, w) => `🎟 Your whitelisted wallet (Wave ${w}):\n\`${a}\``,
+    added: (w) => `✅ Done! You're on the Mars Gum whitelist, Wave ${w}. Keep $QOGE on this wallet until mint.`,
+    replaced: () => '🔁 Wallet replaced (the old address was removed).',
+    me: (w) => `🎟 Your whitelisted wallet (Wave ${w}):`,
     meNone: "You're not on the whitelist yet. Register: `/whitelist address: 0x00…`",
     oops: '⚠️ Something went wrong, try again in a minute.',
   },
 };
+
+const SEP = '\n\n';
+const addr = (a) => `\n\n🎟 \`${a}\``;
+function bilingual([first, second]) {
+  const out = {};
+  for (const k of Object.keys(first)) {
+    const x = first[k], y = second[k];
+    out[k] = typeof x === 'function' ? (...args) => x(...args) + SEP + y(...args) : x + SEP + y;
+  }
+  return out;
+}
 
 const reply = (content) => Response.json({ type: 4, data: { content, flags: EPHEMERAL, allowed_mentions: { parse: [] } } });
 
@@ -90,7 +101,7 @@ async function whitelist(i, t) {
   const wave = (await redis('GET', K.wave)) || '1';
 
   const mine = unpack(await redis('HGET', K.users, uid));
-  if (mine && mine.addr === raw) return reply(t.same(raw, mine.wave));
+  if (mine && mine.addr === raw) return reply(t.same(mine.wave) + addr(raw));
 
   // claim the address atomically; if someone else owns it, refuse
   const claimed = await redis('HSETNX', K.addrs, raw, uid);
@@ -99,15 +110,15 @@ async function whitelist(i, t) {
   if (mine) {
     await redis('HDEL', K.addrs, mine.addr);
     await redis('HSET', K.users, uid, pack(raw, mine.wave, name));
-    return reply(t.replaced(mine.addr, raw));
+    return reply(t.replaced() + `\n\n❌ ~~${mine.addr}~~\n✅ \`${raw}\``);
   }
   await redis('HSET', K.users, uid, pack(raw, wave, name));
-  return reply(t.added(raw, wave));
+  return reply(t.added(wave) + addr(raw));
 }
 
 async function me(i, t) {
   const mine = unpack(await redis('HGET', K.users, i.member.user.id));
-  return reply(mine ? t.me(mine.addr, mine.wave) : t.meNone);
+  return reply(mine ? t.me(mine.wave) + addr(mine.addr) : t.meNone);
 }
 
 async function admin(i) {
@@ -138,7 +149,8 @@ export async function POST(request) {
   if (i.type === 1) return Response.json({ type: 1 }); // PING
   if (i.type !== 2 || !i.member) return reply('Use this command in the QOGE server.');
 
-  const t = String(i.locale || '').startsWith('ru') ? T.ru : T.en;
+  // every reply in both languages; the member's own language goes first
+  const t = bilingual(String(i.locale || '').startsWith('ru') ? [T.ru, T.en] : [T.en, T.ru]);
   try {
     if (i.data.name === 'whitelist') return await whitelist(i, t);
     if (i.data.name === 'whitelist-me') return await me(i, t);
