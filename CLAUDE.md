@@ -52,6 +52,12 @@ Context for picking this project up in a new chat.
   Links: Discord + x.com/QOGEofficial. Update when the mint goes live on BAZARR Launch.
 - Roadmap phases auto-complete at 500/1000/2500/5000 holders; rocket tracker parts install at
   50/250/500/1000/2500/5000 holders (PART_AT in renderVals()).
+- Discord whitelist bot: `api/discord.mjs` (Node function). Discord Interactions Endpoint URL =
+  https://www.qoge.fun/api/discord. Slash commands /whitelist address, /whitelist-me, /wl-admin
+  (status/export/close/open-next; export = CSV attachment). One Discord account = one wallet;
+  QOGE Holder role required; Quai Cyprus-1 addresses only. Data in Upstash Redis (wl:users,
+  wl:addrs, wl:role, wl:wave, wl:open). /api/discord?action=setup re-registers commands and finds
+  the role (public, throttled). Secrets only in Vercel env vars, never in the repo.
 - Mobile layout: `@media (max-width:767px)` block in index.html helmet styles.
 
 ## Links

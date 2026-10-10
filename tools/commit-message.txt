@@ -1,0 +1,4 @@
+Add Discord whitelist bot (/whitelist slash command)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01MPEqxgPdw2kbhtrFwyPCAH
