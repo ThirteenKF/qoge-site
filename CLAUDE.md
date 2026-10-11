@@ -58,6 +58,10 @@ Context for picking this project up in a new chat.
   QOGE Holder role required; Quai Cyprus-1 addresses only. Data in Upstash Redis (wl:users,
   wl:addrs, wl:role, wl:wave, wl:open). /api/discord?action=setup re-registers commands and finds
   the role (public, throttled). Secrets only in Vercel env vars, never in the repo.
+- Giveaways (same bot): /giveaway start prize winners (Manage Server) posts an embed with a Join button
+  (custom_id gw:<id>); only QOGE Holder can enter (Redis set gw:<id>:users); /giveaway draw picks random
+  winners and re-checks the role via the bot token; /giveaway status. Channel #qoge-giveaway (holders read +
+  react only).
 - Mobile layout: `@media (max-width:767px)` block in index.html helmet styles.
 
 ## Links

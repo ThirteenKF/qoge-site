@@ -131,6 +131,80 @@ async function admin(i) {
     'CSV: `/wl-admin action: export`');
 }
 
+// ---------- giveaways ----------
+// /giveaway start prize winners -> public post with a Join button (custom_id gw:<id>)
+// button -> only QOGE Holder can enter (set gw:<id>:users)
+// /giveaway draw -> random winners among entrants who STILL have the role
+const GW = { cur: 'gw:current', prize: id => `gw:${id}:prize`, n: id => `gw:${id}:winners`, users: id => `gw:${id}:users`, ended: id => `gw:${id}:ended` };
+const YELLOW = 0xf5d33a;
+const pub = (data) => Response.json({ type: 4, data: { allowed_mentions: { parse: [] }, ...data } });
+
+async function giveaway(i) {
+  const sub = i.data.options?.[0] || {};
+  const opt = Object.fromEntries((sub.options || []).map(o => [o.name, o.value]));
+  const id = await redis('GET', GW.cur);
+
+  if (sub.name === 'start') {
+    const nid = String(Date.now());
+    const prize = String(opt.prize || '').slice(0, 200), winners = Math.max(1, Math.min(20, Number(opt.winners) || 1));
+    await redis('SET', GW.prize(nid), prize);
+    await redis('SET', GW.n(nid), String(winners));
+    await redis('SET', GW.cur, nid);
+    return pub({
+      embeds: [{
+        color: YELLOW, title: '🎁 QOGE Giveaway',
+        description: `**Приз / Prize:** ${prize}\n**Победителей / Winners:** ${winners}\n\n` +
+          '🎉 Нажми кнопку, чтобы участвовать!\n🎉 Press the button to join!\n\n🔒 Только для / Only for **QOGE Holder**',
+      }],
+      components: [{ type: 1, components: [{ type: 2, style: 1, label: 'Участвовать / Join', emoji: { name: '🎉' }, custom_id: 'gw:' + nid }] }],
+    });
+  }
+
+  if (!id) return reply('Нет активного розыгрыша / No active giveaway. `/giveaway start`');
+  const [prize, n, count, ended] = await Promise.all([redis('GET', GW.prize(id)), redis('GET', GW.n(id)), redis('SCARD', GW.users(id)), redis('GET', GW.ended(id))]);
+
+  if (sub.name === 'status') return reply(`🎁 **${prize}** · участников / entrants: **${count}** · winners: ${n} · ${ended ? 'завершён / ended' : 'идёт / running'}`);
+
+  if (sub.name === 'draw') {
+    if (ended) return reply('Этот розыгрыш уже завершён / Already drawn. Новый: `/giveaway start`');
+    const pool = (await redis('SMEMBERS', GW.users(id))) || [];
+    for (let k = pool.length - 1; k > 0; k--) { const j = crypto.randomInt(k + 1); [pool[k], pool[j]] = [pool[j], pool[k]]; }
+    const roleId = await redis('GET', K.role), winners = [];
+    for (const uid of pool) {
+      if (winners.length >= Number(n)) break;
+      if (await stillHolder(uid, roleId)) winners.push(uid);
+    }
+    await redis('SET', GW.ended(id), '1');
+    if (!winners.length) return pub({ content: `🎁 **${prize}** — нет участников с ролью QOGE Holder / no eligible entrants.` });
+    const list = winners.map(u => `<@${u}>`).join(' ');
+    return pub({
+      content: `🎉 ${list}`,
+      allowed_mentions: { users: winners },
+      embeds: [{ color: YELLOW, title: '🏆 QOGE Giveaway — победители / winners',
+        description: `**Приз / Prize:** ${prize}\n\n${list}\n\nУчастников / Entrants: ${count}\nПоздравляем! Напиши команде, чтобы забрать приз. / Congrats! DM the team to claim.` }],
+    });
+  }
+  return reply('Unknown');
+}
+
+// re-check the role at draw time (someone could have sold and lost it); if Discord can't be asked, keep them
+async function stillHolder(uid, roleId) {
+  try { const m = await discord(`/guilds/${GUILD_ID}/members/${uid}`); return m.roles.includes(roleId); }
+  catch (e) { return !String(e.message).includes('HTTP 404'); }
+}
+
+async function giveawayJoin(i) {
+  const id = i.data.custom_id.slice(3), uid = i.member.user.id;
+  const roleId = await redis('GET', K.role);
+  if (await redis('GET', GW.ended(id))) return reply('⏹ Розыгрыш уже завершён.\n\n⏹ This giveaway has ended.');
+  if (!roleId || !i.member.roles.includes(roleId)) return reply(T.ru.noRole + '\n\n' + T.en.noRole);
+  const added = await redis('SADD', GW.users(id), uid);
+  const count = await redis('SCARD', GW.users(id));
+  return reply(added
+    ? `✅ Ты участвуешь! Всего участников: **${count}**. Удачи 🍀\n\n✅ You're in! Entrants: **${count}**. Good luck 🍀`
+    : `👌 Ты уже участвуешь. Участников: **${count}**.\n\n👌 You're already in. Entrants: **${count}**.`);
+}
+
 // ---------- Discord signature check (Ed25519) ----------
 const SPKI_PREFIX = Buffer.from('302a300506032b6570032100', 'hex');
 function verify(body, sig, ts) {
@@ -147,7 +221,11 @@ export async function POST(request) {
 
   const i = JSON.parse(body);
   if (i.type === 1) return Response.json({ type: 1 }); // PING
-  if (i.type !== 2 || !i.member) return reply('Use this command in the QOGE server.');
+  if (!i.member) return reply('Use this in the QOGE server.');
+  if (i.type === 3 && String(i.data?.custom_id || '').startsWith('gw:')) {
+    try { return await giveawayJoin(i); } catch (e) { console.error(e); return reply('⚠️ Ошибка, попробуй ещё раз / Error, try again'); }
+  }
+  if (i.type !== 2) return reply('Unknown interaction');
 
   // every reply in both languages; the member's own language goes first
   const t = bilingual(String(i.locale || '').startsWith('ru') ? [T.ru, T.en] : [T.en, T.ru]);
@@ -155,6 +233,7 @@ export async function POST(request) {
     if (i.data.name === 'whitelist') return await whitelist(i, t);
     if (i.data.name === 'whitelist-me') return await me(i, t);
     if (i.data.name === 'wl-admin') return await admin(i);
+    if (i.data.name === 'giveaway') return await giveaway(i);
     return reply('Unknown command');
   } catch (e) {
     console.error(e);
@@ -183,6 +262,18 @@ const COMMANDS = [
       type: 3, name: 'action', required: true, description: 'What to do',
       choices: [{ name: 'status', value: 'status' }, { name: 'export CSV', value: 'export' }, { name: 'close registration', value: 'close' }, { name: 'open next wave', value: 'open-next' }],
     }],
+  },
+  {
+    name: 'giveaway', type: 1, contexts: [0], default_member_permissions: MANAGE_GUILD,
+    description: 'Розыгрыш для QOGE Holder / Giveaway for QOGE Holders',
+    options: [
+      { type: 1, name: 'start', description: 'Начать розыгрыш с кнопкой / Start a giveaway with a Join button', options: [
+        { type: 3, name: 'prize', required: true, max_length: 200, description: 'Что разыгрываем / Prize' },
+        { type: 4, name: 'winners', required: false, min_value: 1, max_value: 20, description: 'Сколько победителей (1 по умолчанию) / Number of winners' },
+      ] },
+      { type: 1, name: 'draw', description: 'Выбрать победителей / Pick the winners' },
+      { type: 1, name: 'status', description: 'Сколько участников / Entrants count' },
+    ],
   },
 ];
 
