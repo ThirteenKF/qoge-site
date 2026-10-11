@@ -156,7 +156,10 @@ async function giveaway(i) {
         description: `**Приз / Prize:** ${prize}\n**Победителей / Winners:** ${winners}\n\n` +
           '🎉 Нажми кнопку, чтобы участвовать!\n🎉 Press the button to join!\n\n🔒 Только для / Only for **QOGE Holder**',
       }],
-      components: [{ type: 1, components: [{ type: 2, style: 1, label: 'Участвовать / Join', emoji: { name: '🎉' }, custom_id: 'gw:' + nid }] }],
+      components: [{ type: 1, components: [
+        { type: 2, style: 1, label: 'Участвовать / Join', emoji: { name: '🎉' }, custom_id: 'gw:' + nid },
+        { type: 2, style: 2, label: 'Выбрать победителя (админ)', emoji: { name: '🏆' }, custom_id: 'gwdraw:' + nid },
+      ] }],
     });
   }
 
@@ -165,7 +168,13 @@ async function giveaway(i) {
 
   if (sub.name === 'status') return reply(`🎁 **${prize}** · участников / entrants: **${count}** · winners: ${n} · ${ended ? 'завершён / ended' : 'идёт / running'}`);
 
-  if (sub.name === 'draw') {
+  if (sub.name === 'draw') return await drawGiveaway(id);
+  return reply('Unknown');
+}
+
+async function drawGiveaway(id) {
+  const [prize, n, count, ended] = await Promise.all([redis('GET', GW.prize(id)), redis('GET', GW.n(id)), redis('SCARD', GW.users(id)), redis('GET', GW.ended(id))]);
+  if (!prize) return reply('Розыгрыш не найден / Giveaway not found');
     if (ended) return reply('Этот розыгрыш уже завершён / Already drawn. Новый: `/giveaway start`');
     const pool = (await redis('SMEMBERS', GW.users(id))) || [];
     for (let k = pool.length - 1; k > 0; k--) { const j = crypto.randomInt(k + 1); [pool[k], pool[j]] = [pool[j], pool[k]]; }
@@ -184,8 +193,6 @@ async function giveaway(i) {
         description: `**Приз / Prize:** ${prize}\n\n${list}\n\nУчастников / Entrants: ${count}\nПоздравляем! Напиши команде, чтобы забрать приз. / Congrats! DM the team to claim.` }],
     });
   }
-  return reply('Unknown');
-}
 
 // re-check the role at draw time (someone could have sold and lost it); if Discord can't be asked, keep them
 async function stillHolder(uid, roleId) {
@@ -222,6 +229,13 @@ export async function POST(request) {
   const i = JSON.parse(body);
   if (i.type === 1) return Response.json({ type: 1 }); // PING
   if (!i.member) return reply('Use this in the QOGE server.');
+  if (i.type === 3 && String(i.data?.custom_id || '').startsWith('gwdraw:')) {
+    try {
+      const perms = BigInt(i.member.permissions || '0');
+      if (!(perms & 0x20n) && !(perms & 0x8n)) return reply('🔒 Только для админов.\n\n🔒 Admins only.');
+      return await drawGiveaway(i.data.custom_id.slice(7));
+    } catch (e) { console.error(e); return reply('⚠️ Ошибка, попробуй ещё раз / Error, try again'); }
+  }
   if (i.type === 3 && String(i.data?.custom_id || '').startsWith('gw:')) {
     try { return await giveawayJoin(i); } catch (e) { console.error(e); return reply('⚠️ Ошибка, попробуй ещё раз / Error, try again'); }
   }
