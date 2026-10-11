@@ -147,7 +147,6 @@ function card(id, prize, n, winners) {
     embeds: [{ color: ended ? 0x5b5b66 : YELLOW, title: ended ? '🎁 QOGE Giveaway — завершён / ended' : '🎁 QOGE Giveaway', description: body }],
     components: [{ type: 1, components: [
       { type: 2, style: ended ? 2 : 1, label: ended ? 'Завершён / Ended' : 'Участвовать / Join', emoji: { name: '🎉' }, custom_id: 'gw:' + id, disabled: ended },
-      { type: 2, style: 2, label: 'Выбрать победителя (админ)', emoji: { name: '🏆' }, custom_id: 'gwdraw:' + id, disabled: ended },
     ] }],
   };
 }
@@ -226,6 +225,24 @@ async function openTicket(channelId, uid, prize) {
   } catch (e) { console.error('openTicket', e.message); return null; }
 }
 
+const CMD_DRAW = 'Выбрать победителя', CMD_CLOSE = 'Закрыть тикет';
+
+async function drawFromCard(i) {
+  const msg = i.data.resolved?.messages?.[i.data.target_id];
+  const btn = (msg?.components || []).flatMap(r => r.components || []).find(c => String(c.custom_id || '').startsWith('gw:'));
+  if (!btn) return reply('Нажми правой кнопкой на карточку розыгрыша 🎁 QOGE Giveaway.\n\nRight-click the 🎁 QOGE Giveaway card.');
+  const id = btn.custom_id.slice(3);
+  await redis('SET', GW.msg(id), `${i.channel_id}/${msg.id}`);
+  return await drawGiveaway(id, i.channel_id);
+}
+
+async function closeTicket(i) {
+  const type = i.channel?.type;
+  if (type !== 11 && type !== 12) return reply('Это работает только внутри тикета 🎟.\n\nUse this inside a 🎟 ticket.');
+  await discord(`/channels/${i.channel_id}`, { method: 'PATCH', body: JSON.stringify({ archived: true, locked: true }) });
+  return reply('🔒 Тикет закрыт / Ticket closed.');
+}
+
 // grey out the card's buttons (needs the bot to see the channel); never blocks the announcement
 async function closeCard(id, prize, n, winners) {
   try {
@@ -286,6 +303,14 @@ export async function POST(request) {
   }
   if (i.type !== 2) return reply('Unknown interaction');
 
+  // right-click (message) commands, visible to admins only
+  if (i.data.type === 3) {
+    try {
+      if (i.data.name === CMD_DRAW) return await drawFromCard(i);
+      if (i.data.name === CMD_CLOSE) return await closeTicket(i);
+    } catch (e) { console.error(e); return reply('⚠️ Ошибка, попробуй ещё раз / Error, try again'); }
+  }
+
   // every reply in both languages; the member's own language goes first
   const t = bilingual(String(i.locale || '').startsWith('ru') ? [T.ru, T.en] : [T.en, T.ru]);
   try {
@@ -334,6 +359,8 @@ const COMMANDS = [
       { type: 1, name: 'status', description: 'Сколько участников / Entrants count' },
     ],
   },
+  { name: CMD_DRAW, type: 3, contexts: [0], default_member_permissions: MANAGE_GUILD },
+  { name: CMD_CLOSE, type: 3, contexts: [0], default_member_permissions: MANAGE_GUILD },
 ];
 
 async function discord(path, init = {}) {
