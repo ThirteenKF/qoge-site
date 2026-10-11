@@ -172,11 +172,11 @@ async function giveaway(i) {
 
   if (sub.name === 'status') return reply(`🎁 **${prize}** · участников / entrants: **${count}** · winners: ${n} · ${ended ? 'завершён / ended' : 'идёт / running'}`);
 
-  if (sub.name === 'draw') return await drawGiveaway(id, i.channel_id);
+  if (sub.name === 'draw') return await drawGiveaway(id, i.channel_id, i.member.user.id);
   return reply('Unknown');
 }
 
-async function drawGiveaway(id, fallbackChannel) {
+async function drawGiveaway(id, fallbackChannel, adminId) {
   const [prize, n, count, ended] = await Promise.all([redis('GET', GW.prize(id)), redis('GET', GW.n(id)), redis('SCARD', GW.users(id)), redis('GET', GW.ended(id))]);
   if (!prize) return reply('Розыгрыш не найден / Giveaway not found');
     if (ended) return reply('Этот розыгрыш уже завершён / Already drawn. Новый: `/giveaway start`');
@@ -191,7 +191,7 @@ async function drawGiveaway(id, fallbackChannel) {
     await closeCard(id, prize, n, winners);
     const where = (await redis('GET', GW.msg(id))) || '';
     const ch = where.split('/')[0] || fallbackChannel;
-    const tickets = await Promise.all(winners.map(u => openTicket(ch, u, prize)));
+    const tickets = await Promise.all(winners.map(u => openTicket(ch, u, prize, adminId)));
     if (!winners.length) return pub({ content: `🎁 **${prize}** — нет участников с ролью QOGE Holder / no eligible entrants.` });
     const list = winners.map(u => `<@${u}>`).join(' ');
     return pub({
@@ -206,13 +206,15 @@ async function drawGiveaway(id, fallbackChannel) {
   }
 
 // private ticket thread for a winner: only the winner + admins see it. Returns the thread id or null.
-async function openTicket(channelId, uid, prize) {
+async function openTicket(channelId, uid, prize, adminId) {
   try {
     let name = uid;
     try { const m = await discord(`/guilds/${GUILD_ID}/members/${uid}`); name = m.nick || m.user.global_name || m.user.username; } catch {}
     const th = await discord(`/channels/${channelId}/threads`, { method: 'POST', body: JSON.stringify({
       name: `🎟 ${name} — ${prize}`.slice(0, 100), type: 12, invitable: false, auto_archive_duration: 10080 }) });
     await discord(`/channels/${th.id}/thread-members/${uid}`, { method: 'PUT' });
+    // the admin who drew joins too, so the ticket shows up in their channel list and they get notified
+    if (adminId && adminId !== uid) { try { await discord(`/channels/${th.id}/thread-members/${adminId}`, { method: 'PUT' }); } catch {} }
     await discord(`/channels/${th.id}/messages`, { method: 'POST', body: JSON.stringify({
       content: `🎉 <@${uid}>, поздравляем! Ты выиграл: **${prize}**\n` +
         'Напиши сюда!\n' +
@@ -233,7 +235,7 @@ async function drawFromCard(i) {
   if (!btn) return reply('Нажми правой кнопкой на карточку розыгрыша 🎁 QOGE Giveaway.\n\nRight-click the 🎁 QOGE Giveaway card.');
   const id = btn.custom_id.slice(3);
   await redis('SET', GW.msg(id), `${i.channel_id}/${msg.id}`);
-  return await drawGiveaway(id, i.channel_id);
+  return await drawGiveaway(id, i.channel_id, i.member.user.id);
 }
 
 async function closeTicket(i) {
@@ -295,7 +297,7 @@ export async function POST(request) {
       if (!(perms & 0x20n) && !(perms & 0x8n)) return reply('🔒 Только для админов.\n\n🔒 Admins only.');
       const gid = i.data.custom_id.slice(7);
       if (i.message?.id) await redis('SET', GW.msg(gid), `${i.channel_id}/${i.message.id}`);
-      return await drawGiveaway(gid, i.channel_id);
+      return await drawGiveaway(gid, i.channel_id, i.member.user.id);
     } catch (e) { console.error(e); return reply('⚠️ Ошибка, попробуй ещё раз / Error, try again'); }
   }
   if (i.type === 3 && String(i.data?.custom_id || '').startsWith('gw:')) {

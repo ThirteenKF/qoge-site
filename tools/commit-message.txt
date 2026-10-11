@@ -1,4 +1,4 @@
-Giveaway: winner tickets, admin-only right-click draw and close
+Giveaway tickets: add the drawing admin to the thread
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01MPEqxgPdw2kbhtrFwyPCAH
