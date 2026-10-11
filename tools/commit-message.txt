@@ -1,4 +1,4 @@
-Giveaway: admin-only draw button
+Giveaway: private ticket thread for each winner
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01MPEqxgPdw2kbhtrFwyPCAH

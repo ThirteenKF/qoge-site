@@ -135,7 +135,22 @@ async function admin(i) {
 // /giveaway start prize winners -> public post with a Join button (custom_id gw:<id>)
 // button -> only QOGE Holder can enter (set gw:<id>:users)
 // /giveaway draw -> random winners among entrants who STILL have the role
-const GW = { cur: 'gw:current', prize: id => `gw:${id}:prize`, n: id => `gw:${id}:winners`, users: id => `gw:${id}:users`, ended: id => `gw:${id}:ended` };
+const GW = { cur: 'gw:current', prize: id => `gw:${id}:prize`, n: id => `gw:${id}:winners`, users: id => `gw:${id}:users`, ended: id => `gw:${id}:ended`, msg: id => `gw:${id}:msg` };
+
+// the giveaway card; when ended, both buttons are greyed out and the winners are listed
+function card(id, prize, n, winners) {
+  const ended = Array.isArray(winners);
+  const body = ended
+    ? `**Приз / Prize:** ${prize}\n\n🏆 **Победители / Winners:** ${winners.length ? winners.map(u => `<@${u}>`).join(' ') : '—'}\n\n⏹ Розыгрыш завершён / Giveaway ended`
+    : `**Приз / Prize:** ${prize}\n**Победителей / Winners:** ${n}\n\n🎉 Нажми кнопку, чтобы участвовать!\n🎉 Press the button to join!\n\n🔒 Только для / Only for **QOGE Holder**`;
+  return {
+    embeds: [{ color: ended ? 0x5b5b66 : YELLOW, title: ended ? '🎁 QOGE Giveaway — завершён / ended' : '🎁 QOGE Giveaway', description: body }],
+    components: [{ type: 1, components: [
+      { type: 2, style: ended ? 2 : 1, label: ended ? 'Завершён / Ended' : 'Участвовать / Join', emoji: { name: '🎉' }, custom_id: 'gw:' + id, disabled: ended },
+      { type: 2, style: 2, label: 'Выбрать победителя (админ)', emoji: { name: '🏆' }, custom_id: 'gwdraw:' + id, disabled: ended },
+    ] }],
+  };
+}
 const YELLOW = 0xf5d33a;
 const pub = (data) => Response.json({ type: 4, data: { allowed_mentions: { parse: [] }, ...data } });
 
@@ -150,17 +165,7 @@ async function giveaway(i) {
     await redis('SET', GW.prize(nid), prize);
     await redis('SET', GW.n(nid), String(winners));
     await redis('SET', GW.cur, nid);
-    return pub({
-      embeds: [{
-        color: YELLOW, title: '🎁 QOGE Giveaway',
-        description: `**Приз / Prize:** ${prize}\n**Победителей / Winners:** ${winners}\n\n` +
-          '🎉 Нажми кнопку, чтобы участвовать!\n🎉 Press the button to join!\n\n🔒 Только для / Only for **QOGE Holder**',
-      }],
-      components: [{ type: 1, components: [
-        { type: 2, style: 1, label: 'Участвовать / Join', emoji: { name: '🎉' }, custom_id: 'gw:' + nid },
-        { type: 2, style: 2, label: 'Выбрать победителя (админ)', emoji: { name: '🏆' }, custom_id: 'gwdraw:' + nid },
-      ] }],
-    });
+    return pub(card(nid, prize, winners));
   }
 
   if (!id) return reply('Нет активного розыгрыша / No active giveaway. `/giveaway start`');
@@ -168,11 +173,11 @@ async function giveaway(i) {
 
   if (sub.name === 'status') return reply(`🎁 **${prize}** · участников / entrants: **${count}** · winners: ${n} · ${ended ? 'завершён / ended' : 'идёт / running'}`);
 
-  if (sub.name === 'draw') return await drawGiveaway(id);
+  if (sub.name === 'draw') return await drawGiveaway(id, i.channel_id);
   return reply('Unknown');
 }
 
-async function drawGiveaway(id) {
+async function drawGiveaway(id, fallbackChannel) {
   const [prize, n, count, ended] = await Promise.all([redis('GET', GW.prize(id)), redis('GET', GW.n(id)), redis('SCARD', GW.users(id)), redis('GET', GW.ended(id))]);
   if (!prize) return reply('Розыгрыш не найден / Giveaway not found');
     if (ended) return reply('Этот розыгрыш уже завершён / Already drawn. Новый: `/giveaway start`');
@@ -184,15 +189,52 @@ async function drawGiveaway(id) {
       if (await stillHolder(uid, roleId)) winners.push(uid);
     }
     await redis('SET', GW.ended(id), '1');
+    await closeCard(id, prize, n, winners);
+    const where = (await redis('GET', GW.msg(id))) || '';
+    const ch = where.split('/')[0] || fallbackChannel;
+    const tickets = await Promise.all(winners.map(u => openTicket(ch, u, prize)));
     if (!winners.length) return pub({ content: `🎁 **${prize}** — нет участников с ролью QOGE Holder / no eligible entrants.` });
     const list = winners.map(u => `<@${u}>`).join(' ');
     return pub({
       content: `🎉 ${list}`,
       allowed_mentions: { users: winners },
       embeds: [{ color: YELLOW, title: '🏆 QOGE Giveaway — победители / winners',
-        description: `**Приз / Prize:** ${prize}\n\n${list}\n\nУчастников / Entrants: ${count}\nПоздравляем! Напиши команде, чтобы забрать приз. / Congrats! DM the team to claim.` }],
+        description: `**Приз / Prize:** ${prize}\n\n${list}\n\nУчастников / Entrants: ${count}\n\n` +
+          (tickets.some(Boolean)
+            ? `🎟 Победитель, напиши в свой тикет / Winner, write in your ticket:\n${tickets.map((t, k) => t ? `<@${winners[k]}> → <#${t}>` : `<@${winners[k]}> → напиши команде / DM the team`).join('\n')}`
+            : 'Поздравляем! Напиши команде, чтобы забрать приз. / Congrats! DM the team to claim.') }],
     });
   }
+
+// private ticket thread for a winner: only the winner + admins see it. Returns the thread id or null.
+async function openTicket(channelId, uid, prize) {
+  try {
+    let name = uid;
+    try { const m = await discord(`/guilds/${GUILD_ID}/members/${uid}`); name = m.nick || m.user.global_name || m.user.username; } catch {}
+    const th = await discord(`/channels/${channelId}/threads`, { method: 'POST', body: JSON.stringify({
+      name: `🎟 ${name} — ${prize}`.slice(0, 100), type: 12, invitable: false, auto_archive_duration: 10080 }) });
+    await discord(`/channels/${th.id}/thread-members/${uid}`, { method: 'PUT' });
+    await discord(`/channels/${th.id}/messages`, { method: 'POST', body: JSON.stringify({
+      content: `🎉 <@${uid}>, поздравляем! Ты выиграл: **${prize}**\n` +
+        'Напиши сюда!\n' +
+        '🔒 Этот тикет видишь только ты и админы. Никогда не присылай seed-фразу или приватный ключ!\n\n' +
+        `🎉 <@${uid}>, congrats! You won: **${prize}**\n` +
+        'Write here!\n' +
+        '🔒 Only you and the admins can see this ticket. Never share your seed phrase or private key!',
+      allowed_mentions: { users: [uid] } }) });
+    return th.id;
+  } catch (e) { console.error('openTicket', e.message); return null; }
+}
+
+// grey out the card's buttons (needs the bot to see the channel); never blocks the announcement
+async function closeCard(id, prize, n, winners) {
+  try {
+    const where = await redis('GET', GW.msg(id));
+    if (!where) return;
+    const [ch, msg] = where.split('/');
+    await discord(`/channels/${ch}/messages/${msg}`, { method: 'PATCH', body: JSON.stringify(card(id, prize, n, winners)) });
+  } catch (e) { console.error('closeCard', e.message); }
+}
 
 // re-check the role at draw time (someone could have sold and lost it); if Discord can't be asked, keep them
 async function stillHolder(uid, roleId) {
@@ -202,6 +244,7 @@ async function stillHolder(uid, roleId) {
 
 async function giveawayJoin(i) {
   const id = i.data.custom_id.slice(3), uid = i.member.user.id;
+  if (i.message?.id) await redis('SET', GW.msg(id), `${i.channel_id}/${i.message.id}`);
   const roleId = await redis('GET', K.role);
   if (await redis('GET', GW.ended(id))) return reply('⏹ Розыгрыш уже завершён.\n\n⏹ This giveaway has ended.');
   if (!roleId || !i.member.roles.includes(roleId)) return reply(T.ru.noRole + '\n\n' + T.en.noRole);
@@ -233,7 +276,9 @@ export async function POST(request) {
     try {
       const perms = BigInt(i.member.permissions || '0');
       if (!(perms & 0x20n) && !(perms & 0x8n)) return reply('🔒 Только для админов.\n\n🔒 Admins only.');
-      return await drawGiveaway(i.data.custom_id.slice(7));
+      const gid = i.data.custom_id.slice(7);
+      if (i.message?.id) await redis('SET', GW.msg(gid), `${i.channel_id}/${i.message.id}`);
+      return await drawGiveaway(gid, i.channel_id);
     } catch (e) { console.error(e); return reply('⚠️ Ошибка, попробуй ещё раз / Error, try again'); }
   }
   if (i.type === 3 && String(i.data?.custom_id || '').startsWith('gw:')) {
@@ -295,7 +340,7 @@ async function discord(path, init = {}) {
   const res = await fetch(API + path, { ...init, headers: { authorization: 'Bot ' + env.DISCORD_BOT_TOKEN, 'content-type': 'application/json' } });
   const text = await res.text();
   if (!res.ok) throw new Error(`${path} -> HTTP ${res.status}: ${text}`);
-  return JSON.parse(text);
+  return text ? JSON.parse(text) : {};
 }
 
 async function setup() {
