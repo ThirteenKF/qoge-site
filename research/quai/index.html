@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QUAI tokenomics, explained simply · QNN Research</title>
+<meta name="description" content="Why QUAI costs what it costs: issuance vs burns, SOAP buybacks, the break-even price, demand, risks and scenarios. 22 slides, EN + RU. Not financial advice.">
+<meta name="theme-color" content="#141110">
+<link rel="icon" href="../../assets/logo.jpg" type="image/jpeg">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="$QOGE · QNN Research">
+<meta property="og:title" content="QUAI tokenomics, explained simply · QNN Research">
+<meta property="og:description" content="Why QUAI costs what it costs: issuance vs burns, SOAP buybacks, the break-even price, demand, risks and scenarios. 22 slides, EN + RU. Not financial advice.">
+<meta property="og:url" content="https://www.qoge.fun/research/quai/">
+<meta property="og:image" content="https://www.qoge.fun/research/quai/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@QOGEofficial">
+<meta name="twitter:title" content="QUAI tokenomics, explained simply · QNN Research">
+<meta name="twitter:description" content="Why QUAI costs what it costs: issuance vs burns, SOAP buybacks, the break-even price, demand, risks and scenarios. 22 slides, EN + RU. Not financial advice.">
+<meta name="twitter:image" content="https://www.qoge.fun/research/quai/og.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#141110;--paper:#f4f0ec;--red:oklch(0.62 0.21 25);--yel:oklch(0.88 0.17 95);--mute:#a59e97;--line:#2a2523}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--paper);font-family:'Archivo',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
+header.q{position:sticky;top:0;z-index:20;display:flex;align-items:stretch;background:var(--paper);color:var(--ink);border-bottom:4px solid var(--ink);font-weight:900}
+header.q .logo{display:flex;align-items:center;gap:10px;background:var(--red);color:var(--paper);padding:10px 18px;font-stretch:125%;font-size:20px;white-space:nowrap}
+header.q .logo img{width:32px;height:32px;border-radius:50%;border:2px solid var(--paper);object-fit:cover}
+header.q .crumb{flex:1;min-width:0;display:flex;align-items:center;gap:10px;padding:0 16px;font-size:14px;text-transform:uppercase;white-space:nowrap;overflow:hidden}
+header.q .crumb a:hover{color:var(--red)}
+header.q .crumb .sep{color:#8a827b}
+.lang{display:flex;align-items:stretch;border-left:4px solid var(--ink)}
+.lang button{font:inherit;font-weight:900;font-size:14px;border:0;background:transparent;color:var(--ink);padding:0 14px;cursor:pointer}
+.lang button[aria-pressed=true]{background:var(--ink);color:var(--yel)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+.tag{display:inline-block;background:var(--red);color:var(--paper);padding:6px 14px;font-weight:900;font-size:14px;text-transform:uppercase;transform:skewX(-8deg)}
+h1{margin:18px 0 0;font-weight:900;font-stretch:115%;font-size:clamp(36px,6vw,76px);line-height:.95;letter-spacing:-.01em;text-transform:uppercase;text-wrap:balance}
+h1 span{color:var(--yel)}
+.lead{max-width:720px;margin:18px 0 0;font-size:clamp(16px,2vw,19px);line-height:1.5;color:#cfc8c1;text-wrap:pretty}
+.meta{margin-top:16px;font-size:12px;letter-spacing:.12em;color:var(--mute);text-transform:uppercase}
+.btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 20px;font-weight:900;font-size:14px;text-transform:uppercase;border:3px solid var(--yel);background:var(--yel);color:var(--ink)}
+.btn:hover{background:transparent;color:var(--yel)}
+.btn.ghost{background:transparent;color:var(--paper);border-color:var(--paper)}
+.btn.ghost:hover{background:var(--paper);color:var(--ink)}
+.btn.red{background:var(--red);border-color:var(--red);color:var(--paper)}
+.btn.red:hover{background:transparent;color:var(--red)}
+footer.q{margin-top:64px;border-top:1px solid var(--line);padding:28px 16px 40px;font-size:11px;letter-spacing:.1em;color:#8a827b;text-transform:uppercase;line-height:1.7}
+footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+@media (max-width:640px){header.q .logo span.t{display:none} header.q .crumb{font-size:12px;padding:0 10px} .lang button{padding:0 10px}}
+
+.hero{background:radial-gradient(circle at 80% 30%,#3a1f1a 0%,var(--ink) 65%);border-bottom:4px solid var(--ink);padding:40px 0 44px}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin:28px 0 0}
+.toc a{border:2px solid var(--line);padding:8px 12px;font-size:13px;font-weight:700;color:#cfc8c1}
+.toc a:hover{border-color:var(--yel);color:var(--yel)}
+.slides{display:flex;flex-direction:column;gap:40px;margin-top:40px}
+.slide{scroll-margin-top:80px}
+.slide .bar{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-bottom:10px}
+.slide .no{white-space:nowrap}
+.slide a.zoom{display:block;cursor:zoom-in}
+.slide .no{font-size:12px;letter-spacing:.12em;color:var(--red);font-weight:500}
+.slide .sec{font-size:12px;letter-spacing:.12em;color:var(--mute);text-transform:uppercase}
+.slide img{display:block;width:100%;height:auto;aspect-ratio:16/9;background:#1d1a19;border:4px solid var(--paper);box-shadow:8px 8px 0 var(--red)}
+.slide details{margin-top:16px;border-left:4px solid var(--yel);padding:2px 0 2px 14px;color:#cfc8c1;font-size:15px;line-height:1.55}
+.slide summary{cursor:pointer;font-weight:800;color:var(--paper);font-size:14px;text-transform:uppercase;letter-spacing:.04em}
+.slide details p{margin:8px 0 0}
+.nfa{margin-top:48px;border:4px solid var(--red);padding:20px 22px;font-size:15px;line-height:1.55;color:#cfc8c1}
+.nfa b{color:var(--paper)}
+.cta{margin-top:28px;background:var(--yel);color:var(--ink);padding:28px 24px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+.cta h2{margin:0;font-weight:900;font-stretch:115%;font-size:clamp(22px,3vw,34px);text-transform:uppercase;line-height:1}
+.cta .btn{background:var(--ink);color:var(--yel);border-color:var(--ink)}
+.cta .btn:hover{background:transparent;color:var(--ink)}
+@media (max-width:640px){.slide img{border-width:3px;box-shadow:5px 5px 0 var(--red)} .hero{padding:28px 0 32px}}
+
+</style>
+</head>
+<body>
+<header class="q">
+  <a class="logo" href="../../"><img src="../../assets/logo.jpg" alt="$QOGE logo"><span class="t">QNN</span></a>
+  <nav class="crumb mono"><a href="../">Research</a><span class="sep">/</span><span>QUAI</span></nav>
+  <div class="lang" role="group" aria-label="Language"><button type="button" data-l="en">EN</button><button type="button" data-l="ru">RU</button></div>
+</header>
+
+<section class="hero"><div class="wrap">
+  <span class="tag" data-en="Research #01 · Quai Network" data-ru="Ресёрч #01 · Quai Network">Research #01 · Quai Network</span>
+  <h1><span style="color:inherit" data-en="QUAI tokenomics," data-ru="Токеномика QUAI">QUAI tokenomics,</span> <span data-en="explained simply" data-ru="простыми словами">explained simply</span></h1>
+  <p class="lead" data-en="Why QUAI trades where it does: how many coins are printed and burned, what the SOAP buyback really does, the price where issuance equals burning, who uses the network, the risks — and how it could play out from here." data-ru="Почему QUAI стоит столько, сколько стоит: сколько монет печатается и сжигается, что на самом деле делает выкуп SOAP, при какой цене выпуск равен сжиганию, кто пользуется сетью, какие риски — и как всё может развиваться дальше.">Why QUAI trades where it does: how many coins are printed and burned, what the SOAP buyback really does, the price where issuance equals burning, who uses the network, the risks — and how it could play out from here.</p>
+  <div class="meta mono" data-en="Oct 15, 2026 · 22 slides · prices as of Oct 15, 2026" data-ru="15.10.2026 · 22 слайда · цены на 15.10.2026">Oct 15, 2026 · 22 slides · prices as of Oct 15, 2026</div>
+  <div class="btns">
+    <a class="btn" id="pdf" href="QUAI-Tokenomics-EN.pdf" download><span  data-en="Download PDF" data-ru="Скачать PDF">Download PDF</span> ↓</a>
+    <a class="btn red" href="https://discord.gg/eHVA8rJ2J" target="_blank" rel="noopener"><span  data-en="Discuss in Discord" data-ru="Обсудить в Discord">Discuss in Discord</span> ↗</a>
+    <a class="btn ghost" href="https://x.com/QOGEofficial" target="_blank" rel="noopener">X / Twitter ↗</a>
+  </div>
+  <nav class="toc" id="toc" aria-label="Sections"></nav>
+</div></section>
+<main class="wrap">
+  <div class="slides" id="slides"></div>
+  <div class="nfa"><span  data-en="&lt;b&gt;Not financial advice.&lt;/b&gt; This is an independent community breakdown for education. Numbers come from public sources (qu.ai, DefiLlama, Quaiscan, exchanges) and my own estimates, marked on the slides. Crypto is volatile — do your own research." data-ru="&lt;b&gt;Не финансовый совет.&lt;/b&gt; Это независимый разбор сообщества для обучения. Цифры взяты из открытых источников (qu.ai, DefiLlama, Quaiscan, биржи) и собственных оценок — они помечены на слайдах. Крипта волатильна — проверяйте сами."><b>Not financial advice.</b> This is an independent community breakdown for education. Numbers come from public sources (qu.ai, DefiLlama, Quaiscan, exchanges) and my own estimates, marked on the slides. Crypto is volatile — do your own research.</span></div>
+  <div class="cta"><h2  data-en="Questions? Ask in the Discord" data-ru="Есть вопросы? Пиши в Discord">Questions? Ask in the Discord</h2><a class="btn" href="https://discord.gg/eHVA8rJ2J" target="_blank" rel="noopener"><span  data-en="Join the research channel" data-ru="Канал ресёрча">Join the research channel</span> ↗</a></div>
+</main>
+<footer class="q mono"><div class="wrap"><span>© 2026 $QOGE · QNN Research</span><span  data-en="Not financial advice · DYOR" data-ru="Не финансовый совет · DYOR">Not financial advice · DYOR</span></div></footer>
+<script>
+var DATA={"en": [{"id": "cover", "t": "QUAI, explained simply", "n": "A plain-language deck for users, no jargon. Every number was checked against public sources on October 15, 2026.", "s": "The key points in one minute"}, {"id": "summary", "t": "The key points", "n": "Four numbers to remember. The main point: the price is sitting almost exactly at the level where burning equals issuance.", "s": ""}, {"id": "eli5", "t": "Explain like I’m five: why QUAI is so cheap", "n": "The simple version of the whole deck. The machine is mining and unlocks. The helper is SOAP, which buys back and burns tokens. The shop window is the exchange order book.", "s": ""}, {"id": "updown", "t": "What could lift the price, and what could sink it", "n": "The key point: the tiny shop window works both ways. It lets QUAI jump on small demand and drop just as sharply on small sales.", "s": ""}, {"id": "tokens", "t": "Two coins, one network", "n": "QUAI is the main token this deck covers. QI is the payments coin, designed to hold a steady value.", "s": "How the tokens work and where inflation comes from"}, {"id": "conversion", "t": "QUAI ↔ QI swaps: what burns, what gets printed", "n": "Official wording: anyone can convert between QUAI and QI at the protocol-set rate by burning one to mint the other. The rate (kQuai) tracks mining difficulty; QI has no exchange price, so the total QI can’t be converted to QUAI exactly. For scale: if 1 QI ≈ $1, all QI ≈ $249K ≈ 29M QUAI, about one month of mining. One-way flow discounts are capped: the result is never below 10% of the original amount. Mining issuance is roughly 1 QI per day of 100 MH/s (Disruption Banking estimate).", "s": ""}, {"id": "flows", "t": "Think of a bathtub: tap and drain", "n": "A simple picture: the tap is new tokens, the drain is burned tokens. I derived mining volume from Quai’s official figures: SOAP burns over 300M a year, which is over 75% of new issuance.", "s": ""}, {"id": "singularity", "t": "1.67 billion future tokens cancelled", "n": "The Singularity Fork went live at prime block 1,530,500. The genesis baseline dropped from 3B to 1.33B. It is not a hard cap: mining keeps issuing new tokens.", "s": ""}, {"id": "polaris", "t": "Another 236.5M burned, from the founders and team", "n": "Polaris burns exactly 236,456,538 QUAI. Together with Singularity, that is 1.9B. The last large unlock, 12.6M, happens on October 30; after that it is about 3.7M a month.", "s": ""}, {"id": "soap-how", "t": "SOAP: other chains’ mining buys QUAI", "n": "SOAP stands for Subsidized Open-market Acquisition Protocol. It launched on December 17, 2025. Note: miners are paid in QUAI and some of them sell it, so SOAP is not the only force in the market.", "s": ""}, {"id": "soap-numbers", "t": "How much SOAP earns and burns", "n": "Since launch in December 2025, SOAP has earned about $5.9M, but revenue is falling: January $1.25M, March $0.82M, June $0.32M, September $0.25M. Revenue arrives in lumps every few days. Over the last week the pace was lower, about $231K a month, so I use a range of $230–280K a month from here on.", "s": ""}, {"id": "scenarios", "t": "What if…", "n": "The model matches Quai’s official figures: 18.2% without Polaris and 8.7% with it. The “last 30 days” row calculates how many tokens SOAP buys with $279K at $0.0087. A minus sign means the token count shrinks.", "s": "Supply scenarios and the break-even price"}, {"id": "breakeven", "t": "The price where issuance equals burning", "n": "Below break-even the token count shrinks; above it, it grows. But SOAP revenue itself depends on price: if QUAI gets cheaper, some miners leave and buybacks shrink. So break-even does not guarantee the price won’t fall below it.", "s": ""}, {"id": "market", "t": "The market: very little money in the order book", "n": "The order book is the list of buy and sell orders. On Gate, within 2% of the price, it is even thinner: about $370 to sell and $1,000 to buy. This is a snapshot; it changes every minute.", "s": "Market, myths and how the network could develop"}, {"id": "demand", "t": "Demand: is anyone using the network?", "n": "Transactions come from the Quaiscan explorer and cover the main network zone, so treat them as a lower bound. They include system operations, so this measures network activity, not number of people. TVL is how much money is locked in DeFi apps on Quai.", "s": ""}, {"id": "compare", "t": "QUAI next to other PoW networks", "n": "A comparison by size and liquidity. DefiLlama doesn’t track revenue for the other networks, so there is no direct revenue comparison. ~$3.3M a year is $279K over 30 days times 12; with revenue falling, that’s an optimistic estimate.", "s": ""}, {"id": "project-risks", "t": "Project risks", "n": "Red stripe: risks visible right now; yellow: risks that show up in a bad scenario. The largest addresses are unlabeled: they may be exchange wallets, team wallets or vesting contracts. The original report called the 126M address a team pool, but I found no official confirmation.", "s": ""}, {"id": "myths", "t": "Myths and facts", "n": "These claims show up in popular QUAI tokenomics write-ups. All of them disagree with official data as of October 15, 2026.", "s": ""}, {"id": "futures", "t": "How the network could develop", "n": "These are not forecasts but “if — then”. Burning affects supply, but price also depends on demand: new users, listings, overall market mood. Binance has not listed QUAI.", "s": ""}, {"id": "caps", "t": "Price at different market caps", "n": "People often ask whether QUAI can reach a dollar. For that, its market value would need to grow roughly 117 times — from about $10M to about $1.15B.", "s": ""}, {"id": "risks", "t": "What to watch", "n": "Six indicators you can check yourself to see how the picture is changing.", "s": "What to watch and the bottom line"}, {"id": "final", "t": "Bottom line", "n": "The main takeaway: QUAI’s tokenomics improved a lot, but price depends on demand too, not just on burning. Every number can be checked against the sources.", "s": ""}], "ru": [{"id": "cover", "t": "QUAI простыми словами", "n": "Презентация для пользователей: без сложных терминов. Все цифры проверены по открытым источникам на 15 октября 2026 года.", "s": "Главное за одну минуту"}, {"id": "summary", "t": "Коротко о главном", "n": "Четыре цифры, которые нужно запомнить. Главная мысль: цена сейчас почти на пороге, при котором сжигание токенов равно их выпуску.", "s": ""}, {"id": "eli5", "t": "Объяснение для пятилетнего: почему QUAI стоит так мало", "n": "Простая версия всей презентации. Машинка — это майнинг и разлоки. Помощник — протокол SOAP, который выкупает и сжигает токены. Витрина — биржевой стакан с заявками.", "s": ""}, {"id": "updown", "t": "Что может поднять цену, а что — опустить", "n": "Главное: маленькая витрина работает в обе стороны. Из-за неё QUAI может резко вырасти от небольшого спроса и так же резко упасть от небольших продаж.", "s": ""}, {"id": "tokens", "t": "Две монеты в одной сети", "n": "QUAI — основной токен, о котором вся презентация. QI — монета для платежей, её стоимость задумана стабильной.", "s": "Как устроены токены и откуда берётся инфляция"}, {"id": "conversion", "t": "Обмен QUAI ↔ QI: что сгорает, что печатается", "n": "Официально: «обменять QUAI и QI можно по курсу протокола, сжигая одну монету и выпуская другую». Курс (kQuai) подстраивается под сложность майнинга, биржевой цены у QI нет, поэтому пересчитать весь QI в QUAI точно нельзя. Для масштаба: если 1 QI ≈ $1, весь QI ≈ $249 тыс. ≈ 29 млн QUAI — примерно месяц майнинга. Скидки за поток в одну сторону ограничены: итог не меньше 10% от исходной суммы. Выпуск QI майнингом — примерно 1 QI за сутки работы 100 MH/s (оценка Disruption Banking).", "s": ""}, {"id": "flows", "t": "Как ванна: кран и слив", "n": "Простая метафора: кран — новые токены, слив — сожжённые. Объём майнинга я вывел из официальных цифр Quai: SOAP сжигает больше 300 млн в год, и это больше 75% новой эмиссии.", "s": ""}, {"id": "singularity", "t": "Отменили 1,67 млрд будущих токенов", "n": "Singularity Fork прошёл на блоке 1 530 500. Базовый объём генезиса снизился с 3 млрд до 1,33 млрд. Это не жёсткий лимит: майнинг продолжает выпускать новые токены.", "s": ""}, {"id": "polaris", "t": "Ещё минус 236,5 млн — от основателей и команды", "n": "Polaris сжёг ровно 236 456 538 QUAI. Вместе с Singularity — 1,9 млрд. Последний крупный разлок 12,6 млн пройдёт 30 октября, дальше около 3,7 млн в месяц.", "s": ""}, {"id": "soap-how", "t": "SOAP: чужой майнинг выкупает QUAI", "n": "SOAP расшифровывается как Subsidized Open-market Acquisition Protocol. Запущен 17 декабря 2025 года. Важно: майнеры получают оплату в QUAI и часть из них её продаёт, поэтому SOAP не единственная сила на рынке.", "s": ""}, {"id": "soap-numbers", "t": "Сколько SOAP зарабатывает и сжигает", "n": "С запуска в декабре 2025 SOAP заработал около $5,9 млн, но выручка падает: январь $1,25 млн, март $0,82 млн, июнь $0,32 млн, сентябрь $0,25 млн. Выручка приходит неравномерно: продажи идут пачками раз в несколько дней. За последнюю неделю темп ниже — около $231 тыс. в месяц. Поэтому дальше я считаю диапазон $230–280 тыс. в месяц.", "s": ""}, {"id": "scenarios", "t": "Что было бы, если…", "n": "Модель сходится с официальными цифрами Quai: 18,2% без Polaris и 8,7% с ним. Строка «по выручке за 30 дней» считает, сколько токенов SOAP купит на $279 тыс. при цене $0,0087. Минус означает, что токенов становится меньше.", "s": "Сценарии предложения и безынфляционная цена"}, {"id": "breakeven", "t": "При какой цене выпуск равен сжиганию", "n": "Ниже порога токенов становится меньше, выше — больше. Но выручка SOAP сама зависит от цены: если QUAI дешевеет, часть майнеров уходит, и выкупы сокращаются. Поэтому порог не гарантирует, что цена не упадёт ниже.", "s": ""}, {"id": "market", "t": "Рынок: в стакане очень мало денег", "n": "Стакан — это заявки на покупку и продажу. На Gate в пределах 2% от цены ещё меньше: около $370 на продажу и $1 000 на покупку. Это снимок одного момента, он меняется каждую минуту.", "s": "Рынок, мифы и варианты развития сети"}, {"id": "demand", "t": "Спрос: пользуются ли сетью", "n": "Транзакции считаются по обозревателю Quaiscan и показывают основную зону сети, поэтому это нижняя оценка. В транзакции входят и служебные операции, так что это показатель работы сети, а не число людей. TVL — сколько денег заблокировано в DeFi-приложениях на Quai.", "s": ""}, {"id": "compare", "t": "QUAI среди других PoW-сетей", "n": "Сравнение по размеру и ликвидности. Выручку других сетей DefiLlama не считает, поэтому прямого сравнения по выручке нет. ~$3,3 млн в год — это $279 тыс. за 30 дней, умноженные на 12; при падающей выручке это оптимистичная оценка.", "s": ""}, {"id": "project-risks", "t": "Риски проекта", "n": "Красная полоса — риски, которые видны прямо сейчас; жёлтая — риски, которые проявятся при плохом сценарии. Крупнейшие адреса не подписаны: среди них могут быть кошельки бирж, команды или контракты вестинга. В исходном отчёте адрес на 126 млн назывался пулом команды, но я не нашёл этому официального подтверждения.", "s": ""}, {"id": "myths", "t": "Мифы и факты", "n": "Эти утверждения встречаются в популярных разборах токеномики QUAI. Все они расходятся с официальными данными на 15 октября 2026 года.", "s": ""}, {"id": "futures", "t": "Как может развиваться сеть", "n": "Это не прогнозы, а «если — то». Сжигание влияет на предложение, но цена зависит и от спроса: новые пользователи, листинги, общее настроение рынка. Binance QUAI пока не листил.", "s": ""}, {"id": "caps", "t": "Цена при разной капитализации", "n": "Часто спрашивают, может ли QUAI стоить доллар. Для этого его рыночная стоимость должна вырасти примерно в 117 раз — с ~$10 млн до ~$1,15 млрд.", "s": ""}, {"id": "risks", "t": "За чем следить", "n": "Шесть показателей, по которым можно самому проверять, как меняется ситуация.", "s": "За чем следить и итог"}, {"id": "final", "t": "Итог", "n": "Главная мысль: токеномика QUAI заметно улучшилась, но цена зависит не только от сжигания, а и от спроса. Все цифры можно перепроверить по источникам.", "s": ""}]};
+var SEC={en:'Section',ru:'Раздел'}, NOTE={en:'Explanation',ru:'Пояснение'}, SL={en:'Slide',ru:'Слайд'};
+function esc(s){return s.replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+window.render=function(l){
+  var list=DATA[l], n=list.length, out='', toc='', cur='';
+  list.forEach(function(s,i){
+    var no=String(i+1).padStart(2,'0');
+    if(s.s){cur=s.s; toc+='<a href="#s-'+s.id+'">'+esc(s.s)+'</a>';}
+    out+='<article class="slide" id="s-'+s.id+'"><div class="bar"><span class="no mono">'+SL[l].toUpperCase()+' '+no+' / '+n+'</span><span class="sec mono">'+esc(cur)+'</span></div>'+
+      '<a class="zoom" href="'+l+'/'+no+'.webp" target="_blank" rel="noopener"><img src="'+l+'/'+no+'.webp" alt="'+esc(s.t)+'" width="1600" height="900" '+(i<2?'':'loading="lazy" ')+'decoding="async"></a>'+
+      (s.n?'<details'+(i<1?' open':'')+'><summary>'+NOTE[l]+'</summary><p>'+esc(s.n)+'</p></details>':'')+'</article>';
+  });
+  document.getElementById('slides').innerHTML=out;
+  document.getElementById('toc').innerHTML=toc;
+  var p=document.getElementById('pdf'); p.href='QUAI-Tokenomics-'+l.toUpperCase()+'.pdf';
+  document.title=(l==='ru'?'Токеномика QUAI простыми словами':'QUAI tokenomics, explained simply')+' · QNN Research';
+  if(location.hash){var t=document.querySelector(location.hash); if(t) t.scrollIntoView();}
+};
+
+function getLang(){
+  var p=new URLSearchParams(location.search).get('lang');
+  if(p==='ru'||p==='en') return p;
+  var s=null; try{s=localStorage.getItem('qoge-lang')}catch(e){}
+  if(s) return s==='ru'?'ru':'en';
+  return (navigator.language||'en').slice(0,2)==='ru'?'ru':'en';
+}
+function setLang(l,save){
+  if(save){try{localStorage.setItem('qoge-lang',l)}catch(e){}}
+  document.documentElement.lang=l;
+  document.querySelectorAll('.lang button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.l===l)});
+  document.querySelectorAll('[data-en]').forEach(function(el){el.innerHTML=el.getAttribute('data-'+l)});
+  if(window.render) window.render(l);
+}
+document.querySelectorAll('.lang button').forEach(function(b){b.onclick=function(){setLang(b.dataset.l,true)}});
+
+setLang(getLang(),false);
+</script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QNN Research · crypto project breakdowns by $QOGE</title>
+<meta name="description" content="Plain-language breakdowns of crypto projects from the $QOGE community: tokenomics, numbers, risks and scenarios. EN + RU. Not financial advice.">
+<meta name="theme-color" content="#141110">
+<link rel="icon" href="../assets/logo.jpg" type="image/jpeg">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="$QOGE · QNN Research">
+<meta property="og:title" content="QNN Research · crypto project breakdowns by $QOGE">
+<meta property="og:description" content="Plain-language breakdowns of crypto projects from the $QOGE community: tokenomics, numbers, risks and scenarios. EN + RU. Not financial advice.">
+<meta property="og:url" content="https://www.qoge.fun/research/">
+<meta property="og:image" content="https://www.qoge.fun/research/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@QOGEofficial">
+<meta name="twitter:title" content="QNN Research · crypto project breakdowns by $QOGE">
+<meta name="twitter:description" content="Plain-language breakdowns of crypto projects from the $QOGE community: tokenomics, numbers, risks and scenarios. EN + RU. Not financial advice.">
+<meta name="twitter:image" content="https://www.qoge.fun/research/og.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#141110;--paper:#f4f0ec;--red:oklch(0.62 0.21 25);--yel:oklch(0.88 0.17 95);--mute:#a59e97;--line:#2a2523}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--paper);font-family:'Archivo',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
+header.q{position:sticky;top:0;z-index:20;display:flex;align-items:stretch;background:var(--paper);color:var(--ink);border-bottom:4px solid var(--ink);font-weight:900}
+header.q .logo{display:flex;align-items:center;gap:10px;background:var(--red);color:var(--paper);padding:10px 18px;font-stretch:125%;font-size:20px;white-space:nowrap}
+header.q .logo img{width:32px;height:32px;border-radius:50%;border:2px solid var(--paper);object-fit:cover}
+header.q .crumb{flex:1;min-width:0;display:flex;align-items:center;gap:10px;padding:0 16px;font-size:14px;text-transform:uppercase;white-space:nowrap;overflow:hidden}
+header.q .crumb a:hover{color:var(--red)}
+header.q .crumb .sep{color:#8a827b}
+.lang{display:flex;align-items:stretch;border-left:4px solid var(--ink)}
+.lang button{font:inherit;font-weight:900;font-size:14px;border:0;background:transparent;color:var(--ink);padding:0 14px;cursor:pointer}
+.lang button[aria-pressed=true]{background:var(--ink);color:var(--yel)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+.tag{display:inline-block;background:var(--red);color:var(--paper);padding:6px 14px;font-weight:900;font-size:14px;text-transform:uppercase;transform:skewX(-8deg)}
+h1{margin:18px 0 0;font-weight:900;font-stretch:115%;font-size:clamp(36px,6vw,76px);line-height:.95;letter-spacing:-.01em;text-transform:uppercase;text-wrap:balance}
+h1 span{color:var(--yel)}
+.lead{max-width:720px;margin:18px 0 0;font-size:clamp(16px,2vw,19px);line-height:1.5;color:#cfc8c1;text-wrap:pretty}
+.meta{margin-top:16px;font-size:12px;letter-spacing:.12em;color:var(--mute);text-transform:uppercase}
+.btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 20px;font-weight:900;font-size:14px;text-transform:uppercase;border:3px solid var(--yel);background:var(--yel);color:var(--ink)}
+.btn:hover{background:transparent;color:var(--yel)}
+.btn.ghost{background:transparent;color:var(--paper);border-color:var(--paper)}
+.btn.ghost:hover{background:var(--paper);color:var(--ink)}
+.btn.red{background:var(--red);border-color:var(--red);color:var(--paper)}
+.btn.red:hover{background:transparent;color:var(--red)}
+footer.q{margin-top:64px;border-top:1px solid var(--line);padding:28px 16px 40px;font-size:11px;letter-spacing:.1em;color:#8a827b;text-transform:uppercase;line-height:1.7}
+footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+@media (max-width:640px){header.q .logo span.t{display:none} header.q .crumb{font-size:12px;padding:0 10px} .lang button{padding:0 10px}}
+
+.hero{padding:44px 0 8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:28px;margin-top:36px}
+.card{display:flex;flex-direction:column;background:#1d1a19;border:4px solid var(--paper);box-shadow:8px 8px 0 var(--red);transition:transform .15s}
+.card:hover{transform:translate(-3px,-3px)}
+.card img{display:block;width:100%;height:auto;aspect-ratio:16/9;border-bottom:4px solid var(--paper)}
+.card .b{padding:18px 18px 22px;display:flex;flex-direction:column;gap:10px}
+.card h2{margin:0;font-weight:900;font-stretch:110%;font-size:26px;line-height:1.05;text-transform:uppercase}
+.card p{margin:0;color:#cfc8c1;font-size:15px;line-height:1.5}
+.card .m{font-size:11px;letter-spacing:.12em;color:var(--mute);text-transform:uppercase}
+.card .go{margin-top:4px;font-weight:900;color:var(--yel);text-transform:uppercase;font-size:14px}
+.soon{border:4px dashed #4a4340;box-shadow:none;justify-content:center;align-items:flex-start;gap:12px;padding:28px;min-height:260px}
+.soon p{margin:0;color:#cfc8c1;line-height:1.5}
+.soon:hover{transform:none}
+.soon h2{color:#8a827b}
+
+</style>
+</head>
+<body>
+<header class="q">
+  <a class="logo" href="../"><img src="../assets/logo.jpg" alt="$QOGE logo"><span class="t">QNN</span></a>
+  <nav class="crumb mono"><a href="../">$QOGE</a><span class="sep">/</span><span>Research</span></nav>
+  <div class="lang" role="group" aria-label="Language"><button type="button" data-l="en">EN</button><button type="button" data-l="ru">RU</button></div>
+</header>
+
+<main class="wrap">
+<section class="hero">
+  <span class="tag" data-en="QNN Research" data-ru="QNN Ресёрч">QNN Research</span>
+  <h1><span style="color:inherit" data-en="Crypto projects," data-ru="Криптопроекты">Crypto projects,</span> <span data-en="no hype" data-ru="без хайпа">no hype</span></h1>
+  <p class="lead" data-en="Plain-language breakdowns of crypto projects: where the tokens come from, where they go, what moves the price and what could break. Every number is sourced. EN + RU." data-ru="Разборы криптопроектов простыми словами: откуда берутся токены, куда уходят, что двигает цену и что может сломаться. У каждой цифры есть источник. EN + RU.">Plain-language breakdowns of crypto projects: where the tokens come from, where they go, what moves the price and what could break. Every number is sourced. EN + RU.</p>
+</section>
+<div class="grid">
+  <a class="card" href="quai/">
+    <img src="quai/en/01.webp" data-img="quai/LANG/01.webp" alt="QUAI tokenomics cover" width="1600" height="900">
+    <div class="b">
+      <span class="m mono" data-en="#01 · Oct 15, 2026 · 22 slides" data-ru="#01 · 15.10.2026 · 22 слайда">#01 · Oct 15, 2026 · 22 slides</span>
+      <h2  data-en="QUAI tokenomics" data-ru="Токеномика QUAI">QUAI tokenomics</h2>
+      <p  data-en="Issuance vs burns, SOAP buybacks, the break-even price, demand and risks." data-ru="Выпуск против сжигания, выкуп SOAP, безынфляционная цена, спрос и риски.">Issuance vs burns, SOAP buybacks, the break-even price, demand and risks.</p>
+      <span class="go" data-en="Read →" data-ru="Читать →">Read →</span>
+    </div>
+  </a>
+  <div class="card soon">
+    <h2  data-en="Next project — soon" data-ru="Следующий проект — скоро">Next project — soon</h2>
+    <p><span  data-en="Want a breakdown of a specific project? Suggest it in the Discord." data-ru="Хочешь разбор конкретного проекта? Предложи его в Discord.">Want a breakdown of a specific project? Suggest it in the Discord.</span></p>
+    <a class="go" href="https://discord.gg/eHVA8rJ2J" target="_blank" rel="noopener">Discord ↗</a>
+  </div>
+</div>
+</main>
+<footer class="q mono"><div class="wrap"><span>© 2026 $QOGE · QNN Research</span><span  data-en="Not financial advice · DYOR" data-ru="Не финансовый совет · DYOR">Not financial advice · DYOR</span></div></footer>
+<script>
+window.render=function(l){document.querySelectorAll('[data-img]').forEach(function(i){i.src=i.dataset.img.replace('LANG',l)});
+document.title=(l==='ru'?'QNN Ресёрч · разборы криптопроектов от $QOGE':'QNN Research · crypto project breakdowns by $QOGE');};
+
+function getLang(){
+  var p=new URLSearchParams(location.search).get('lang');
+  if(p==='ru'||p==='en') return p;
+  var s=null; try{s=localStorage.getItem('qoge-lang')}catch(e){}
+  if(s) return s==='ru'?'ru':'en';
+  return (navigator.language||'en').slice(0,2)==='ru'?'ru':'en';
+}
+function setLang(l,save){
+  if(save){try{localStorage.setItem('qoge-lang',l)}catch(e){}}
+  document.documentElement.lang=l;
+  document.querySelectorAll('.lang button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.l===l)});
+  document.querySelectorAll('[data-en]').forEach(function(el){el.innerHTML=el.getAttribute('data-'+l)});
+  if(window.render) window.render(l);
+}
+document.querySelectorAll('.lang button').forEach(function(b){b.onclick=function(){setLang(b.dataset.l,true)}});
+
+setLang(getLang(),false);
+</script>
+</body>
+</html>

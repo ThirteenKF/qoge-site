@@ -159,6 +159,8 @@ async function giveaway(i) {
   const id = await redis('GET', GW.cur);
 
   if (sub.name === 'start') {
+    if (i.channel?.type === 11 || i.channel?.type === 12)
+      return reply('⚠️ Ты внутри ветки/тикета — её видят не все. Запусти розыгрыш в самом канале <#' + (i.channel.parent_id || '') + '>.\n\n⚠️ You are inside a thread/ticket. Start the giveaway in the channel itself.');
     const nid = String(Date.now());
     const prize = String(opt.prize || '').slice(0, 200), winners = Math.max(1, Math.min(20, Number(opt.winners) || 1));
     await redis('SET', GW.prize(nid), prize);
@@ -228,6 +230,7 @@ async function openTicket(channelId, uid, prize, adminId) {
 }
 
 const CMD_DRAW = 'Выбрать победителя', CMD_CLOSE = 'Закрыть тикет';
+
 
 async function drawFromCard(i) {
   const msg = i.data.resolved?.messages?.[i.data.target_id];

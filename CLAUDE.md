@@ -62,6 +62,11 @@ Context for picking this project up in a new chat.
   (custom_id gw:<id>); only QOGE Holder can enter (Redis set gw:<id>:users); /giveaway draw picks random
   winners and re-checks the role via the bot token; /giveaway status. Channel #qoge-giveaway (holders read +
   react only).
+- Research section (`research/`): static pages, no runtime. `research/index.html` = hub (cards, one per
+  report); `research/quai/index.html` = QUAI tokenomics report: slides as webp images (`en/NN.webp`,
+  `ru/NN.webp`, 1600x900) + speaker notes, EN/RU toggle (shares localStorage 'qoge-lang', `?lang=ru` works),
+  PDF downloads, og.jpg preview. Generated from the Claude Slides decks by a script in Claude's workspace.
+  New report = new folder `research/<project>/` + a card in the hub. Main page links it via nav5 + footer.
 - Mobile layout: `@media (max-width:767px)` block in index.html helmet styles.
 
 ## Links
