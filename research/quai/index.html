@@ -78,6 +78,13 @@ footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12p
 .cta h2{margin:0;font-weight:900;font-stretch:115%;font-size:clamp(22px,3vw,34px);text-transform:uppercase;line-height:1}
 .cta .btn{background:var(--ink);color:var(--yel);border-color:var(--ink)}
 .cta .btn:hover{background:transparent;color:var(--ink)}
+.support{margin-top:28px;border:4px solid var(--yel);padding:24px;display:flex;flex-wrap:wrap;gap:16px 24px;align-items:center;justify-content:space-between;background:linear-gradient(135deg,rgba(255,210,58,.08),transparent 60%)}
+.support h2{margin:0 0 6px;font-weight:900;font-stretch:115%;font-size:clamp(20px,2.6vw,28px);text-transform:uppercase;line-height:1.05;color:var(--yel)}
+.support p{margin:0;color:#cfc8c1;font-size:15px;line-height:1.5;max-width:520px}
+.support .addr{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.support code{font-family:ui-monospace,Consolas,monospace;font-size:14px;background:#0d0b0a;border:2px solid var(--line);padding:12px 14px;color:var(--paper);word-break:break-all}
+.support .net{display:block;font-size:11px;letter-spacing:.12em;color:var(--mute);text-transform:uppercase;margin-bottom:6px}
+.support button.btn{cursor:pointer;font-family:inherit}
 @media (max-width:640px){.slide img{border-width:3px;box-shadow:5px 5px 0 var(--red)} .hero{padding:28px 0 32px}}
 
 </style>
@@ -103,8 +110,16 @@ footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12p
     </div></section>
     <main class="wrap">
       <div class="slides" id="slides"></div>
-      <div class="nfa"><span  data-en="&lt;b&gt;Not financial advice.&lt;/b&gt; This is an independent community breakdown for education. Numbers come from public sources ({P[&#x27;src_en&#x27;]}) and our own estimates, marked on the slides. Crypto is volatile — do your own research." data-ru="&lt;b&gt;Не финансовый совет.&lt;/b&gt; Это независимый разбор сообщества для обучения. Цифры взяты из открытых источников ({P[&#x27;src_ru&#x27;]}) и собственных оценок — они помечены на слайдах. Крипта волатильна — проверяйте сами."><b>Not financial advice.</b> This is an independent community breakdown for education. Numbers come from public sources ({P['src_en']}) and our own estimates, marked on the slides. Crypto is volatile — do your own research.</span></div>
+      <div class="nfa"><span  data-en="&lt;b&gt;Not financial advice.&lt;/b&gt; This is an independent community breakdown for education. Numbers come from public sources (qu.ai (Singularity, Polaris, roadmap), supply.qu.ai, soap.qu.ai, DefiLlama, Coinpaprika, MEXC and Gate APIs, Disruption Banking) and our own estimates, marked on the slides. Crypto is volatile — do your own research." data-ru="&lt;b&gt;Не финансовый совет.&lt;/b&gt; Это независимый разбор сообщества для обучения. Цифры взяты из открытых источников (qu.ai (Singularity, Polaris, роадмап), supply.qu.ai, soap.qu.ai, DefiLlama, Coinpaprika, API MEXC и Gate, Disruption Banking) и собственных оценок — они помечены на слайдах. Крипта волатильна — проверяйте сами."><b>Not financial advice.</b> This is an independent community breakdown for education. Numbers come from public sources (qu.ai (Singularity, Polaris, roadmap), supply.qu.ai, soap.qu.ai, DefiLlama, Coinpaprika, MEXC and Gate APIs, Disruption Banking) and our own estimates, marked on the slides. Crypto is volatile — do your own research.</span></div>
       <div class="cta"><h2  data-en="Questions? Ask in the Discord" data-ru="Есть вопросы? Пиши в Discord">Questions? Ask in the Discord</h2><a class="btn" href="https://discord.gg/eHVA8rJ2J" target="_blank" rel="noopener"><span  data-en="Join the research channel" data-ru="Канал ресёрча">Join the research channel</span> ↗</a></div>
+      <div class="support" id="support">
+        <div><h2><span data-en="Support the creator" data-ru="Поддержать создателя">Support the creator</span> 💛</h2>
+        <p data-en="These breakdowns are free. If this one helped you, you can send a tip — it keeps new research coming." data-ru="Эти разборы бесплатные. Если этот был полезен, можно отправить донат — это помогает выпускать новые ресёрчи.">These breakdowns are free. If this one helped you, you can send a tip — it keeps new research coming.</p></div>
+        <div><span class="net" data-en="ETH / any EVM network" data-ru="ETH / любая EVM-сеть">ETH / any EVM network</span>
+        <div class="addr"><code id="tipaddr">0xFf916a74d7E1540A4fD91D302568692c07cFf6A3</code><button type="button" class="btn" id="tipcopy"><span data-en="Copy" data-ru="Копировать">Copy</span></button></div></div>
+      </div>
+      <script>document.getElementById('tipcopy').addEventListener('click',function(){var b=this,a=document.getElementById('tipaddr').textContent;
+        (navigator.clipboard?navigator.clipboard.writeText(a):Promise.reject()).catch(function(){var t=document.createElement('textarea');t.value=a;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove()}).finally(function(){var s=b.firstElementChild,old=s.innerHTML;s.innerHTML='✓';setTimeout(function(){s.innerHTML=old},1500)})});</script>
     </main>
     <footer class="q mono"><div class="wrap"><span>© 2026 $QOGE · QNN Research</span><span  data-en="Not financial advice · DYOR" data-ru="Не финансовый совет · DYOR">Not financial advice · DYOR</span></div></footer>
     <script>
