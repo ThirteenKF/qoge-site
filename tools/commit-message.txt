@@ -1,7 +1,0 @@
-Add NEAR research and rename Starknet research
-
-- New page research/near: "NEAR - Big Brother's Shadow" (33 slides EN/RU, PDFs)
-- New slides: on-chain metrics, market and leverage, peer comparison, catalyst calendar, 2 source slides with 60 links
-- Fixed rivals bar chart
-- Starknet research renamed to "A Foundation on Bones"
-- Research hub: NEAR card added
