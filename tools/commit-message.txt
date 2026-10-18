@@ -1,4 +1,5 @@
-Research: add "Support the creator" ETH tip block, fix sources placeholder
+Add NEAR research and rename Starknet research
 
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
-Claude-Session: https://claude.ai/code/session_01MPEqxgPdw2kbhtrFwyPCAH
+- New page research/near: "NEAR - Big Brother's Shadow" (27 slides EN/RU, PDFs)
+- Starknet research renamed to "A Foundation on Bones"
+- Research hub: NEAR card added
