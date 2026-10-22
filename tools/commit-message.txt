@@ -1,5 +1,0 @@
-Mars Gum mint is live: update NFT banner
-
-- Banner: holder mint live on BAZARR Launch (99 QUAI, 1 per wallet)
-- Add how-to-mint steps for holders (EN/RU/ES/PT/ZH)
-- Buttons: mint on launchpad, trade on BAZARR
