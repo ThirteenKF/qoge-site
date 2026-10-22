@@ -47,6 +47,21 @@ a:hover{color:oklch(0.72 0.17 40)}
   .q-head > a:first-child img{width:28px!important;height:28px!important}
   .q-head > a:last-child{padding:0 14px!important;font-size:13px!important;margin-left:auto}
   .q-head > div{padding:0 8px!important}
+  .q-head{flex-wrap:wrap!important}
+  .q-head > a:first-child{order:1}
+  .q-head > .q-lang{order:2;margin-left:auto}
+  .q-head > a:last-child{order:3;margin-left:0!important}
+  .q-head > .q-res{order:4;flex:1 1 100%;padding:0 0 4px 0!important;border-left:0!important;border-top:4px solid #141110;gap:0;height:50px;align-items:stretch}
+  .q-res-new{align-self:center;margin:0 8px 0 10px}
+  .q-res-ico{display:none}
+  .q-res-txt{justify-content:center;padding-right:10px;border-right:2px solid #3a3431}
+  .q-res-s{display:none}
+  .q-res-t{font-size:14px}
+  .q-res-run{display:flex!important;align-items:center;flex:1;min-width:0;overflow:hidden;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:12px;letter-spacing:.06em;color:#f4f0ec;text-transform:none}
+  .q-res-track{display:flex;white-space:nowrap;animation:qresRun 22s linear infinite}
+  .q-res-track > span{padding-left:14px}
+  .q-res-go{display:flex!important;align-items:center;background:oklch(0.88 0.17 95);color:#141110;padding:0 14px;font-size:0}
+  .q-res-go::after{content:"→";font-size:20px}
   h1{font-size:clamp(30px,9vw,44px)!important}
   h2{font-size:clamp(28px,8vw,40px)!important}
   .q-ctas > *{flex:1 1 100%;justify-content:center;text-align:center}
@@ -55,6 +70,23 @@ a:hover{color:oklch(0.72 0.17 40)}
   .q-rm-badge{grid-column:2;grid-row:1;padding:0 12px!important;justify-content:flex-end}
   .q-rm-body{grid-column:1 / -1;grid-row:2;padding:14px!important}
 }
+.q-res{position:relative;overflow:hidden;display:flex;align-items:center;gap:12px;background:#141110;color:oklch(0.88 0.17 95);padding:0 18px 0 14px;border-left:4px solid #141110;text-transform:uppercase;white-space:nowrap;font-weight:900}
+.q-res:hover{background:oklch(0.62 0.21 25);color:#f4f0ec}
+.q-res::before{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:repeating-linear-gradient(-45deg,oklch(0.88 0.17 95) 0 8px,#141110 8px 16px);background-size:22.6px 4px;animation:qresStripe 1s linear infinite}
+.q-res::after{content:"";position:absolute;top:0;bottom:0;width:60px;left:-80px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);transform:skewX(-20deg);animation:qresShine 3.2s ease-in-out infinite}
+.q-res-new{background:oklch(0.62 0.21 25);color:#f4f0ec;font-size:10px;letter-spacing:.12em;padding:3px 6px;animation:qresBlink 1.2s steps(1) infinite}
+.q-res-ico{flex:none;animation:qresScan 2.4s ease-in-out infinite}
+.q-res-txt{display:flex;flex-direction:column;line-height:1.05}
+.q-res-t{font-size:16px;letter-spacing:.01em}
+.q-res-s{font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:10px;letter-spacing:.08em;color:#f4f0ec;opacity:.8;margin-top:3px}
+.q-res-run,.q-res-go{display:none}
+@keyframes qresStripe{to{background-position:22.6px 0}}
+@keyframes qresShine{0%,55%{left:-80px}100%{left:110%}}
+@keyframes qresBlink{0%,60%{opacity:1}61%,100%{opacity:.25}}
+@keyframes qresScan{0%,100%{transform:rotate(0) translate(0,0)}25%{transform:rotate(-12deg) translate(-1px,-1px)}75%{transform:rotate(10deg) translate(1px,0)}}
+@keyframes qresRun{to{transform:translateX(-50%)}}
+@media (min-width:768px) and (max-width:1180px){.q-res-s,.q-res-new{display:none}}
+@media (prefers-reduced-motion:reduce){.q-res::before,.q-res::after,.q-res-new,.q-res-ico,.q-res-track{animation:none!important}}
 @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
 </style>
 </helmet>
@@ -82,8 +114,13 @@ a:hover{color:oklch(0.72 0.17 40)}
     <a href="#mission" style="color:#141110" style-hover="color:oklch(0.62 0.21 25)">{{ t.nav2 }}</a>
     <a href="#tokenomics" style="color:#141110" style-hover="color:oklch(0.62 0.21 25)">{{ t.nav3 }}</a>
     <a href="#faq" style="color:#141110" style-hover="color:oklch(0.62 0.21 25)">{{ t.nav4 }}</a>
-    <a href="research/" style="color:oklch(0.62 0.21 25)" style-hover="color:#141110">{{ t.nav5 }} ↗</a>
   </nav>
+  <a class="q-res" href="research/">
+    <span class="q-res-new">NEW</span><svg class="q-res-ico" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l6 6"/><path d="M7 11.5l2-2.5 2 2 2-3" stroke-width="2"/></svg>
+    <span class="q-res-txt"><span class="q-res-t">QNN {{ t.nav5 }}</span><span class="q-res-s">{{ t.resLatest }}</span></span>
+    <span class="q-res-run"><span class="q-res-track"><span>{{ t.resList }}</span><span aria-hidden="true">{{ t.resList }}</span></span></span>
+    <span class="q-res-go">{{ t.resGo }} →</span>
+  </a>
   <div class="q-lang" style="display:flex;align-items:center;padding:0 12px;border-left:4px solid #141110;position:relative">{{ langPicker }}</div>
   <a href="#buy" style="display:flex;align-items:center;background:oklch(0.88 0.17 95);color:#141110;padding:0 22px;border-left:4px solid #141110;font-size:15px;text-transform:uppercase;white-space:nowrap" style-hover="background:#141110;color:oklch(0.88 0.17 95)">{{ t.buyCta }}</a>
 </header>
@@ -381,7 +418,7 @@ class Component extends DCLogic {
   setLang(l) { try { localStorage.setItem('qoge-lang', l); } catch (e) {} document.documentElement.lang = l; this.setState({ lang: l }); }
   dict(chain) {
     const en = {
-      loc: 'en-GB', c4tag: 'Exclusive · Family', c4live: '● LIVE', c4stamp: 'T−?? · EARTH · PACKING', c4ch: 'Big brother suits up: “I’m going to get him”', c4b: 'Big brother Doge took a three-day astronaut course (reward: one sausage), squeezed into a spacesuit two sizes too big and is recruiting a rescue crew. Requirement #1: don’t eat the onboard bacon.', c4q: '“He was always curious. I told him not to sniff rockets.” — big brother, 4 y/o, Earth', c4note: 'PARODY. NOT AFFILIATED WITH DOGECOIN, NASA OR ANY REAL PERSON.', live: '● LIVE FROM MARS', nav1: 'The scandal', nav2: 'Rocket', nav3: 'Numbers', nav4: 'Q&A', nav5: 'Research', buyCta: 'Buy $QOGE',
+      loc: 'en-GB', c4tag: 'Exclusive · Family', c4live: '● LIVE', c4stamp: 'T−?? · EARTH · PACKING', c4ch: 'Big brother suits up: “I’m going to get him”', c4b: 'Big brother Doge took a three-day astronaut course (reward: one sausage), squeezed into a spacesuit two sizes too big and is recruiting a rescue crew. Requirement #1: don’t eat the onboard bacon.', c4q: '“He was always curious. I told him not to sniff rockets.” — big brother, 4 y/o, Earth', c4note: 'PARODY. NOT AFFILIATED WITH DOGECOIN, NASA OR ANY REAL PERSON.', live: '● LIVE FROM MARS', nav1: 'The scandal', nav2: 'Rocket', nav3: 'Numbers', nav4: 'Q&A', nav5: 'Research', resLatest: '#04 · Noah’s Ark — a bunker for institutions', resList: '#04 Noah’s Ark: a bunker for institutions  ◆  #03 Big Brother’s Shadow (NEAR)  ◆  #02 A Foundation on Bones (Starknet)  ◆  #01 QUAI tokenomics  ◆ ', resGo: 'Read', buyCta: 'Buy $QOGE',
       ngTag: 'Mint live · NFT', ngTitle: 'QOGE Mars Gum', ngText: 'Our first NFT collection: 100 sealed packs, 100 cards with real Mars rovers. 10 Legendary cards are still classified.', ngSoon: 'Holder mint is live on BAZARR Launch · 99 QUAI · 1 per wallet', ngMint: 'Mint on launchpad', ngTrade: 'Trade on BAZARR', ngHowH: 'How to mint (holders only)', ngS1: 'Buy $QOGE — step-by-step guide below.', ngS2: 'Join our Discord and connect your wallet in #connect-wallet to get the QOGE Holder role.', ngS3: 'Send your Quai wallet address with the /whitelist command in Discord.', ngS4: 'Once your address is on the list, open the launchpad, connect the same wallet and mint for 99 QUAI.', ngX: 'See the post on X', ngDiscord: 'Details in Discord',
       s2go: 'Where to buy QUAI', s4go: 'Join Discord', byWhyH: 'What holders get:', byWhy: 'the QOGE Holder role in Discord, all crew channels, and Mars Gum NFT news first.', ngHold: 'Become a holder',
       breaking: 'Breaking', h1a: 'Local puppy accidentally colonizes', h1b: 'Mars',
@@ -418,7 +455,7 @@ class Component extends DCLogic {
       lvHold: '{n} holders now in ground control', lvSteady: 'Fuel price steady, dog keeps building', lvUp: 'Fuel price up {n}% in 24h', lvDown: 'Fuel {n}% cheaper in 24h, building continues', lvVol: '{n} QUAI of fuel moved in 24h', lvBudget: 'Mission budget: ${n}'
     };
     const ru = {
-      loc: 'ru-RU', c4tag: 'Эксклюзив · Семья', c4live: '● ПРЯМОЙ ЭФИР', c4stamp: 'T−?? · ЗЕМЛЯ · СБОРЫ', c4ch: 'Старший брат надел скафандр: «Я лечу за ним»', c4b: 'Старший брат Доге прошёл трёхдневные курсы астронавтов (награда — одна сосиска), влез в скафандр на два размера больше и набирает спасательный экипаж. Требование №1: не есть бортовой бекон.', c4q: '«Он всегда был любопытным. Я говорил ему не нюхать ракеты» — старший брат, 4 года, Земля', c4note: 'ПАРОДИЯ. НЕ СВЯЗАНО С DOGECOIN, NASA ИЛИ РЕАЛЬНЫМИ ЛЮДЬМИ.', live: '● ПРЯМОЙ ЭФИР С МАРСА', nav1: 'Скандал', nav2: 'Ракета', nav3: 'Цифры', nav4: 'Вопросы', nav5: 'Ресёрч', buyCta: 'Купить $QOGE',
+      loc: 'ru-RU', c4tag: 'Эксклюзив · Семья', c4live: '● ПРЯМОЙ ЭФИР', c4stamp: 'T−?? · ЗЕМЛЯ · СБОРЫ', c4ch: 'Старший брат надел скафандр: «Я лечу за ним»', c4b: 'Старший брат Доге прошёл трёхдневные курсы астронавтов (награда — одна сосиска), влез в скафандр на два размера больше и набирает спасательный экипаж. Требование №1: не есть бортовой бекон.', c4q: '«Он всегда был любопытным. Я говорил ему не нюхать ракеты» — старший брат, 4 года, Земля', c4note: 'ПАРОДИЯ. НЕ СВЯЗАНО С DOGECOIN, NASA ИЛИ РЕАЛЬНЫМИ ЛЮДЬМИ.', live: '● ПРЯМОЙ ЭФИР С МАРСА', nav1: 'Скандал', nav2: 'Ракета', nav3: 'Цифры', nav4: 'Вопросы', nav5: 'Ресёрч', resLatest: '#04 · Ноев ковчег — бункер для институционалов', resList: '#04 Ноев ковчег: бункер для институционалов  ◆  #03 Тень большого брата (NEAR)  ◆  #02 Фундамент на костях (Starknet)  ◆  #01 Токеномика QUAI  ◆ ', resGo: 'Читать', buyCta: 'Купить $QOGE',
       ngTag: 'Минт идёт · NFT', ngTitle: 'QOGE Mars Gum', ngText: 'Наша первая NFT-коллекция: 100 запечатанных пачек, 100 вкладышей с настоящими марсоходами. 10 легендарных пока засекречены.', ngSoon: 'Минт для холдеров открыт на BAZARR Launch · 99 QUAI · 1 на кошелёк', ngMint: 'Минт на лаунчпаде', ngTrade: 'Торговать на BAZARR', ngHowH: 'Как заминтить (только для холдеров)', ngS1: 'Купи $QOGE — пошаговая инструкция ниже.', ngS2: 'Зайди в наш Discord и подключи кошелёк в #connect-wallet — получишь роль QOGE Holder.', ngS3: 'Отправь адрес своего кошелька Quai командой /whitelist в Discord.', ngS4: 'Когда адрес попадёт в список, открой лаунчпад, подключи тот же кошелёк и минти за 99 QUAI.', ngX: 'Пост в X', ngDiscord: 'Подробности в Discord',
       s2go: 'Где купить QUAI', s4go: 'Войти в Discord', byWhyH: 'Что получает холдер:', byWhy: 'роль QOGE Holder в Discord, доступ ко всем каналам экипажа и первые новости о NFT Mars Gum.', ngHold: 'Стать холдером',
       breaking: 'Срочно', h1a: 'Обычный щенок случайно колонизировал', h1b: 'Марс',
@@ -455,7 +492,7 @@ class Component extends DCLogic {
       lvHold: 'Холдеров в ЦУП: {n}', lvSteady: 'Цена топлива стабильна, пёс продолжает стройку', lvUp: 'Топливо подорожало на {n}% за сутки', lvDown: 'Топливо подешевело на {n}% за сутки, стройка идёт', lvVol: 'За сутки перекачано {n} QUAI топлива', lvBudget: 'Бюджет миссии: ${n}'
     };
     const es = {
-      loc: 'es-ES', c4tag: 'Exclusiva · Familia', c4live: '● EN DIRECTO', c4stamp: 'T−?? · TIERRA · MALETAS', c4ch: 'El hermano mayor se pone el traje: «Voy a por él»', c4b: 'El hermano mayor Doge hizo un curso de astronauta de tres días (premio: una salchicha), se metió en un traje dos tallas más grande y busca tripulación de rescate. Requisito n.º 1: no comerse el beicon de a bordo.', c4q: '«Siempre fue muy curioso. Le dije que no olfateara cohetes» — hermano mayor, 4 años, Tierra', c4note: 'PARODIA. SIN RELACIÓN CON DOGECOIN, LA NASA NI PERSONAS REALES.', live: '● EN DIRECTO DESDE MARTE', nav1: 'El escándalo', nav2: 'Cohete', nav3: 'Cifras', nav4: 'Preguntas', nav5: 'Análisis', buyCta: 'Comprar $QOGE',
+      loc: 'es-ES', c4tag: 'Exclusiva · Familia', c4live: '● EN DIRECTO', c4stamp: 'T−?? · TIERRA · MALETAS', c4ch: 'El hermano mayor se pone el traje: «Voy a por él»', c4b: 'El hermano mayor Doge hizo un curso de astronauta de tres días (premio: una salchicha), se metió en un traje dos tallas más grande y busca tripulación de rescate. Requisito n.º 1: no comerse el beicon de a bordo.', c4q: '«Siempre fue muy curioso. Le dije que no olfateara cohetes» — hermano mayor, 4 años, Tierra', c4note: 'PARODIA. SIN RELACIÓN CON DOGECOIN, LA NASA NI PERSONAS REALES.', live: '● EN DIRECTO DESDE MARTE', nav1: 'El escándalo', nav2: 'Cohete', nav3: 'Cifras', nav4: 'Preguntas', nav5: 'Análisis', resLatest: '#04 · El Arca de Noé — un búnker para instituciones', resList: '#04 El Arca de Noé: un búnker para instituciones  ◆  #03 La sombra del Gran Hermano (NEAR)  ◆  #02 Cimientos sobre huesos (Starknet)  ◆  #01 Tokenómica de QUAI  ◆ ', resGo: 'Leer', buyCta: 'Comprar $QOGE',
       ngTag: 'Mint en vivo · NFT', ngTitle: 'QOGE Mars Gum', ngText: 'Nuestra primera colección NFT: 100 paquetes sellados, 100 cromos con rovers reales de Marte. 10 legendarios siguen en secreto.', ngSoon: 'El mint para holders está abierto en BAZARR Launch · 99 QUAI · 1 por wallet', ngMint: 'Mint en el launchpad', ngTrade: 'Comerciar en BAZARR', ngHowH: 'Cómo hacer mint (solo holders)', ngS1: 'Compra $QOGE: la guía paso a paso está abajo.', ngS2: 'Entra en nuestro Discord y conecta tu wallet en #connect-wallet para recibir el rol QOGE Holder.', ngS3: 'Envía la dirección de tu wallet de Quai con el comando /whitelist en Discord.', ngS4: 'Cuando tu dirección esté en la lista, abre el launchpad, conecta la misma wallet y haz mint por 99 QUAI.', ngX: 'Ver el post en X', ngDiscord: 'Detalles en Discord',
       s2go: 'Dónde comprar QUAI', s4go: 'Entrar en Discord', byWhyH: 'Qué recibe un holder:', byWhy: 'el rol QOGE Holder en Discord, todos los canales de la tripulación y las noticias del NFT Mars Gum antes que nadie.', ngHold: 'Hazte holder',
       breaking: 'Última hora', h1a: 'Un cachorro coloniza por accidente', h1b: 'Marte',
@@ -492,7 +529,7 @@ class Component extends DCLogic {
       lvHold: 'Holders en el centro de control: {n}', lvSteady: 'Precio del combustible estable, el perro sigue construyendo', lvUp: 'El combustible sube un {n}% en 24 h', lvDown: 'El combustible baja un {n}% en 24 h, la obra sigue', lvVol: '{n} QUAI de combustible movidos en 24 h', lvBudget: 'Presupuesto de la misión: ${n}'
     };
     const pt = {
-      loc: 'pt-BR', c4tag: 'Exclusivo · Família', c4live: '● AO VIVO', c4stamp: 'T−?? · TERRA · ARRUMANDO MALAS', c4ch: 'Irmão mais velho veste o traje: “Vou buscar ele”', c4b: 'O irmão mais velho Doge fez um curso de astronauta de três dias (prêmio: uma salsicha), entrou num traje dois números maior e está recrutando a equipe de resgate. Requisito nº 1: não comer o bacon de bordo.', c4q: '“Ele sempre foi curioso. Eu falei pra ele não cheirar foguete” — irmão mais velho, 4 anos, Terra', c4note: 'PARÓDIA. SEM LIGAÇÃO COM DOGECOIN, NASA OU PESSOAS REAIS.', live: '● AO VIVO DE MARTE', nav1: 'O escândalo', nav2: 'Foguete', nav3: 'Números', nav4: 'Perguntas', nav5: 'Análises', buyCta: 'Comprar $QOGE',
+      loc: 'pt-BR', c4tag: 'Exclusivo · Família', c4live: '● AO VIVO', c4stamp: 'T−?? · TERRA · ARRUMANDO MALAS', c4ch: 'Irmão mais velho veste o traje: “Vou buscar ele”', c4b: 'O irmão mais velho Doge fez um curso de astronauta de três dias (prêmio: uma salsicha), entrou num traje dois números maior e está recrutando a equipe de resgate. Requisito nº 1: não comer o bacon de bordo.', c4q: '“Ele sempre foi curioso. Eu falei pra ele não cheirar foguete” — irmão mais velho, 4 anos, Terra', c4note: 'PARÓDIA. SEM LIGAÇÃO COM DOGECOIN, NASA OU PESSOAS REAIS.', live: '● AO VIVO DE MARTE', nav1: 'O escândalo', nav2: 'Foguete', nav3: 'Números', nav4: 'Perguntas', nav5: 'Análises', resLatest: '#04 · A Arca de Noé — um bunker para instituições', resList: '#04 A Arca de Noé: um bunker para instituições  ◆  #03 A sombra do Grande Irmão (NEAR)  ◆  #02 Alicerces sobre ossos (Starknet)  ◆  #01 Tokenomics da QUAI  ◆ ', resGo: 'Ler', buyCta: 'Comprar $QOGE',
       ngTag: 'Mint ao vivo · NFT', ngTitle: 'QOGE Mars Gum', ngText: 'Nossa primeira coleção NFT: 100 pacotes lacrados, 100 cards com rovers reais de Marte. 10 lendários continuam em segredo.', ngSoon: 'O mint para holders está aberto no BAZARR Launch · 99 QUAI · 1 por carteira', ngMint: 'Mint no launchpad', ngTrade: 'Negociar no BAZARR', ngHowH: 'Como fazer o mint (só holders)', ngS1: 'Compre $QOGE: o passo a passo está abaixo.', ngS2: 'Entre no nosso Discord e conecte sua carteira em #connect-wallet para receber o cargo QOGE Holder.', ngS3: 'Envie o endereço da sua carteira Quai com o comando /whitelist no Discord.', ngS4: 'Quando seu endereço estiver na lista, abra o launchpad, conecte a mesma carteira e faça o mint por 99 QUAI.', ngX: 'Ver o post no X', ngDiscord: 'Detalhes no Discord',
       s2go: 'Onde comprar QUAI', s4go: 'Entrar no Discord', byWhyH: 'O que o holder ganha:', byWhy: 'o cargo QOGE Holder no Discord, todos os canais da tripulação e as novidades do NFT Mars Gum primeiro.', ngHold: 'Torne-se holder',
       breaking: 'Urgente', h1a: 'Filhote coloniza sem querer', h1b: 'Marte',
@@ -529,7 +566,7 @@ class Component extends DCLogic {
       lvHold: 'Holders no centro de controle: {n}', lvSteady: 'Preço do combustível estável, o cachorro segue construindo', lvUp: 'Combustível sobe {n}% em 24 h', lvDown: 'Combustível cai {n}% em 24 h, a obra continua', lvVol: '{n} QUAI de combustível movimentados em 24 h', lvBudget: 'Orçamento da missão: ${n}'
     };
     const zh = {
-      loc: 'zh-CN', c4tag: '独家 · 家人', c4live: '● 直播', c4stamp: 'T−?? · 地球 · 收拾行李', c4ch: '哥哥穿上宇航服：“我去接它回来”', c4b: '哥哥 Doge 上完三天宇航员速成班（奖励：一根香肠），穿上大两号的宇航服，正在招募救援队。第一条要求：不许偷吃船上的培根。', c4q: '“它从小就好奇。我早说过别去闻火箭。” —— 哥哥，4 岁，地球', c4note: '恶搞内容。与 Dogecoin、NASA 或任何真实人物无关。', live: '● 火星现场直播', nav1: '丑闻', nav2: '火箭', nav3: '数据', nav4: '问答', nav5: '研究', buyCta: '购买 $QOGE',
+      loc: 'zh-CN', c4tag: '独家 · 家人', c4live: '● 直播', c4stamp: 'T−?? · 地球 · 收拾行李', c4ch: '哥哥穿上宇航服：“我去接它回来”', c4b: '哥哥 Doge 上完三天宇航员速成班（奖励：一根香肠），穿上大两号的宇航服，正在招募救援队。第一条要求：不许偷吃船上的培根。', c4q: '“它从小就好奇。我早说过别去闻火箭。” —— 哥哥，4 岁，地球', c4note: '恶搞内容。与 Dogecoin、NASA 或任何真实人物无关。', live: '● 火星现场直播', nav1: '丑闻', nav2: '火箭', nav3: '数据', nav4: '问答', nav5: '研究', resLatest: '#04 · 诺亚方舟：机构的避难所', resList: '#04 诺亚方舟：机构的避难所  ◆  #03 老大哥的影子（NEAR）  ◆  #02 白骨上的地基（Starknet）  ◆  #01 QUAI 代币经济学  ◆ ', resGo: '阅读', buyCta: '购买 $QOGE',
       ngTag: '铸造进行中 · NFT', ngTitle: 'QOGE 火星泡泡糖', ngText: '我们的首个 NFT 系列：100 包密封泡泡糖，100 张真实火星车卡片。10 张传奇卡仍属机密。', ngSoon: '持有者铸造已在 BAZARR Launch 开放 · 99 QUAI · 每个钱包 1 个', ngMint: '前往发射台铸造', ngTrade: '在 BAZARR 交易', ngHowH: '如何铸造（仅限持有者）', ngS1: '购买 $QOGE——分步指南见下方。', ngS2: '加入我们的 Discord，在 #connect-wallet 频道连接钱包，获得 QOGE Holder 身份组。', ngS3: '在 Discord 中用 /whitelist 命令提交你的 Quai 钱包地址。', ngS4: '地址进入名单后，打开发射台，连接同一个钱包，以 99 QUAI 铸造。', ngX: '查看 X 帖子', ngDiscord: '在 Discord 了解详情',
       s2go: '在哪里买 QUAI', s4go: '加入 Discord', byWhyH: '持有者可以获得：', byWhy: 'Discord 中的 QOGE Holder 身份组、所有机组频道，以及 Mars Gum NFT 的第一手消息。', ngHold: '成为持有者',
       breaking: '突发', h1a: '小狗意外殖民了', h1b: '火星',
