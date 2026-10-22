@@ -49,7 +49,10 @@ Context for picking this project up in a new chat.
   No server: streak lives in localStorage 'qoge-visit'. To add log entries: append to every list.
 - NFT teaser banner (#nft, between the ticker strip and #daily): QOGE Mars Gum collection (100 rover cards,
   files in `QOGE SITE\nft\mars-gum`), image assets/mars-gum-pack.webp, texts ng* in every language.
-  Links: Discord + x.com/QOGEofficial. Update when the mint goes live on BAZARR Launch.
+  Mint is LIVE (holder whitelist, 99 QUAI, 1 per wallet): launchpad
+  https://launchpad.bazarr.xyz/mint/0x003880cbfaeb5050edbb61dcc4f8fd226826f4d8 , trading on https://www.bazarr.xyz/ .
+  Banner has "How to mint (holders only)" steps ngS1..ngS4 (buy $QOGE -> Discord #connect-wallet role ->
+  /whitelist address -> owner adds the address on the launchpad manually -> mint). Buttons: ngMint, #buy, Discord, ngTrade.
 - Roadmap phases auto-complete at 500/1000/2500/5000 holders; rocket tracker parts install at
   50/250/500/1000/2500/5000 holders (PART_AT in renderVals()).
 - Discord whitelist bot: `api/discord.mjs` (Node function). Discord Interactions Endpoint URL =

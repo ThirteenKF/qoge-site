@@ -1,7 +1,5 @@
-Add research #04: Noah's Ark - a bunker for institutions
+Mars Gum mint is live: update NFT banner
 
-- New page research/noahs-ark (40 slides EN/RU, PDFs)
-- Quantum threat to Bitcoin, top-5 post-quantum refuges
-- Full reviews of QRL and Quantus (QTC): revenue, team, tokenomics, audits, news-driven price charts, forecasts
-- Disclaimer: no revenue product, a bet on becoming a Noah's Ark for crypto capital
-- Research hub: new card
+- Banner: holder mint live on BAZARR Launch (99 QUAI, 1 per wallet)
+- Add how-to-mint steps for holders (EN/RU/ES/PT/ZH)
+- Buttons: mint on launchpad, trade on BAZARR
