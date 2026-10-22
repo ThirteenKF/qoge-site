@@ -1,7 +1,7 @@
-Add NEAR research and rename Starknet research
+Add research #04: Noah's Ark - a bunker for institutions
 
-- New page research/near: "NEAR - Big Brother's Shadow" (31 slides EN/RU, PDFs)
-- Slides: how NEAR Intents works, on-chain metrics, market and leverage, peer comparison, catalyst calendar
-- Fixed rivals bar chart
-- Starknet research renamed to "A Foundation on Bones"
-- Research hub: NEAR card added
+- New page research/noahs-ark (40 slides EN/RU, PDFs)
+- Quantum threat to Bitcoin, top-5 post-quantum refuges
+- Full reviews of QRL and Quantus (QTC): revenue, team, tokenomics, audits, news-driven price charts, forecasts
+- Disclaimer: no revenue product, a bet on becoming a Noah's Ark for crypto capital
+- Research hub: new card
