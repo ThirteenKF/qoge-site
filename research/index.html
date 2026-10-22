@@ -54,6 +54,8 @@ footer.q{margin-top:64px;border-top:1px solid var(--line);padding:28px 16px 40px
 footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
 @media (max-width:640px){header.q .logo span.t{display:none} header.q .crumb{font-size:12px;padding:0 10px} .lang button{padding:0 10px}}
 
+body{background:var(--ink) url(research-bg.webp) center top/cover fixed no-repeat}
+@media (max-width:767px){body{background-attachment:scroll;background-size:auto 100vh}}
 .hero{padding:44px 0 8px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:28px;margin-top:36px}
 .card{display:flex;flex-direction:column;background:#1d1a19;border:4px solid var(--paper);box-shadow:8px 8px 0 var(--red);transition:transform .15s}
@@ -128,7 +130,7 @@ footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12p
   </div>
 </div>
 </main>
-<footer class="q mono"><div class="wrap"><span>© 2026 $QOGE · QNN Research</span><span  data-en="Not financial advice · DYOR" data-ru="Не финансовый совет · DYOR">Not financial advice · DYOR</span></div></footer>
+<footer class="q mono"><div class="wrap"><span>© 2026 $QOGE · QNN Research</span><span  data-en="Not financial advice · DYOR" data-ru="Не финансовый совет · DYOR">Not financial advice · DYOR</span><span data-en="Background photo: NASA/JPL-Caltech/MSSS" data-ru="Фото фона: NASA/JPL-Caltech/MSSS">Background photo: NASA/JPL-Caltech/MSSS</span></div></footer>
 <script>
 window.render=function(l){document.querySelectorAll('[data-img]').forEach(function(i){i.src=i.dataset.img.replace('LANG',l)});
 document.title=(l==='ru'?'QNN Ресёрч · разборы криптопроектов от $QOGE':'QNN Research · crypto project breakdowns by $QOGE');};
