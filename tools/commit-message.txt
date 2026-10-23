@@ -1,4 +1,0 @@
-Research #02 Starknet: add team X links (Tom Brand, Lior Goldberg, Michael Riabzev)
-
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
-Claude-Session: https://claude.ai/code/session_01MPEqxgPdw2kbhtrFwyPCAH
