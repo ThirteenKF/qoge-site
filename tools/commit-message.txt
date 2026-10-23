@@ -1,0 +1,4 @@
+Research #02 Starknet: rebuilt as "Phoenix or Ashes" on the latest template (36 slides, EN+RU)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01MPEqxgPdw2kbhtrFwyPCAH
