@@ -1,0 +1,4 @@
+Mars Gum banner: "Trade on BAZARR" links to the collection page
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01MPEqxgPdw2kbhtrFwyPCAH
