@@ -60,7 +60,8 @@ a:hover{color:oklch(0.72 0.17 40)}
   .q-res-run{display:flex!important;align-items:center;flex:1;min-width:0;overflow:hidden;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:12px;letter-spacing:.06em;color:#f4f0ec;text-transform:none}
   .q-res-track{display:flex;white-space:nowrap;animation:qresRun 22s linear infinite}
   .q-res-track > span{padding-left:14px}
-  .q-res-go{display:flex!important;align-items:center;background:oklch(0.88 0.17 95);color:#141110;padding:0 14px;font-size:0}
+  .q-res-go{display:flex!important;align-items:center;background:oklch(0.88 0.17 95);color:#141110;padding:0 14px!important;font-size:0!important;margin:0!important;border:0!important;box-shadow:none!important}
+  .q-res:hover{transform:none!important;box-shadow:none!important}
   .q-res-go::after{content:"→";font-size:20px}
   h1{font-size:clamp(30px,9vw,44px)!important}
   h2{font-size:clamp(28px,8vw,40px)!important}
@@ -79,14 +80,14 @@ a:hover{color:oklch(0.72 0.17 40)}
 .q-res-txt{display:flex;flex-direction:column;line-height:1.05}
 .q-res-t{font-size:16px;letter-spacing:.01em}
 .q-res-s{font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:10px;letter-spacing:.08em;color:#f4f0ec;opacity:.8;margin-top:3px}
-.q-res-run,.q-res-go{display:none}
+.q-res{cursor:pointer;transition:transform .15s,box-shadow .15s}.q-res:hover{transform:translateY(-2px);box-shadow:0 6px 0 #141110}.q-res-run{display:none}.q-res-go{display:inline-flex;align-items:center;gap:6px;margin-left:4px;background:oklch(0.88 0.17 95);color:#141110;font-size:14px;letter-spacing:.06em;padding:7px 12px;border:2px solid #141110;box-shadow:3px 3px 0 oklch(0.62 0.21 25)}.q-res-go .arr{display:inline-block;animation:qresArr 1s ease-in-out infinite}.q-res:hover .q-res-go{background:#f4f0ec}@keyframes qresArr{0%,100%{transform:translateX(0)}50%{transform:translateX(4px)}}
 @keyframes qresStripe{to{background-position:22.6px 0}}
 @keyframes qresShine{0%,55%{left:-80px}100%{left:110%}}
 @keyframes qresBlink{0%,60%{opacity:1}61%,100%{opacity:.25}}
 @keyframes qresScan{0%,100%{transform:rotate(0) translate(0,0)}25%{transform:rotate(-12deg) translate(-1px,-1px)}75%{transform:rotate(10deg) translate(1px,0)}}
 @keyframes qresRun{to{transform:translateX(-50%)}}
 @media (min-width:768px) and (max-width:1180px){.q-res-s,.q-res-new{display:none}}
-@media (prefers-reduced-motion:reduce){.q-res::before,.q-res::after,.q-res-new,.q-res-ico,.q-res-track{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.q-res::before,.q-res::after,.q-res-new,.q-res-ico,.q-res-track,.q-res-go .arr{animation:none!important}}
 @keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
 </style>
 </helmet>
@@ -119,7 +120,7 @@ a:hover{color:oklch(0.72 0.17 40)}
     <span class="q-res-new">NEW</span><svg class="q-res-ico" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l6 6"/><path d="M7 11.5l2-2.5 2 2 2-3" stroke-width="2"/></svg>
     <span class="q-res-txt"><span class="q-res-t">QNN {{ t.nav5 }}</span><span class="q-res-s">{{ t.resLatest }}</span></span>
     <span class="q-res-run"><span class="q-res-track"><span>{{ t.resList }}</span><span aria-hidden="true">{{ t.resList }}</span></span></span>
-    <span class="q-res-go">{{ t.resGo }} →</span>
+    <span class="q-res-go">{{ t.resGo }} <span class="arr">→</span></span>
   </a>
   <div class="q-lang" style="display:flex;align-items:center;padding:0 12px;border-left:4px solid #141110;position:relative">{{ langPicker }}</div>
   <a href="#buy" style="display:flex;align-items:center;background:oklch(0.88 0.17 95);color:#141110;padding:0 22px;border-left:4px solid #141110;font-size:15px;text-transform:uppercase;white-space:nowrap" style-hover="background:#141110;color:oklch(0.88 0.17 95)">{{ t.buyCta }}</a>

@@ -1,4 +1,4 @@
-Research #04 Noah's Ark: clickable X profiles and all in-slide links; Russian link previews
+Header: clear "Read →" call-to-action on the QNN Research button
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01MPEqxgPdw2kbhtrFwyPCAH
