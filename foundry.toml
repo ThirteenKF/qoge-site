@@ -1,0 +1,7 @@
+[profile.default]
+src = "contracts"
+out = "out"
+libs = ["lib"]
+# Quai Network runs an EVM-compatible geth fork; paris keeps the bytecode free
+# of PUSH0 so the contract also works if a zone still predates Shanghai.
+evm_version = "paris"

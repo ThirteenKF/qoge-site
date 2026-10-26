@@ -13,6 +13,16 @@ Context for picking this project up in a new chat.
   (the parent `QOGE SITE` folder holds the original export — do not edit it)
 
 ## Files
+- `contracts/QogeStreak.sol` + `test/QogeStreak.t.sol` — on-chain visit streak
+  (one checkIn() per UTC day; day 1 = 2026-10-04 UTC = GENESIS_DAY 20730).
+  `foundry.toml` pins `evm_version = paris` (no PUSH0). Deploy (Quai mainnet,
+  Cyprus-1, RPC https://rpc.quai.network/cyprus1):
+  `forge create contracts/QogeStreak.sol:QogeStreak --rpc-url … --private-key … --constructor-args 0x0048848cA70eA1560577B4725A84b23B6bC589e2`,
+  then paste the address into `QOGE_STREAK.contract` in index.html (feature
+  stays hidden while it is empty). Site side: Pelagus/Blip EIP-1193
+  (`window.pelagus`/`window.ethel`), `quai_requestAccounts` → `eth_requestAccounts`
+  fallback, `eth_sendTransaction` with the checkIn() selector, `eth_call`
+  streakOf(address) for the read; texts `oc*` in every dict.
 - `index.html` — all markup, styles and logic (EN/RU dictionary, FAQ, roadmap,
   ticker). Exported from a design tool. Only the "Breaking News" design is kept;
   the unused hero/section variants were removed. <head> has title, description,
