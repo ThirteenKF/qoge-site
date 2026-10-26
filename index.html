@@ -21,6 +21,20 @@
 <meta name="twitter:title" content="$QOGE — Local puppy accidentally colonizes Mars">
 <meta name="twitter:description" content="Community memecoin on Quai Network. The first dog on Mars needs fuel to get home.">
 <meta name="twitter:image" content="https://www.qoge.fun/assets/og.jpg">
+<script>
+// Serve React from this origin instead of unpkg.com (support.js honours
+// window.__resources): one less third-party hop, no unpkg outage can blank
+// the site, and file:// works offline. Files are the exact unpkg builds —
+// sha384 matches the SRI pins inside support.js:
+//   react      DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z
+//   react-dom  gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1
+window.__resources = {
+  'https://unpkg.com/react@18.3.1/umd/react.production.min.js': './assets/vendor/react.production.min.js',
+  'https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js': './assets/vendor/react-dom.production.min.js'
+};
+</script>
+<link rel="preload" href="assets/vendor/react.production.min.js" as="script">
+<link rel="preload" href="assets/vendor/react-dom.production.min.js" as="script">
 <script src="./support.js"></script>
 </head>
 <body>
