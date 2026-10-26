@@ -8,7 +8,8 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  # write is needed by the "Publish refreshed metrics" step below
+  contents: write
   pages: write
   id-token: write
 
@@ -29,10 +30,22 @@ jobs:
           node-version: 20
       - name: Fetch live metrics from Quainance
         run: node scripts/fetch-metrics.mjs
+      - name: Publish refreshed metrics to the metrics branch
+        # Keeps the repo snapshot (and the Vercel static fallback) fresh
+        # without pushing to main — Vercel would rebuild 48x/day otherwise.
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet -- metrics.json assets/metrics.js; then
+            git checkout -B metrics
+            git add metrics.json assets/metrics.js
+            git commit -m "Refresh metrics snapshot [skip ci]"
+            git push origin metrics
+          fi
       - name: Prepare site
         run: |
           mkdir _site
-          cp -r index.html support.js metrics.json assets _site/
+          cp -r index.html support.js metrics.json robots.txt sitemap.xml assets _site/
           touch _site/.nojekyll
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
