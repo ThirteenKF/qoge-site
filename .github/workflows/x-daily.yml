@@ -1,0 +1,28 @@
+name: Post ship's log to X
+
+on:
+  schedule:
+    - cron: '10 9 * * *'  # daily 09:10 UTC — morning for EU/US, evening for Asia
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Post today's log entry
+        env:
+          # X (Twitter) app with OAuth 1.0a user-context access for the
+          # @QOGEofficial account. Generate at developer.twitter.com ->
+          # your app -> Keys & tokens. Free tier is enough for 1 post/day.
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_SECRET: ${{ secrets.X_ACCESS_SECRET }}
+        run: node scripts/post-journal.mjs
