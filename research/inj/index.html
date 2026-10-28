@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Injective (INJ), explained simply · QNN Research</title>
+<meta name="description" content="A full breakdown of Injective: the on-chain orderbook, burn-auction tokenomics, the institutional track (Robinhood, SEC, RWA standards) and the open question — demand. 19 slides, EN + RU. Not financial advice.">
+<meta name="theme-color" content="#141110">
+<link rel="icon" href="../../assets/logo.jpg" type="image/jpeg">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="$QOGE · QNN Research">
+<meta property="og:title" content="Injective (INJ), explained simply · QNN Research">
+<meta property="og:description" content="A full breakdown of Injective: the on-chain orderbook, burn-auction tokenomics, the institutional track (Robinhood, SEC, RWA standards) and the open question — demand. 19 slides, EN + RU. Not financial advice.">
+<meta property="og:url" content="https://www.qoge.fun/research/inj/">
+<meta property="og:image" content="https://www.qoge.fun/research/inj/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@QOGEofficial">
+<meta name="twitter:title" content="Injective (INJ), explained simply · QNN Research">
+<meta name="twitter:description" content="A full breakdown of Injective: the on-chain orderbook, burn-auction tokenomics, the institutional track (Robinhood, SEC, RWA standards) and the open question — demand. 19 slides, EN + RU. Not financial advice.">
+<meta name="twitter:image" content="https://www.qoge.fun/research/inj/og.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#141110;--paper:#f4f0ec;--red:oklch(0.62 0.21 25);--yel:oklch(0.88 0.17 95);--mute:#a59e97;--line:#2a2523}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--paper);font-family:'Archivo',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
+header.q{position:sticky;top:0;z-index:20;display:flex;align-items:stretch;background:var(--paper);color:var(--ink);border-bottom:4px solid var(--ink);font-weight:900}
+header.q .logo{display:flex;align-items:center;gap:10px;background:var(--red);color:var(--paper);padding:10px 18px;font-stretch:125%;font-size:20px;white-space:nowrap}
+header.q .logo img{width:32px;height:32px;border-radius:50%;border:2px solid var(--paper);object-fit:cover}
+header.q .crumb{flex:1;min-width:0;display:flex;align-items:center;gap:10px;padding:0 16px;font-size:14px;text-transform:uppercase;white-space:nowrap;overflow:hidden}
+header.q .crumb a:hover{color:var(--red)}
+header.q .crumb .sep{color:#8a827b}
+.lang{display:flex;align-items:stretch;border-left:4px solid var(--ink)}
+.lang button{font:inherit;font-weight:900;font-size:14px;border:0;background:transparent;color:var(--ink);padding:0 14px;cursor:pointer}
+.lang button[aria-pressed=true]{background:var(--ink);color:var(--yel)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+.tag{display:inline-block;background:var(--red);color:var(--paper);padding:6px 14px;font-weight:900;font-size:14px;text-transform:uppercase;transform:skewX(-8deg)}
+h1{margin:18px 0 0;font-weight:900;font-stretch:115%;font-size:clamp(36px,6vw,76px);line-height:.95;letter-spacing:-.01em;text-transform:uppercase;text-wrap:balance}
+h1 span{color:var(--yel)}
+.lead{max-width:720px;margin:18px 0 0;font-size:clamp(16px,2vw,19px);line-height:1.5;color:#cfc8c1;text-wrap:pretty}
+.meta{margin-top:16px;font-size:12px;letter-spacing:.12em;color:var(--mute);text-transform:uppercase}
+.btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 20px;font-weight:900;font-size:14px;text-transform:uppercase;border:3px solid var(--yel);background:var(--yel);color:var(--ink)}
+.btn:hover{background:transparent;color:var(--yel)}
+.btn.ghost{background:transparent;color:var(--paper);border-color:var(--paper)}
+.btn.ghost:hover{background:var(--paper);color:var(--ink)}
+.btn.red{background:var(--red);border-color:var(--red);color:var(--paper)}
+.btn.red:hover{background:transparent;color:var(--red)}
+footer.q{margin-top:64px;border-top:1px solid var(--line);padding:28px 16px 40px;font-size:11px;letter-spacing:.1em;color:#8a827b;text-transform:uppercase;line-height:1.7}
+footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+@media (max-width:640px){header.q .logo span.t{display:none} header.q .crumb{font-size:12px;padding:0 10px} .lang button{padding:0 10px}}
+
+.hero{background:transparent;border-bottom:4px solid var(--ink);padding:40px 0 44px}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin:28px 0 0}
+.toc a{border:2px solid var(--line);padding:8px 12px;font-size:13px;font-weight:700;color:#cfc8c1}
+.toc a:hover{border-color:var(--yel);color:var(--yel)}
+.slides{display:flex;flex-direction:column;gap:40px;margin-top:40px}
+.slide{scroll-margin-top:80px}
+.slide .bar{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-bottom:10px}
+.slide .no{white-space:nowrap}
+.slide a.zoom{display:block;cursor:zoom-in}
+.slide .no{font-size:12px;letter-spacing:.12em;color:var(--red);font-weight:500}
+.slide .sec{font-size:12px;letter-spacing:.12em;color:var(--mute);text-transform:uppercase}
+.slide img{display:block;width:100%;height:auto;aspect-ratio:16/9;background:#1d1a19;border:4px solid var(--paper);box-shadow:8px 8px 0 var(--red)}
+.slide details{margin-top:16px;border-left:4px solid var(--yel);padding:2px 0 2px 14px;color:#cfc8c1;font-size:15px;line-height:1.55}
+.slide summary{cursor:pointer;font-weight:800;color:var(--paper);font-size:14px;text-transform:uppercase;letter-spacing:.04em}
+.slide details p{margin:8px 0 0}
+.nfa{margin-top:48px;border:4px solid var(--red);padding:20px 22px;font-size:15px;line-height:1.55;color:#cfc8c1}
+.nfa b{color:var(--paper)}
+.cta{margin-top:28px;background:var(--yel);color:var(--ink);padding:28px 24px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+.cta h2{margin:0;font-weight:900;font-stretch:115%;font-size:clamp(22px,3vw,34px);text-transform:uppercase;line-height:1}
+.cta .btn{background:var(--ink);color:var(--yel);border-color:var(--ink)}
+.cta .btn:hover{background:transparent;color:var(--ink)}
+@media (max-width:640px){.slide img{border-width:3px;box-shadow:5px 5px 0 var(--red)} .hero{padding:28px 0 32px}}
+
+body{background:var(--ink) url(../research-bg.webp) center top/cover fixed no-repeat}
+@media (max-width:767px){body{background-attachment:scroll;background-size:auto 100vh}}
+</style>
+</head>
+<body>
+<header class="q">
+  <a class="logo" href="../../"><img src="../../assets/logo.jpg" alt="$QOGE logo"><span class="t">QNN</span></a>
+  <nav class="crumb mono"><a href="../">Research</a><span class="sep">/</span><span>INJECTIVE · INJ</span></nav>
+  <div class="lang" role="group" aria-label="Language"><button type="button" data-l="en">EN</button><button type="button" data-l="ru">RU</button></div>
+</header>
+
+    <section class="hero"><div class="wrap">
+      <span class="tag" data-en="Research #05 · Injective" data-ru="Ресёрч #05 · Injective">Research #05 · Injective</span>
+      <h1><span style="color:inherit" data-en="Injective (INJ)," data-ru="Injective (INJ),">Injective (INJ),</span> <span data-en="explained simply" data-ru="простыми словами">explained simply</span></h1>
+      <p class="lead" data-en="A full breakdown of Injective: the on-chain orderbook, burn-auction tokenomics with zero unlocks, the institutional track (Robinhood, SEC transfer agent, RWA standards, KRW1) — and the open question: demand. Prices as of October 26, 2026." data-ru="Полный разбор Injective: ончейн-ордербук, токеномика со сжиганиями и нулём разлоков, институциональный трек (Robinhood, SEC transfer agent, RWA-стандарты, KRW1) — и главный открытый вопрос: спрос. Цены на 26 октября 2026 года.">A full breakdown of Injective: the on-chain orderbook, burn-auction tokenomics with zero unlocks, the institutional track (Robinhood, SEC transfer agent, RWA standards, KRW1) — and the open question: demand. Prices as of October 26, 2026.</p>
+      <div class="meta mono" data-en="Oct 26, 2026 · 19 slides · prices as of Oct 26, 2026" data-ru="26.10.2026 · 19 слайдов · цены на 26.10.2026">Oct 26, 2026 · 19 slides · prices as of Oct 26, 2026</div>
+      <div class="btns">
+        <a class="btn red" href="https://discord.gg/eHVA8rJ2J" target="_blank" rel="noopener"><span  data-en="Discuss in Discord" data-ru="Обсудить в Discord">Discuss in Discord</span> ↗</a>
+        <a class="btn ghost" href="https://x.com/QOGEofficial" target="_blank" rel="noopener">X / Twitter ↗</a>
+      </div>
+      <nav class="toc" id="toc" aria-label="Sections"></nav>
+    </div></section>
+    <main class="wrap">
+      <div class="slides" id="slides"></div>
+      <div class="nfa"><span  data-en="&lt;b&gt;Not financial advice.&lt;/b&gt; This is an independent community breakdown for education. Numbers come from public sources (CoinGecko, DefiLlama, injective.com, official press releases) and our own calculations, marked on the slides. Crypto is volatile — do your own research." data-ru="&lt;b&gt;Не финансовый совет.&lt;/b&gt; Это независимый разбор сообщества для обучения. Цифры взяты из открытых источников (CoinGecko, DefiLlama, injective.com, официальные пресс-релизы) и собственных расчётов — они помечены на слайдах. Крипта волатильна — проверяйте сами."><b>Not financial advice.</b> This is an independent community breakdown for education. Numbers come from public sources (CoinGecko, DefiLlama, injective.com, official press releases) and our own calculations, marked on the slides. Crypto is volatile — do your own research.</span></div>
+      <div class="cta"><h2  data-en="Questions? Ask in the Discord" data-ru="Есть вопросы? Пиши в Discord">Questions? Ask in the Discord</h2><a class="btn" href="https://discord.gg/eHVA8rJ2J" target="_blank" rel="noopener"><span  data-en="Join the research channel" data-ru="Канал ресёрча">Join the research channel</span> ↗</a></div>
+    </main>
+    <footer class="q mono"><div class="wrap"><span>© 2026 $QOGE · QNN Research</span><span  data-en="Not financial advice · DYOR" data-ru="Не финансовый совет · DYOR">Not financial advice · DYOR</span><span data-en="Background photo: NASA/JPL-Caltech/MSSS" data-ru="Фото фона: NASA/JPL-Caltech/MSSS">Background photo: NASA/JPL-Caltech/MSSS</span></div></footer>
+    <script>
+    var DATA={"en": [{"id":"cover","t":"INJ, explained simply","n":"A full breakdown of Injective for users: the orderbook, the tokenomics, the institutional track. Every number was checked against public sources on October 26, 2026.","s":"The key points in one minute","l":[]},{"id":"key","t":"The key points","n":"Five numbers to remember: $7.81 price, $780M market cap, everything circulating, −85% from ATH, and a $12M TVL against it.","s":"","l":[]},{"id":"updown","t":"What could lift the price, and what could sink it","n":"The upside is the institutional track and the young EVM ecosystem; the downside is weak DeFi demand and issuance that currently offsets the burns.","s":"","l":[]},{"id":"team","t":"The team: who builds Injective","n":"Eric Chen (CEO) and Albert Chon (CTO) founded Injective Labs; the project was incubated by Binance Labs. The $150M Ecosystem Group (2023) included Pantera, Jump Crypto, Kraken Ventures, KuCoin Ventures and Delphi Labs.","s":"How the project works","l":[]},{"id":"tech","t":"How the network works","n":"Cosmos stack with fast finality. The core is an on-chain orderbook: spot and derivatives live at the protocol level. Since November 2025 Wasm and EVM contracts share one liquidity pool. iAgent is the SDK for on-chain AI agents.","s":"","l":[]},{"id":"timeline","t":"Timeline: from launch to RWA","n":"TGE in October 2020 (100M INJ), the $150M ecosystem fund in January 2023, Google Cloud as a validator in March 2025, the native EVM mainnet in November 2025, the Meridian RWA standards in September 2026, and in 2026 the Robinhood listing plus the KRW1 stablecoin.","s":"","l":[]},{"id":"tok","t":"Tokenomics: the base numbers","n":"Base supply 100M INJ since TGE; everything is circulating now. About 6–6.85M INJ has been burned. Staking issuance is 2.2–4.4% a year depending on the bonded share (currently ~47% vs the 60% target).","s":"Tokenomics and burns","l":[]},{"id":"burn","t":"The burn auction: how burning works","n":"Every week the protocol collects 60% of exchange dApp fees; participants bid in INJ, the winning bid is burned forever and the winner takes the asset basket. The first burn was 40,000 INJ; in January 2026 a governance vote removed ~6.85M INJ from circulation.","s":"","l":[]},{"id":"math","t":"Supply math","n":"Our estimate: staking issuance is +1.0–2.1M INJ a year; buybacks at the current pace are about −1.7M a year, plus the auctions. At today’s activity supply stagnates — deflation is a function of volume, not a constant. Marked as our own calculation.","s":"","l":[]},{"id":"demand","t":"Demand: is anyone using the network?","n":"TVL is $12M — 1.5% of the market cap. Turnover comes from app trading (flagship Helix), which does not show up in TVL. The new channels — KRW1, RWA standards, Robinhood — are just launching.","s":"Demand and market","l":[]},{"id":"market","t":"The market: liquidity and venues","n":"24-hour volume is $141M — 18% of the market cap. Trading happens on Coinbase, Binance, Kraken and Robinhood. There are no cliffs ahead: pressure comes only from trading and staking issuance.","s":"","l":[]},{"id":"history","t":"A year of price: V-shaped recovery","n":"From $9.03 in October 2025 the price slid to $2.75 by April 2026, spiked in June and recovered from September. Now $7.86 — still −85% from the March 2024 peak of $52.62.","s":"","l":[]},{"id":"myths","t":"Myths and facts","n":"These claims show up in popular INJ write-ups. All of them disagree with the data as of October 26, 2026: deflation depends on activity, Google did not buy the token, and the institutional work is still in progress.","s":"Myths, forecasts and scenarios","l":[]},{"id":"scenarios","t":"Scenarios [HYPOTHESIS]","n":"The corridors are tied to the yearly range of $2.75–9.03: bearish $4–5, base case $6–9, bullish $12–15. These are if-then conditions, not forecasts.","s":"","l":[]},{"id":"calls","t":"What forecast sites promise","n":"CoinDataFlow: $8.93–57.59 for 2027–2032; DigitalCoinPrice: $9.69 by the end of 2027; CoinCodex: ~$8.11 by November 2026. The consensus is ‘stay around today’s level’.","s":"","l":[]},{"id":"caps","t":"Price at different market caps","n":"Supply is 100M, so price = market cap ÷ 100M. Returning to the March 2024 peak requires a 6.7× growth of the capitalization. ‘INJ at $100’ means ‘the network at $10B’ — a question of demand, not supply.","s":"","l":[]},{"id":"facts","t":"Eight facts you didn’t know","n":"From the TGE anniversary to the burn-auction mechanics and the 90% oracle-gas cut in the Vulcan upgrade.","s":"Watch list and bottom line","l":[]},{"id":"watch","t":"What to watch","n":"Six indicators you can check yourself: TVL and Helix volumes, the size of the weekly burns, the bonded share, the SEC filing status, KRW1 volumes, and the first RWA launches on Meridian.","s":"","l":[]},{"id":"final","t":"Bottom line","n":"Supply is clean: everything circulating, zero unlocks, burns work. The problem is demand — a $12M TVL against a $780M market cap. The main quest is the institutional road: Meridian → SEC → Robinhood → KRW1.","s":"","l":[]}], "ru": [{"id":"cover","t":"INJ простыми словами","n":"Полный разбор Injective для пользователей: ордербук, токеномика, институциональный трек. Все цифры проверены по открытым источникам на 26 октября 2026 года.","s":"Главное за минуту","l":[]},{"id":"key","t":"Главное за минуту","n":"Пять цифр: цена $7,81, капитализация $780 млн, всё предложение на рынке, −85% от ATH и TVL $12 млн против этого.","s":"","l":[]},{"id":"updown","t":"Что может поднять цену, а что — опустить","n":"Аргументы вверх — институциональный трек и молодая EVM-экосистема; вниз — слабый DeFi-спрос и эмиссия, которая сейчас уравновешивает сжигания.","s":"","l":[]},{"id":"team","t":"Команда: кто строит Injective","n":"Эрик Чен (CEO) и Альберт Чон (CTO) — Injective Labs; проект инкубировался в Binance Labs. Фонд Injective Ecosystem Group ($150 млн, 2023): Pantera, Jump Crypto, Kraken Ventures, KuCoin Ventures, Delphi Labs.","s":"Как устроен проект","l":[]},{"id":"tech","t":"Как устроена сеть","n":"Cosmos-стек с быстрым финалити. Ядро — ончейн-ордербук: спот и деривативы на уровне протокола. С ноября 2025 Wasm и EVM работают с единой ликвидностью. iAgent — SDK ончейн AI-агентов.","s":"","l":[]},{"id":"timeline","t":"Хронология: от запуска до RWA","n":"TGE в октябре 2020 (100 млн INJ), фонд $150 млн в январе 2023, Google Cloud валидатором в марте 2025, нативный EVM в ноябре 2025, RWA-стандарты Meridian в сентябре 2026, в 2026-м — листинг Robinhood и стейблкоин KRW1.","s":"","l":[]},{"id":"tok","t":"Токеномика: базовые цифры","n":"База 100 млн INJ с TGE; сейчас в обращении всё. Сожжено около 6–6,85 млн. Стейкинг-эмиссия 2,2–4,4% в год в зависимости от доли стейкинга (~47% при цели 60%).","s":"Токеномика и сжигания","l":[]},{"id":"burn","t":"Burn-аукцион: как работает сжигание","n":"Раз в неделю протокол собирает 60% комиссий биржевых dApp; участники делают ставки в INJ, победившая ставка сжигается навсегда, победитель забирает корзину активов. Первый burn — 40 000 INJ; в январе 2026 голосованием изъято ~6,85 млн INJ.","s":"","l":[]},{"id":"math","t":"Математика предложения","n":"Наша оценка: эмиссия стейкинга +1,0–2,1 млн INJ в год; выкупы при текущем темпе ≈ −1,7 млн в год плюс аукционы. При нынешней активности предложение стагнирует — дефляция зависит от объёмов, это не константа. Помечено как собственный расчёт.","s":"","l":[]},{"id":"demand","t":"Спрос: пользуются ли сетью","n":"TVL — $12 млн, это 1,5% капитализации. Оборот даёт торговля в приложениях (флагман Helix), которая в TVL не видна. Новые каналы — KRW1, RWA-стандарты, Robinhood — только запускаются.","s":"Спрос и рынок","l":[]},{"id":"market","t":"Рынок: ликвидность и где торгуется","n":"Объём за 24 часа — $141 млн, это 18% капитализации. Торги идут на Coinbase, Binance, Kraken и Robinhood. Клифов впереди нет: давление создаёт только торговля и стейкинг-эмиссия.","s":"","l":[]},{"id":"history","t":"Цена за год: V-образное восстановление","n":"С $9,03 в октябре 2025 цена упала до $2,75 к апрелю 2026, спайкнула в июне и восстанавливается с сентября. Сейчас $7,86 — всё ещё −85% от пика $52,62 в марте 2024.","s":"","l":[]},{"id":"myths","t":"Мифы и факты","n":"Эти утверждения встречаются в популярных разборах INJ. Все они расходятся с данными на 26 октября 2026: дефляция зависит от активности, Google токен не покупал, институциональная работа ещё в процессе.","s":"Мифы, прогнозы и сценарии","l":[]},{"id":"scenarios","t":"Прогноз: сценарии [ГИПОТЕЗА]","n":"Коридоры привязаны к годовому диапазону $2,75–9,03: плохой $4–5, базовый $6–9, хороший $12–15. Это «если — то», а не прогнозы.","s":"","l":[]},{"id":"calls","t":"Что обещают прогноз-сайты","n":"CoinDataFlow: $8,93–57,59 на 2027–2032; DigitalCoinPrice: $9,69 к концу 2027; CoinCodex: ~$8,11 к ноябрю 2026. Консенсус — «остаться около текущего уровня».","s":"","l":[]},{"id":"caps","t":"Цена при разной капитализации","n":"Supply 100 млн, значит цена = капитализация ÷ 100 млн. Возврат на пик марта 2024 требует роста капитализации в 6,7 раза. «INJ за $100» = «сеть за $10 млрд» — вопрос спроса, а не предложения.","s":"","l":[]},{"id":"facts","t":"Восемь фактов, которые вы не знали","n":"От годовщины TGE до механики burn-аукциона и урезания газа оракулов на 90% в апгрейде Vulcan.","s":"За чем следить и итог","l":[]},{"id":"watch","t":"За чем следить","n":"Шесть показателей для самостоятельной проверки: TVL и объёмы Helix, размер еженедельных сжиганий, доля стейкинга, статус заявки SEC, объёмы KRW1 и первые RWA-запуски на Meridian.","s":"","l":[]},{"id":"final","t":"Итог","n":"Предложение чистое: всё на рынке, ноль разлоков, сжигания работают. Проблема — спрос: TVL $12 млн при капитализации $780 млн. Главный квест — институциональная дорога: Meridian → SEC → Robinhood → KRW1.","s":"","l":[]}]}, TT={"en":"Injective (INJ), explained simply","ru":"Injective (INJ) простыми словами"};
+    var SEC2={en:'Section',ru:'Раздел'}, NOTE={en:'Explanation',ru:'Пояснение'}, SL={en:'Slide',ru:'Слайд'};
+    function esc(s){return s.replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+    window.render=function(l){
+      var list=DATA[l], n=list.length, out='', toc='', cur='';
+      list.forEach(function(s,i){
+        var no=String(i+1).padStart(2,'0');
+        if(s.s){cur=s.s; toc+='<a href="#s-'+s.id+'">'+esc(s.s)+'</a>';}
+        out+='<article class="slide" id="s-'+s.id+'"><div class="bar"><span class="no mono">'+SL[l].toUpperCase()+' '+no+' / '+n+'</span><span class="sec mono">'+esc(cur)+'</span></div>'+
+          '<a class="zoom" href="'+l+'/'+no+'.webp" target="_blank" rel="noopener"><img src="'+l+'/'+no+'.webp" alt="'+esc(s.t)+'" width="1600" height="900" '+(i<2?'':'loading="lazy" ')+'decoding="async"></a>'+
+          (s.n?'<details'+(i<1?' open':'')+'><summary>'+NOTE[l]+'</summary><p>'+esc(s.n)+'</p></details>':'')+'</article>';
+      });
+      document.getElementById('slides').innerHTML=out;
+      document.getElementById('toc').innerHTML=toc;
+      document.title=TT[l]+' · QNN Research';
+      if(location.hash){var t=document.querySelector(location.hash); if(t) t.scrollIntoView();}
+    };
+
+function getLang(){
+  var p=new URLSearchParams(location.search).get('lang');
+  if(p==='ru'||p==='en') return p;
+  var s=null; try{s=localStorage.getItem('qoge-lang')}catch(e){}
+  if(s) return s==='ru'?'ru':'en';
+  return (navigator.language||'en').slice(0,2)==='ru'?'ru':'en';
+}
+function setLang(l,save){
+  if(save){try{localStorage.setItem('qoge-lang',l)}catch(e){}}
+  document.documentElement.lang=l;
+  document.querySelectorAll('.lang button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.l===l)});
+  document.querySelectorAll('[data-en]').forEach(function(el){el.innerHTML=el.getAttribute('data-'+l)});
+  if(window.render) window.render(l);
+}
+document.querySelectorAll('.lang button').forEach(function(b){b.onclick=function(){setLang(b.dataset.l,true)}};
+
+    setLang(getLang(),false);
+    </script>
+    </body>
+    </html>
