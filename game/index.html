@@ -17,7 +17,7 @@ canvas{display:block;image-rendering:auto;cursor:none}
 <script>
 'use strict';
 // ===== language: ?lang=ru|en, else the site's saved choice, else the browser language =====
-const EN={"⚠ ПАДАЕТ СПУТНИК!": "⚠ SATELLITE INCOMING!", "мышь — двигать   колесо — поворот": "mouse — move   wheel — rotate", "звук ✕": "sound ✕", "звук ♪": "sound ♪", "ещё ": "", "до старта": "to launch", "УРОВЕНЬ": "LEVEL", "УРОВЕНЬ ": "LEVEL ", "Счёт: ": "Score: ", "СТРОЙ БАЗУ ИЗ ГРУЗОВ": "BUILD THE MARS BASE", "СЛЕДУЮЩИЙ": "NEXT", "РЕКОРД": "BEST", "РАКЕТА": "ROCKET", "РАКЕТА ГОТОВА! +": "ROCKET READY! +", "ПКМ": "RMB", "ПАУЗА": "PAUSED", "ОЧКИ": "SCORE", "Ну ничего, ещё раз!": "Oops! Try again!", "МИССИЯ": "MISSION", "МАРС-КОМБО ×4!": "MARS COMBO ×4!", "ЛКМ — бросить   ПКМ — в карман": "LMB — drop   RMB — pocket", "ЛИНИИ": "LINES", "Клик — продолжить": "Click to continue", "Клик — начать игру": "Click to start", "Клик — ещё раз": "Click to play again", "КОМБО ×": "COMBO ×", "КАРМАН": "POCKET", "Иногда падает спутник — берегись!": "Watch out for falling satellites!", "БАЗА РУХНУЛА": "BASE DESTROYED", "БАБАХ!": "BOOM!", " линий": " lines left", "ЛКМ — бросить   ПКМ (держать) — быстрее": "LMB — drop   hold RMB — faster", "клик колесом": "wheel click", "⏸ ПАУЗА": "⏸ PAUSE", "▶ ИГРАТЬ": "▶ PLAY", "← НА САЙТ": "← QOGE.FUN"};
+const EN={"⚠ ПАДАЕТ СПУТНИК!": "⚠ SATELLITE INCOMING!", "мышь — двигать   колесо — поворот": "mouse — move   wheel — rotate", "звук ✕": "sound ✕", "звук ♪": "sound ♪", "ещё ": "", "до старта": "to launch", "УРОВЕНЬ": "LEVEL", "УРОВЕНЬ ": "LEVEL ", "Счёт: ": "Score: ", "СТРОЙ БАЗУ ИЗ ГРУЗОВ": "BUILD THE MARS BASE", "СЛЕДУЮЩИЙ": "NEXT", "РЕКОРД": "BEST", "РАКЕТА": "ROCKET", "РАКЕТА ГОТОВА! +": "ROCKET READY! +", "ПКМ": "RMB", "ПАУЗА": "PAUSED", "ОЧКИ": "SCORE", "Ну ничего, ещё раз!": "Oops! Try again!", "МИССИЯ": "MISSION", "МАРС-КОМБО ×4!": "MARS COMBO ×4!", "ЛКМ — бросить   ПКМ — в карман": "LMB — drop   RMB — pocket", "ЛИНИИ": "LINES", "Клик — продолжить": "Click to continue", "Клик — начать игру": "Click to start", "Клик — ещё раз": "Click to play again", "КОМБО ×": "COMBO ×", "КАРМАН": "POCKET", "Иногда падает спутник — берегись!": "Watch out for falling satellites!", "БАЗА РУХНУЛА": "BASE DESTROYED", "БАБАХ!": "BOOM!", " линий": " lines left", "ЛКМ — бросить   ПКМ (держать) — быстрее": "LMB — drop   hold RMB — faster", "клик колесом": "wheel click", "⏸ ПАУЗА": "⏸ PAUSE", "▶ ИГРАТЬ": "▶ PLAY", "← НА САЙТ": "← QOGE.FUN", "← → двигать   ↑ поворот   ↓ быстрее": "← → move   ↑ rotate   ↓ faster", "Пробел — бросить   C — карман   Esc — пауза": "Space — drop   C — pocket   Esc — pause", "Клик или Enter — начать игру": "Click or Enter to start", "Клик или Enter — ещё раз": "Click or Enter to play again", "Клик или Esc — продолжить": "Click or Esc to continue"};
 let LANG=(new URLSearchParams(location.search).get('lang')||'').toLowerCase();
 if(!LANG){try{LANG=(localStorage.getItem('qoge-lang')||'').toLowerCase()}catch(e){}}
 if(LANG!=='ru'&&LANG!=='en')LANG=/^(ru|uk|be|kk)/i.test(navigator.language||'')?'ru':'en';
@@ -131,7 +131,8 @@ function tickEvents(now){
 // ================== input: mouse only ==================
 function toLocal(e){const r=cv.getBoundingClientRect();return {mx:((e.clientX-r.left)*VW/r.width-OXs)/K,my:((e.clientY-r.top)*VH/r.height-OYs)/K}}
 let mxL=VW/2,myL=VH/2;
-cv.addEventListener('mousemove',e=>{const {mx,my}=toLocal(e);mxL=mx;myL=my;mouseCol=Math.floor((mx-BX)/CS)});
+let kb=false;
+cv.addEventListener('mousemove',e=>{const {mx,my}=toLocal(e);if(Math.abs(mx-mxL)+Math.abs(my-myL)>3)kb=false;mxL=mx;myL=my;mouseCol=Math.floor((mx-BX)/CS)});
 cv.addEventListener('wheel',e=>{e.preventDefault();rotate(e.deltaY<0?1:-1)},{passive:false});
 cv.addEventListener('contextmenu',e=>e.preventDefault());
 cv.addEventListener('mousedown',e=>{const {mx,my}=toLocal(e);
@@ -143,7 +144,23 @@ cv.addEventListener('mousedown',e=>{const {mx,my}=toLocal(e);
  if(e.button===0)hardDrop();else if(e.button===2){soft=true;dropT=0}else if(e.button===1){e.preventDefault();hold()}});
 addEventListener('mouseup',e=>{if(e.button===2)soft=false});
 cv.addEventListener('mouseleave',()=>{soft=false});
-addEventListener('keydown',e=>{if(['Escape','p','P','з','З'].includes(e.key))togglePause()});
+// keyboard: arrows or WASD (by physical key, works in any layout)
+function shift(d){if(state==='play'&&!collide(cur,cur.x+d,cur.y,cur.cells)){cur.x+=d;beep(220,.02,'square',.02)}}
+addEventListener('keydown',e=>{const c=e.code;
+ if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Space'].includes(c))e.preventDefault();
+ if(c==='Escape'||c==='KeyP'){togglePause();return}
+ if(state==='menu'||state==='over'){if(c==='Enter'||c==='Space'){reset();beep(523,.1,'triangle',.06);kb=true}return}
+ if(state==='pause'){if(c==='Enter'||c==='Space')resume();return}
+ kb=true;
+ if(c==='ArrowLeft'||c==='KeyA')shift(-1);
+ else if(c==='ArrowRight'||c==='KeyD')shift(1);
+ else if(!e.repeat&&(c==='ArrowUp'||c==='KeyW'||c==='KeyX'))rotate(1);
+ else if(!e.repeat&&c==='KeyZ')rotate(-1);
+ else if(c==='ArrowDown'||c==='KeyS'){if(!soft){soft=true;dropT=0}}
+ else if(!e.repeat&&c==='Space')hardDrop();
+ else if(!e.repeat&&(c==='KeyC'||c==='ShiftLeft'||c==='ShiftRight'))hold();
+},{passive:false});
+addEventListener('keyup',e=>{if(e.code==='ArrowDown'||e.code==='KeyS')soft=false});
 let pausedAt=0;
 function shiftTimers(d){satNext+=d;metNext+=d;if(sat){sat.t+=d;if(sat.t2)sat.t2+=d;if(sat.t3)sat.t3+=d}if(met)met.t+=d}
 function togglePause(){if(state==='play'){state='pause';soft=false;pausedAt=performance.now()}else if(state==='pause')resume()}
@@ -157,7 +174,7 @@ cv.addEventListener('touchend',e=>{e.preventDefault();if(!tStart)return;const p=
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&state==='play'){state='pause';soft=false;pausedAt=performance.now()}});
 
 // follow the mouse: step the piece toward the column under the cursor (never through blocks)
-function follow(){if(state!=='play')return;const w=maxI(cur.cells)-minI(cur.cells)+1;let target=mouseCol-Math.floor(w/2)-minI(cur.cells);
+function follow(){if(state!=='play'||kb)return;const w=maxI(cur.cells)-minI(cur.cells)+1;let target=mouseCol-Math.floor(w/2)-minI(cur.cells);
  for(let s=0;s<3&&cur.x!==target;s++){const d=Math.sign(target-cur.x);if(!collide(cur,cur.x+d,cur.y,cur.cells))cur.x+=d;else break}}
 
 // ================== render ==================
@@ -222,8 +239,8 @@ function drawUI(now){
  if(DOG.complete)x.drawImage(DOG,f*DW,0,DW,DH,262-DW/2,600-DH+bob,DW,DH);
  if(bubble&&now<bubble.until){x.font='bold 22px DejaVu Sans,Arial';const w=Math.max(200,x.measureText(bubble.t).width+40);x.fillStyle='#ffcf3a';rr(275-w/2,250,w,58,16);x.fill();x.beginPath();x.moveTo(250,307);x.lineTo(266,336);x.lineTo(282,307);x.fill();x.fillStyle='#1a0e08';x.fillText(bubble.t,275-w/2+20,287)}
  // controls
- x.fillStyle='#f4efe4';rr(40,640,420,52,10);x.fill();x.strokeStyle='#1a1410';x.lineWidth=3;x.stroke();x.strokeStyle='#1a1410';x.lineWidth=2;rr(58,656,20,32,10);x.stroke();x.beginPath();x.moveTo(68,656);x.lineTo(68,668);x.stroke();
- x.fillStyle='#1a1410';x.font='13px DejaVu Sans,Arial';x.fillText(L('мышь — двигать   колесо — поворот'),90,668);x.fillText(L('ЛКМ — бросить   ПКМ (держать) — быстрее'),90,686);
+ x.fillStyle='#f4efe4';rr(40,640,420,52,10);x.fill();x.strokeStyle='#1a1410';x.lineWidth=3;x.stroke();x.strokeStyle='#1a1410';x.lineWidth=2;if(kb){rr(52,660,32,22,4);x.stroke();x.fillStyle='#1a1410';for(let i=0;i<4;i++)x.fillRect(56+i*7,664,4,3);x.fillRect(58,674,20,3)}else{rr(58,656,20,32,10);x.stroke();x.beginPath();x.moveTo(68,656);x.lineTo(68,668);x.stroke()}
+ x.fillStyle='#1a1410';x.font='13px DejaVu Sans,Arial';if(kb){x.fillText(L('← → двигать   ↑ поворот   ↓ быстрее'),90,668);x.fillText(L('Пробел — бросить   C — карман   Esc — пауза'),90,686)}else{x.fillText(L('мышь — двигать   колесо — поворот'),90,668);x.fillText(L('ЛКМ — бросить   ПКМ (держать) — быстрее'),90,686)}
  // mute
  x.fillStyle=state==='pause'?'#ffd23a':'#f4efe4';rr(1096,86,156,34,8);x.fill();x.strokeStyle='#1a1410';x.lineWidth=2;x.stroke();x.fillStyle='#1a1410';x.font='bold 14px DejaVu Sans,Arial';x.fillText(state==='pause'?L('▶ ИГРАТЬ'):L('⏸ ПАУЗА'),1126,109);
  x.fillStyle='#f4efe4';rr(1096,40,72,32,8);x.fill();x.strokeStyle='#1a1410';x.lineWidth=2;x.stroke();x.fillStyle='#1a1410';x.font='bold 13px DejaVu Sans,Arial';x.fillText(LANG==='ru'?'RU · en':'EN · ru',1106,61);
@@ -244,7 +261,7 @@ function cardFrame(){
  x.fillStyle='#f4efe4';x.beginPath();x.rect(10,10,VW-20,VH-20);x.rect(22,22,VW-44,VH-44);x.fill('evenodd');
  x.strokeStyle='#1a1410';x.lineWidth=3;x.strokeRect(23.5,23.5,VW-47,VH-47);
 }
-function cursor(){if(state!=='play'){x.fillStyle='#ffcf3a';x.beginPath();x.moveTo(mxL,myL);x.lineTo(mxL+14,myL+10);x.lineTo(mxL+6,myL+12);x.lineTo(mxL+2,myL+20);x.fill();return}
+function cursor(){if(kb&&state==='play')return;if(state!=='play'){x.fillStyle='#ffcf3a';x.beginPath();x.moveTo(mxL,myL);x.lineTo(mxL+14,myL+10);x.lineTo(mxL+6,myL+12);x.lineTo(mxL+2,myL+20);x.fill();return}
  x.strokeStyle='rgba(255,207,58,.8)';x.lineWidth=2;x.beginPath();x.arc(mxL,myL,9,0,7);x.stroke();x.beginPath();x.moveTo(mxL-14,myL);x.lineTo(mxL-5,myL);x.moveTo(mxL+5,myL);x.lineTo(mxL+14,myL);x.stroke()}
 
 // ================== loop ==================
@@ -256,9 +273,9 @@ function frame(now){
  x.setTransform(K,0,0,K,OXs+sx,OYs+sy);
  if(grid)drawBoard(now);else{drawBoardEmpty()}
  drawUI(now);drawFX(now);
- if(state==='menu')overlay('QOGE MARS DROP',L('Клик — начать игру'),L('Иногда падает спутник — берегись!'));
- if(state==='pause')overlay(L('ПАУЗА'),L('Клик — продолжить'));
- if(state==='over')overlay(L('БАЗА РУХНУЛА'),L('Счёт: ')+score.toLocaleString('ru'),L('Клик — ещё раз'));
+ if(state==='menu')overlay('QOGE MARS DROP',L('Клик или Enter — начать игру'),L('Иногда падает спутник — берегись!'));
+ if(state==='pause')overlay(L('ПАУЗА'),L('Клик или Esc — продолжить'));
+ if(state==='over')overlay(L('БАЗА РУХНУЛА'),L('Счёт: ')+score.toLocaleString('ru'),L('Клик или Enter — ещё раз'));
  x.setTransform(1,0,0,1,0,0);cardFrame();x.setTransform(K,0,0,K,OXs,OYs);cursor();x.setTransform(1,0,0,1,0,0);
  requestAnimationFrame(frame)}
 function drawBoardEmpty(){grid=null;const save=grid;grid=Array.from({length:ROWS},()=>Array(COLS).fill(null));const st=state;state='menu';drawBoard(performance.now());state=st;grid=save}
