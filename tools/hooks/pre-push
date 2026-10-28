@@ -1,0 +1,7 @@
+#!/bin/sh
+# QOGE guard: commits/pushes only through tools/publish.bat (owner approves the file list there)
+if [ "$QOGE_PUBLISH" != "1" ]; then
+  echo "BLOCKED: git  is allowed only through tools/publish.bat (run by the owner)." "$(basename "$0")"
+  exit 1
+fi
+exit 0

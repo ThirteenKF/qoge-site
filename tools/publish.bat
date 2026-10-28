@@ -2,6 +2,20 @@
 chcp 65001 >nul
 cd /d "%~dp0.."
 echo === QOGE: publish changes ===
+set QOGE_PUBLISH=1
+echo.
+echo --- files that will be published ---
+git status --short
+echo.
+echo --- commits not yet on GitHub ---
+git log origin/main..HEAD --oneline
+echo.
+set /p OK=Publish all of this to the site? Type y and press Enter: 
+if /i not "%OK%"=="y" (
+  echo Cancelled. Nothing was published.
+  pause
+  exit /b
+)
 git add -A
 git diff --cached --quiet
 if %errorlevel%==0 (
