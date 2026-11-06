@@ -1,5 +1,5 @@
 // Vercel Edge Function: share card PNG (1200x675) for X/Telegram link previews.
-// GET /api/og?d=<log day>&r=<rank 0..6>&s=<streak>&l=<en|ru|es|pt|zh>&p=<rocket %>
+// GET /api/og?d=<log day>&r=<rank 0..6>&s=<streak>&l=<en|ru>&p=<rocket %>
 // Draws today's ship's-log entry + the rank badge (assets/badges/rank-N.png).
 import { ImageResponse } from '@vercel/og';
 
@@ -8,9 +8,6 @@ export const config = { runtime: 'edge' };
 const T = {
   en: { tag: '● ON THE RADIO', sub: '$QOGE · GROUND CONTROL', title: "Ship's log", day: 'day {n}', sign: '— Q., stranded on Mars', days: '{n} days in a row', one: '1 day in a row', rocket: 'Rocket built: {p}%', ranks: ['Cadet', 'Mechanic', 'Pilot', 'Navigator', 'Commander', 'Admiral', 'Mars legend'] },
   ru: { tag: '● НА СВЯЗИ', sub: '$QOGE · ЦЕНТР УПРАВЛЕНИЯ', title: 'Бортовой журнал', day: 'день {n}', sign: '— Q., застрял на Марсе', days: '{n} дн. подряд', one: '1 дн. подряд', rocket: 'Ракета собрана: {p}%', ranks: ['Стажёр', 'Механик', 'Пилот', 'Штурман', 'Командир', 'Адмирал', 'Легенда Марса'] },
-  es: { tag: '● EN LA RADIO', sub: '$QOGE · CENTRO DE CONTROL', title: 'Diario de a bordo', day: 'día {n}', sign: '— Q., atrapado en Marte', days: '{n} días seguidos', one: '1 día seguido', rocket: 'Cohete listo: {p}%', ranks: ['Cadete', 'Mecánico', 'Piloto', 'Navegante', 'Comandante', 'Almirante', 'Leyenda de Marte'] },
-  pt: { tag: '● NO RÁDIO', sub: '$QOGE · CONTROLE DA MISSÃO', title: 'Diário de bordo', day: 'dia {n}', sign: '— Q., preso em Marte', days: '{n} dias seguidos', one: '1 dia seguido', rocket: 'Foguete pronto: {p}%', ranks: ['Cadete', 'Mecânico', 'Piloto', 'Navegador', 'Comandante', 'Almirante', 'Lenda de Marte'] },
-  zh: { tag: '● 通讯中', sub: '$QOGE · 地面控制', title: '航行日志', day: '第 {n} 天', sign: '—— Q.，被困火星', days: '连续 {n} 天', one: '连续 1 天', rocket: '火箭完成度：{p}%', ranks: ['学员', '机械师', '飞行员', '领航员', '指挥官', '上将', '火星传奇'] },
 };
 
 const INK = '#141110', CREAM = '#f4f0ec', YEL = '#f5d33a', RED = '#e8473f', GREY = '#a59e97';
@@ -48,23 +45,18 @@ export default async function handler(req) {
   const title = (t.title + ' · ').toUpperCase(), dayTxt = t.day.replace('{n}', day).toUpperCase();
   const rank = t.ranks[r].toUpperCase(), streak = (s === 1 ? t.one : t.days.replace('{n}', s)).toUpperCase(), rocket = t.rocket.replace('{p}', p);
   const logNo = 'LOG #' + String(day).padStart(3, '0');
-  const cjk = L === 'zh';
-  const qLen = quote.length * (cjk ? 1.9 : 1);
+  const qLen = quote.length;
   const qSize = qLen <= 60 ? 46 : qLen <= 95 ? 40 : qLen <= 130 ? 35 : qLen <= 170 ? 31 : 27;
-  const tSize = (title + dayTxt).length * (cjk ? 1.9 : 1) > 26 ? 46 : 56;
-  const rSize = rank.length * (cjk ? 1.9 : 1) > 12 ? 34 : 44;
+  const tSize = (title + dayTxt).length > 26 ? 46 : 56;
+  const rSize = rank.length > 12 ? 34 : 44;
 
   const allText = [t.tag, t.sub, title, dayTxt, quote, t.sign, rank, streak, rocket, logNo, 'www.qoge.fun', '$QOGE'].join('');
   const fonts = []; let fontErr = '';
   try {
     const [bold, black, mono] = await Promise.all([font('Inter:wght@800', allText), font('Inter:wght@900', allText), font('IBM+Plex+Mono:wght@500', allText)]);
     fonts.push({ name: 'Inter', data: bold, weight: 800, style: 'normal' }, { name: 'Inter', data: black, weight: 900, style: 'normal' }, { name: 'Mono', data: mono, weight: 500, style: 'normal' });
-    if (cjk) {
-      const [sc8, sc9] = await Promise.all([font('Noto+Sans+SC:wght@800', allText), font('Noto+Sans+SC:wght@900', allText)]);
-      fonts.push({ name: 'SC', data: sc8, weight: 800, style: 'normal' }, { name: 'SC', data: sc9, weight: 900, style: 'normal' });
-    }
   } catch (e) { fontErr = String(e && e.message || e); }
-  const SANS = cjk ? 'SC, Inter' : 'Inter', MONO = cjk ? 'Mono, SC' : 'Mono';
+  const SANS = 'Inter', MONO = 'Mono';
 
   const tree = el('div', { width: 1200, height: 675, display: 'flex', position: 'relative', backgroundColor: INK, fontFamily: SANS, color: CREAM },
     el('div', { position: 'absolute', left: 0, top: 0, width: 16, height: 675, backgroundColor: RED }),

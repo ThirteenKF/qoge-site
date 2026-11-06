@@ -415,7 +415,7 @@ a:hover{color:oklch(0.72 0.17 40)}
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;buildProgress&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0,&quot;max&quot;:100,&quot;step&quot;:1,&quot;default&quot;:37,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Mission&quot;},&quot;chain&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Quai Network&quot;,&quot;Solana&quot;,&quot;Ethereum&quot;,&quot;Base&quot;,&quot;BNB Chain&quot;,&quot;TON&quot;],&quot;default&quot;:&quot;Quai Network&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Token&quot;},&quot;contractAddress&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;0x0048848cA70eA1560577B4725A84b23B6bC589e2&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Token&quot;}}">
 class Component extends DCLogic {
-  state = { visit: null, now: Date.now(), copied: false, scroll: 0, progress: 0, openFaq: 0, langOpen: false, metrics: null, hi: null, lang: (() => { const ok = ['en', 'es', 'pt', 'ru', 'zh']; try { const v = localStorage.getItem('qoge-lang'); if (ok.includes(v)) return v; } catch (e) {} const nav = (typeof navigator !== 'undefined' && navigator.language || 'en').slice(0, 2).toLowerCase(); return ok.includes(nav) ? nav : 'en'; })() };
+  state = { visit: null, now: Date.now(), copied: false, scroll: 0, progress: 0, openFaq: 0, langOpen: false, metrics: null, hi: null, lang: (() => { const ok = ['en', 'ru']; try { const v = localStorage.getItem('qoge-lang'); if (ok.includes(v)) return v; } catch (e) {} const nav = (typeof navigator !== 'undefined' && navigator.language || 'en').slice(0, 2).toLowerCase(); return ok.includes(nav) ? nav : 'en'; })() };
   setLang(l) { try { localStorage.setItem('qoge-lang', l); } catch (e) {} document.documentElement.lang = l; this.setState({ lang: l }); }
   dict(chain) {
     const en = {
@@ -492,118 +492,7 @@ class Component extends DCLogic {
       faqs: [['Что такое $QOGE?', 'Комьюнити-мемкоин с историей первой собаки на Марсе. Каждый холдер — топливо для его ракеты домой.'], ['Есть ли доля команды?', 'Нет. Честный запуск, без пресейла и токенов команды. Ракета принадлежит стае.'], ['В какой сети?', '$QOGE живёт в сети ' + chain + '. Всегда сверяй адрес контракта с этим сайтом перед обменом.'], ['Это инвестиционный совет?', 'Нет. $QOGE — мем без внутренней ценности и ожидаемой доходности. Вкладывай только то, что не жалко потерять.'], ['Когда он вернётся домой?', 'Когда ракета будет построена. Следи за статусом постройки выше.']],
       lvHold: 'Холдеров в ЦУП: {n}', lvSteady: 'Цена топлива стабильна, пёс продолжает стройку', lvUp: 'Топливо подорожало на {n}% за сутки', lvDown: 'Топливо подешевело на {n}% за сутки, стройка идёт', lvVol: 'За сутки перекачано {n} QUAI топлива', lvBudget: 'Бюджет миссии: ${n}'
     };
-    const es = {
-      loc: 'es-ES', c4tag: 'Exclusiva · Familia', c4live: '● EN DIRECTO', c4stamp: 'T−?? · TIERRA · MALETAS', c4ch: 'El hermano mayor se pone el traje: «Voy a por él»', c4b: 'El hermano mayor Doge hizo un curso de astronauta de tres días (premio: una salchicha), se metió en un traje dos tallas más grande y busca tripulación de rescate. Requisito n.º 1: no comerse el beicon de a bordo.', c4q: '«Siempre fue muy curioso. Le dije que no olfateara cohetes» — hermano mayor, 4 años, Tierra', c4note: 'PARODIA. SIN RELACIÓN CON DOGECOIN, LA NASA NI PERSONAS REALES.', live: '● EN DIRECTO DESDE MARTE', nav1: 'El escándalo', nav2: 'Cohete', nav3: 'Cifras', nav4: 'Preguntas', nav5: 'Análisis', nav6: 'Juego', resLatest: '#05 · Injective: orderbook, quemaduras y demanda', resList: '#05 Injective: orderbook, quemaduras y demanda  ◆  #04 El Arca de Noé: un búnker para instituciones  ◆  #03 La sombra del Gran Hermano (NEAR)  ◆  #02 Cimientos sobre huesos (Starknet)  ◆  #01 Tokenómica de QUAI  ◆ ', resGo: 'Leer', buyCta: 'Comprar $QOGE',
-      ngTag: 'Mint en vivo · NFT', ngTitle: 'QOGE Mars Gum', ngText: 'Nuestra primera colección NFT: 100 paquetes sellados, 100 cromos con rovers reales de Marte. 10 legendarios siguen en secreto.', ngSoon: 'El mint para holders está abierto en BAZARR Launch · 99 QUAI · 1 por wallet', ngMint: 'Mint en el launchpad', ngTrade: 'Comerciar en BAZARR', ngHowH: 'Cómo hacer mint (solo holders)', ngS1: 'Compra $QOGE: la guía paso a paso está abajo.', ngS2: 'Entra en nuestro Discord y conecta tu wallet en #connect-wallet para recibir el rol QOGE Holder.', ngS3: 'Envía la dirección de tu wallet de Quai con el comando /whitelist en Discord.', ngS4: 'Cuando tu dirección esté en la lista, abre el launchpad, conecta la misma wallet y haz mint por 99 QUAI.', ngX: 'Ver el post en X', ngDiscord: 'Detalles en Discord',
-      s2go: 'Dónde comprar QUAI', s4go: 'Entrar en Discord', byWhyH: 'Qué recibe un holder:', byWhy: 'el rol QOGE Holder en Discord, todos los canales de la tripulación y las noticias del NFT Mars Gum antes que nadie.', ngHold: 'Hazte holder',
-      breaking: 'Última hora', h1a: 'Un cachorro coloniza por accidente', h1b: 'Marte',
-      heroP: 'Se coló en un cohete de la NASA «solo para olfatear». Ahora construye una nave con piezas de un rover. Los expertos dicen que es «un perro muy bueno» y que está «atrapado de verdad».',
-      fund: 'Financia el rescate', exclusive: 'EXCLUSIVA', heroQuote: '«Solo quería ver los cables» — Q. Oge, 2 años, Marte', justIn: 'Último minuto',
-      lgTag: 'QNN investiga', lgSub: 'PARTE 1 DE 1 · LA LEYENDA DE QOGE', lgH1: 'Cómo un perro muy bueno acabó a', lgH2: '225 M km', lgH3: 'de casa',
-      c1tag: 'Cámara de seguridad', c2tag: 'En directo', c3tag: 'Exclusiva',
-      c1ch: 'Un cachorro entra en la plataforma «solo para olfatear»', c2ch: 'La cuenta atrás llega a cero. El cachorro sigue dentro.', c3ch: 'La primera imagen de Marte muestra... ¿un perro?',
-      c1b: 'La NASA preparaba un cohete a Marte. Entre cables y comprobaciones finales, un cachorro pequeño y normal se coló y se escondió en la nave. Solo para explorar. Supuestamente.',
-      c2b: 'Los motores rugieron y nuestro aventurero peludo salió disparado al espacio profundo, solo ida al Planeta Rojo. Sin billete. Sin chuches. Sin plan.',
-      c3b: 'Los científicos esperaban rocas rojas y vacías. En su lugar, la cámara captó a un cachorro desconcertado mirando a la Tierra y preguntándose cómo demonios llegó allí.',
-      lgQuote: '«No apuntó a la Luna. Conquistó Marte por accidente».', lgQuoteBy: '— TODOS LOS PRESENTADORES, PROBABLEMENTE',
-      stmt: 'COMUNICADO OFICIAL', stmtText: '«No tenemos ni idea de cómo llegó el perro allí y, sinceramente, estamos un poco impresionados».', stmtBy: '— BECARIO ANÓNIMO DE UNA AGENCIA ESPACIAL · CITA FICTICIA',
-      msTag: '● Noticia en desarrollo', msSub: 'CONSTRUYENDO EL CAMINO A CASA', msH1: 'Perro varado construye un cohete con', msH2: 'piezas de rover',
-      msP: 'Fuentes cercanas al perro confirman que echa de menos la hierba y el beicon. Impulsado por el aburrimiento intergaláctico y un espíritu inquebrantable, está convirtiendo un rover jubilado en su viaje de vuelta.',
-      f1k: 'POLVO ROJO', f1v: 'Por todas partes', f2k: 'BOCAS DE INCENDIO', f3k: 'CORREO', f3v: 'Inexistente', f4k: 'MORAL', f4v: 'Inquebrantable',
-      msBox: '$QOGE no es solo una memecoin. Es el combustible oficial de la misión. Cada holder = más combustible en el tanque.',
-      tracker: 'Seguimiento', parts: 'PIEZAS', rocket: 'COHETE', complete: 'COMPLETO', installed: 'INSTALADO', addFuel: 'Añade combustible → compra $QOGE',
-      byTag: 'Guía de supervivencia', bySub: 'CÓMO COMPRAR · EN', byH1: 'Cómo conseguir $QOGE en', byH2: '4 pasos',
-      s1t: 'Consigue una wallet', s2t: 'Carga combustible', s3t: 'Cambia por $QOGE', s4t: 'Verifícate en Discord',
-      s1b: 'Instala Pelagus (extensión del navegador) o Blip (app móvil), wallets de ' + chain + '. Guarda la frase semilla como el último beicon de Marte.', s1pel: 'Pelagus · navegador', s1blip: 'Blip · móvil', s2b: 'Compra QUAI en un exchange (por ejemplo MEXC) y envíalo a tu wallet. Guarda un poco de QUAI para las comisiones de red.',
-      s3b: 'Abre $QOGE en Quainance, conecta tu wallet y pulsa Swap: QUAI → $QOGE. Comprueba la dirección del contrato de abajo en el explorador de Quai.', s3go: 'Comprar en Quainance', s3ex: 'Ver en el explorador', s4b: 'Entra en nuestro Discord y conecta tu wallet en #connect-wallet. Recibes el rol QOGE Holder y se abren todos los canales de la tripulación.',
-      caLabel: 'DIRECCIÓN DEL CONTRATO',
-      tkTag: 'En cifras', tkSub: 'TOKENÓMICA', tkH: 'Ficha del combustible', m1: 'CAP. DE MERCADO', m2: 'PRECIO', m3: 'LIQUIDEZ', m4: 'HOLDERS', mLive: 'DATOS EN VIVO · QUAINANCE', mUpd: 'ACTUALIZADO', chTitle: 'PRECIO · 7D', chVol: 'VOL', chNow: 'AHORA', chNoData: 'Aún no hay operaciones',
-      rmTag: 'A continuación', rmSub: 'ROADMAP · PROGRAMACIÓN', rmH1: 'Marte → Tierra:', rmH2: 'la programación', aired: 'EMITIDO ✓', onAir: '● EN ANTENA', upNext: 'PRÓXIMAMENTE', rmProg: 'Holders: {n} / {goal}', dlTag: '● En la radio', dlSub: 'CADA DÍA · CENTRO DE CONTROL', dlTitle: 'Diario de a bordo', dlDay: 'día {n}', dlSign: '— Q., atrapado en Marte', dlPS: 'P.D. {h} holders en el centro de control. Combustible: {chg} en 24 h.', dlUp: 'sube un {n}%', dlDown: 'baja un {n}%', dlFlat: 'estable', dlStreakH: 'Tu racha', dlDays: 'días seguidos', dlBest: 'Récord: {n} · visitas: {v}', dlNext: '{n} días más → {rank}', dlMax: 'Rango máximo. Respeto.', shTitle: 'Tu tarjeta de misión', shShare: 'Compartir imagen', shCopyOpen: 'Copiar imagen y abrir X', shDownload: 'Descargar imagen', shHint: 'Imagen copiada: pégala en tu post (Ctrl+V)', shHintFail: 'No se pudo copiar: descarga la imagen y adjúntala al post', shClose: 'Cerrar', shRocket: 'Cohete listo: {pct}%', dlShare: 'Compartir progreso en X', dlShareText: 'Soy {rank} de la misión $QOGE: {n} días seguidos en contacto con Marte 🚀 Cohete al {pct}%, {h} holders a bordo. Únete al centro de control:', dlTomorrow: 'Vuelve mañana para no perder la racha.', dlSinceH: 'Desde tu última visita', dlFirst: '¡Primer contacto! Vuelve mañana y verás qué ha cambiado.', dlHolders: 'Holders', dlPrice: 'Precio del combustible', dl24h: 'Últimas 24 horas', dlVol: 'Volumen', ranks: ['Cadete', 'Mecánico', 'Piloto', 'Navegante', 'Comandante', 'Almirante', 'Leyenda de Marte'], dlBadgeTop: '$QOGE · CENTRO DE CONTROL', dlBadgeDays: '{n} días seguidos', dlD: 'd',
-      fqTag: 'Preguntas del público', fqH1: 'Preguntasteis.', fqH2: 'Ladramos.',
-      cmH1: 'Únete al equipo de rescate.', cmH2: 'Tráelo a casa.', bubble: 'date prisa, me quedé sin beicon',
-      foot1: '© 2026 $QOGE · UNA MEMECOIN SIN VALOR INTRÍNSECO NI EXPECTATIVA DE RENTABILIDAD.', foot2: 'SIN RELACIÓN CON LA NASA. SOLO UN PERRO.',
-      copy: 'COPIAR', copied: 'COPIADO ✓', awaiting: 'ESPERANDO COMBUSTIBLE', at: 'AL ',
-      partNames: ['Blindaje del casco (chasis del rover)', 'Ordenador de navegación', 'Patas de aterrizaje', 'Escudo térmico', 'Motores principales', 'Tanques de combustible ($QOGE)'],
-      phase: 'FASE', phases: [['Rescate de piezas', ['Lanzamiento justo ✓', 'Web y redes ✓', '500 holders']], ['Montaje', ['1.000 holders', '1.000 miembros en Telegram y X', 'Concursos de memes y raids con premios en $QOGE', 'Solicitudes a CoinGecko y CoinMarketCap']], ['Repostaje', ['2.500 holders', 'Más liquidez en Quainance', 'Colaboraciones con proyectos de Quai', 'Pack de stickers y memes de QOGE']], ['Vuelta a casa', ['5.000 holders', 'Listado en CoinGecko / CMC', 'DexScreener cuando soporte Quai', 'Beicon ilimitado 🥓']]],
-      ticker: ['La NASA declina hacer comentarios', 'Escasez de bocas de incendio en Marte: 100%', 'El perro pide beicon por radio', 'Los holders de $QOGE forman el centro de control'],
-      faqs: [['¿Qué es $QOGE?', 'Una memecoin comunitaria que cuenta la historia del primer perro en Marte. Cada holder es combustible para su cohete de vuelta.'], ['¿Hay asignación para el equipo?', 'No. Lanzamiento justo, sin preventa, sin tokens del equipo. La manada es dueña del cohete.'], ['¿En qué red está?', '$QOGE vive en ' + chain + '. Comprueba siempre la dirección del contrato en esta web antes de cambiar.'], ['¿Es un consejo de inversión?', 'No. $QOGE es un meme sin valor intrínseco ni rentabilidad esperada. Usa solo lo que puedas permitirte perder.'], ['¿Cuándo vuelve a casa?', 'Cuando el cohete esté construido. Sigue el estado de la construcción más arriba.']],
-      lvHold: 'Holders en el centro de control: {n}', lvSteady: 'Precio del combustible estable, el perro sigue construyendo', lvUp: 'El combustible sube un {n}% en 24 h', lvDown: 'El combustible baja un {n}% en 24 h, la obra sigue', lvVol: '{n} QUAI de combustible movidos en 24 h', lvBudget: 'Presupuesto de la misión: ${n}'
-    };
-    const pt = {
-      loc: 'pt-BR', c4tag: 'Exclusivo · Família', c4live: '● AO VIVO', c4stamp: 'T−?? · TERRA · ARRUMANDO MALAS', c4ch: 'Irmão mais velho veste o traje: “Vou buscar ele”', c4b: 'O irmão mais velho Doge fez um curso de astronauta de três dias (prêmio: uma salsicha), entrou num traje dois números maior e está recrutando a equipe de resgate. Requisito nº 1: não comer o bacon de bordo.', c4q: '“Ele sempre foi curioso. Eu falei pra ele não cheirar foguete” — irmão mais velho, 4 anos, Terra', c4note: 'PARÓDIA. SEM LIGAÇÃO COM DOGECOIN, NASA OU PESSOAS REAIS.', live: '● AO VIVO DE MARTE', nav1: 'O escândalo', nav2: 'Foguete', nav3: 'Números', nav4: 'Perguntas', nav5: 'Análises', nav6: 'Jogo', resLatest: '#05 · Injective: orderbook, queimas e demanda', resList: '#05 Injective: orderbook, queimas e demanda  ◆  #04 A Arca de Noé: um bunker para instituições  ◆  #03 A sombra do Grande Irmão (NEAR)  ◆  #02 Alicerces sobre ossos (Starknet)  ◆  #01 Tokenomics da QUAI  ◆ ', resGo: 'Ler', buyCta: 'Comprar $QOGE',
-      ngTag: 'Mint ao vivo · NFT', ngTitle: 'QOGE Mars Gum', ngText: 'Nossa primeira coleção NFT: 100 pacotes lacrados, 100 cards com rovers reais de Marte. 10 lendários continuam em segredo.', ngSoon: 'O mint para holders está aberto no BAZARR Launch · 99 QUAI · 1 por carteira', ngMint: 'Mint no launchpad', ngTrade: 'Negociar no BAZARR', ngHowH: 'Como fazer o mint (só holders)', ngS1: 'Compre $QOGE: o passo a passo está abaixo.', ngS2: 'Entre no nosso Discord e conecte sua carteira em #connect-wallet para receber o cargo QOGE Holder.', ngS3: 'Envie o endereço da sua carteira Quai com o comando /whitelist no Discord.', ngS4: 'Quando seu endereço estiver na lista, abra o launchpad, conecte a mesma carteira e faça o mint por 99 QUAI.', ngX: 'Ver o post no X', ngDiscord: 'Detalhes no Discord',
-      s2go: 'Onde comprar QUAI', s4go: 'Entrar no Discord', byWhyH: 'O que o holder ganha:', byWhy: 'o cargo QOGE Holder no Discord, todos os canais da tripulação e as novidades do NFT Mars Gum primeiro.', ngHold: 'Torne-se holder',
-      breaking: 'Urgente', h1a: 'Filhote coloniza sem querer', h1b: 'Marte',
-      heroP: 'Entrou escondido num foguete da NASA “só pra dar uma cheiradinha”. Agora está montando uma nave com peças de um rover. Especialistas dizem que ele é “um cachorro muito bonzinho” e que está “preso de verdade”.',
-      fund: 'Financie o resgate', exclusive: 'EXCLUSIVO', heroQuote: '“Eu só queria ver os cabos” — Q. Oge, 2 anos, Marte', justIn: 'Agora',
-      lgTag: 'QNN investiga', lgSub: 'PARTE 1 DE 1 · A LENDA DE QOGE', lgH1: 'Como um cachorro muito bonzinho foi parar a', lgH2: '225 mi de km', lgH3: 'de casa',
-      c1tag: 'Câmera de segurança', c2tag: 'Ao vivo', c3tag: 'Exclusivo',
-      c1ch: 'Filhote invade base de lançamento “só pra cheirar”', c2ch: 'A contagem chega a zero. O filhote continua lá dentro.', c3ch: 'Primeira imagem de Marte mostra... um cachorro?',
-      c1b: 'A NASA preparava um foguete para Marte. Entre cabos e checagens finais, um filhote pequeno e comum entrou e se escondeu na nave. Só pra explorar. Supostamente.',
-      c2b: 'Os motores rugiram e nosso aventureiro peludo foi lançado ao espaço profundo, só de ida para o Planeta Vermelho. Sem passagem. Sem petiscos. Sem plano.',
-      c3b: 'Os cientistas esperavam pedras vermelhas e vazias. Em vez disso, a câmera flagrou um filhote confuso olhando para a Terra, se perguntando como diabos foi parar ali.',
-      lgQuote: '“Ele não mirou na Lua. Conquistou Marte sem querer.”', lgQuoteBy: '— TODO APRESENTADOR DE JORNAL, PROVAVELMENTE',
-      stmt: 'COMUNICADO OFICIAL', stmtText: '“Não fazemos ideia de como o cachorro chegou lá e, sinceramente, estamos um pouco impressionados.”', stmtBy: '— ESTAGIÁRIO ANÔNIMO DE AGÊNCIA ESPACIAL · CITAÇÃO FICTÍCIA',
-      msTag: '● Notícia em andamento', msSub: 'CONSTRUINDO O CAMINHO DE VOLTA', msH1: 'Cachorro preso monta foguete com', msH2: 'peças de rover',
-      msP: 'Fontes próximas ao cachorro confirmam que ele sente falta da grama e do bacon. Movido pelo tédio intergaláctico e por um espírito inabalável, ele está transformando um rover aposentado na carona de volta.',
-      f1k: 'POEIRA VERMELHA', f1v: 'Em todo lugar', f2k: 'HIDRANTES', f3k: 'CORREIO', f3v: 'Não existe', f4k: 'MORAL', f4v: 'Inabalável',
-      msBox: '$QOGE não é só uma memecoin. É o combustível oficial da missão. Cada holder = mais combustível no tanque.',
-      tracker: 'Rastreador', parts: 'PEÇAS', rocket: 'FOGUETE', complete: 'PRONTO', installed: 'INSTALADO', addFuel: 'Abasteça → compre $QOGE',
-      byTag: 'Guia de sobrevivência', bySub: 'COMO COMPRAR · NA', byH1: 'Como pegar $QOGE em', byH2: '4 passos',
-      s1t: 'Crie uma carteira', s2t: 'Abasteça', s3t: 'Troque por $QOGE', s4t: 'Verifique no Discord',
-      s1b: 'Instale a Pelagus (extensão do navegador) ou a Blip (app de celular), carteiras da ' + chain + '. Guarde a frase-semente como o último bacon de Marte.', s1pel: 'Pelagus · navegador', s1blip: 'Blip · celular', s2b: 'Compre QUAI numa corretora (por exemplo MEXC) e envie para sua carteira. Deixe um pouco de QUAI para as taxas da rede.',
-      s3b: 'Abra $QOGE na Quainance, conecte sua carteira e clique em Swap: QUAI → $QOGE. Confira o endereço do contrato abaixo no explorador da Quai.', s3go: 'Comprar na Quainance', s3ex: 'Ver no explorador', s4b: 'Entre no nosso Discord e conecte sua carteira em #connect-wallet. Você recebe o cargo QOGE Holder e todos os canais da tripulação se abrem.',
-      caLabel: 'ENDEREÇO DO CONTRATO',
-      tkTag: 'Em números', tkSub: 'TOKENOMICS', tkH: 'Ficha do combustível', m1: 'VALOR DE MERCADO', m2: 'PREÇO', m3: 'LIQUIDEZ', m4: 'HOLDERS', mLive: 'DADOS AO VIVO · QUAINANCE', mUpd: 'ATUALIZADO', chTitle: 'PREÇO · 7D', chVol: 'VOL', chNow: 'AGORA', chNoData: 'Ainda sem negociações',
-      rmTag: 'A seguir', rmSub: 'ROADMAP · PROGRAMAÇÃO', rmH1: 'Marte → Terra:', rmH2: 'a programação', aired: 'EXIBIDO ✓', onAir: '● NO AR', upNext: 'EM BREVE', rmProg: 'Holders: {n} / {goal}', dlTag: '● No rádio', dlSub: 'TODO DIA · CONTROLE DA MISSÃO', dlTitle: 'Diário de bordo', dlDay: 'dia {n}', dlSign: '— Q., preso em Marte', dlPS: 'P.S. {h} holders no controle da missão. Combustível: {chg} em 24 h.', dlUp: 'subiu {n}%', dlDown: 'caiu {n}%', dlFlat: 'estável', dlStreakH: 'Sua sequência', dlDays: 'dias seguidos', dlBest: 'Recorde: {n} · visitas: {v}', dlNext: 'Mais {n} dias → {rank}', dlMax: 'Patente máxima. Respeito.', shTitle: 'Seu cartão da missão', shShare: 'Compartilhar imagem', shCopyOpen: 'Copiar imagem e abrir o X', shDownload: 'Baixar imagem', shHint: 'Imagem copiada: cole no seu post (Ctrl+V)', shHintFail: 'Não deu para copiar: baixe a imagem e anexe ao post', shClose: 'Fechar', shRocket: 'Foguete pronto: {pct}%', dlShare: 'Compartilhar progresso no X', dlShareText: 'Sou {rank} da missão $QOGE: {n} dias seguidos em contato com Marte 🚀 Foguete {pct}% pronto, {h} holders a bordo. Entre no controle da missão:', dlTomorrow: 'Volte amanhã para manter a sequência.', dlSinceH: 'Desde sua última visita', dlFirst: 'Primeiro contato! Volte amanhã e mostramos o que mudou.', dlHolders: 'Holders', dlPrice: 'Preço do combustível', dl24h: 'Últimas 24 horas', dlVol: 'Volume', ranks: ['Cadete', 'Mecânico', 'Piloto', 'Navegador', 'Comandante', 'Almirante', 'Lenda de Marte'], dlBadgeTop: '$QOGE · CONTROLE DA MISSÃO', dlBadgeDays: '{n} dias seguidos', dlD: 'd',
-      fqTag: 'Perguntas dos espectadores', fqH1: 'Vocês perguntaram.', fqH2: 'Nós latimos.',
-      cmH1: 'Entre na equipe de resgate.', cmH2: 'Traga ele pra casa.', bubble: 'corre, acabou meu bacon',
-      foot1: '© 2026 $QOGE · UMA MEMECOIN SEM VALOR INTRÍNSECO NEM EXPECTATIVA DE RETORNO.', foot2: 'SEM LIGAÇÃO COM A NASA. SÓ UM CACHORRO.',
-      copy: 'COPIAR', copied: 'COPIADO ✓', awaiting: 'AGUARDANDO COMBUSTÍVEL', at: 'EM ',
-      partNames: ['Blindagem do casco (chassi do rover)', 'Computador de navegação', 'Pernas de pouso', 'Escudo térmico', 'Motores principais', 'Tanques de combustível ($QOGE)'],
-      phase: 'FASE', phases: [['Sucata', ['Lançamento justo ✓', 'Site e redes ✓', '500 holders']], ['Montagem', ['1.000 holders', '1.000 membros no Telegram e X', 'Concursos de memes e raids com prêmios em $QOGE', 'Pedidos à CoinGecko e CoinMarketCap']], ['Abastecimento', ['2.500 holders', 'Mais liquidez na Quainance', 'Collabs com projetos da Quai', 'Pacote de stickers e memes QOGE']], ['Volta pra casa', ['5.000 holders', 'Listagem na CoinGecko / CMC', 'DexScreener quando suportar Quai', 'Bacon ilimitado 🥓']]],
-      ticker: ['A NASA não comenta', 'Falta de hidrantes em Marte chega a 100%', 'Cachorro pede bacon pelo rádio', 'Holders de $QOGE formam o centro de controle'],
-      faqs: [['O que é $QOGE?', 'Uma memecoin da comunidade que conta a história do primeiro cachorro em Marte. Cada holder é combustível para o foguete de volta.'], ['Existe alocação para a equipe?', 'Não. Lançamento justo, sem pré-venda, sem tokens da equipe. A matilha é dona do foguete.'], ['Em qual rede está?', '$QOGE vive na ' + chain + '. Sempre confira o endereço do contrato neste site antes de trocar.'], ['Isso é recomendação de investimento?', 'Não. $QOGE é um meme sem valor intrínseco nem retorno financeiro esperado. Use só o que você pode perder.'], ['Quando ele volta pra casa?', 'Quando o foguete ficar pronto. Acompanhe o status da construção acima.']],
-      lvHold: 'Holders no centro de controle: {n}', lvSteady: 'Preço do combustível estável, o cachorro segue construindo', lvUp: 'Combustível sobe {n}% em 24 h', lvDown: 'Combustível cai {n}% em 24 h, a obra continua', lvVol: '{n} QUAI de combustível movimentados em 24 h', lvBudget: 'Orçamento da missão: ${n}'
-    };
-    const zh = {
-      loc: 'zh-CN', c4tag: '独家 · 家人', c4live: '● 直播', c4stamp: 'T−?? · 地球 · 收拾行李', c4ch: '哥哥穿上宇航服：“我去接它回来”', c4b: '哥哥 Doge 上完三天宇航员速成班（奖励：一根香肠），穿上大两号的宇航服，正在招募救援队。第一条要求：不许偷吃船上的培根。', c4q: '“它从小就好奇。我早说过别去闻火箭。” —— 哥哥，4 岁，地球', c4note: '恶搞内容。与 Dogecoin、NASA 或任何真实人物无关。', live: '● 火星现场直播', nav1: '丑闻', nav2: '火箭', nav3: '数据', nav4: '问答', nav5: '研究', nav6: '游戏', resLatest: '#05 · Injective：订单簿、销毁与需求', resList: '#05 Injective：订单簿、销毁与需求  ◆  #04 诺亚方舟：机构的避难所  ◆  #03 老大哥的影子（NEAR）  ◆  #02 白骨上的地基（Starknet）  ◆  #01 QUAI 代币经济学  ◆ ', resGo: '阅读', buyCta: '购买 $QOGE',
-      ngTag: '铸造进行中 · NFT', ngTitle: 'QOGE 火星泡泡糖', ngText: '我们的首个 NFT 系列：100 包密封泡泡糖，100 张真实火星车卡片。10 张传奇卡仍属机密。', ngSoon: '持有者铸造已在 BAZARR Launch 开放 · 99 QUAI · 每个钱包 1 个', ngMint: '前往发射台铸造', ngTrade: '在 BAZARR 交易', ngHowH: '如何铸造（仅限持有者）', ngS1: '购买 $QOGE——分步指南见下方。', ngS2: '加入我们的 Discord，在 #connect-wallet 频道连接钱包，获得 QOGE Holder 身份组。', ngS3: '在 Discord 中用 /whitelist 命令提交你的 Quai 钱包地址。', ngS4: '地址进入名单后，打开发射台，连接同一个钱包，以 99 QUAI 铸造。', ngX: '查看 X 帖子', ngDiscord: '在 Discord 了解详情',
-      s2go: '在哪里买 QUAI', s4go: '加入 Discord', byWhyH: '持有者可以获得：', byWhy: 'Discord 中的 QOGE Holder 身份组、所有机组频道，以及 Mars Gum NFT 的第一手消息。', ngHold: '成为持有者',
-      breaking: '突发', h1a: '小狗意外殖民了', h1b: '火星',
-      heroP: '它钻进 NASA 的火箭，说是“只想闻一闻”。现在正用火星车零件造飞船。专家称它是“一只非常乖的狗狗”，而且“真的回不来了”。',
-      fund: '资助救援', exclusive: '独家', heroQuote: '“我只是想看看那些电线” —— Q. Oge，2 岁，火星', justIn: '最新',
-      lgTag: 'QNN 调查', lgSub: '第 1 集 / 共 1 集 · QOGE 传奇', lgH1: '一只乖狗狗是怎么跑到离家', lgH2: '2.25 亿公里', lgH3: '的地方的',
-      c1tag: '监控画面', c2tag: '直播', c3tag: '独家',
-      c1ch: '小狗溜进发射场，“只想闻一闻”', c2ch: '倒计时归零，小狗还在里面。', c3ch: '火星首张画面里……是一只狗？',
-      c1b: 'NASA 正在为火星任务准备火箭。在电缆和最后检查之间，一只普普通通的小狗溜了进去，躲进了飞船。据说只是想探险。',
-      c2b: '发动机轰鸣，我们毛茸茸的冒险家被送进深空，单程直飞红色星球。没有票，没有零食，没有计划。',
-      c3b: '科学家们本以为会看到荒凉的红色岩石。结果镜头拍到一只一脸茫然的小狗正望着地球，琢磨自己到底是怎么来的。',
-      lgQuote: '“它没瞄准月球，却意外征服了火星。”', lgQuoteBy: '—— 大概每一位新闻主播',
-      stmt: '官方声明', stmtText: '“我们完全不知道那只狗是怎么过去的，说实话，我们有点佩服。”', stmtBy: '—— 某航天机构匿名实习生 · 虚构引言',
-      msTag: '● 持续报道', msSub: '修建回家的路', msH1: '被困狗狗用', msH2: '火星车零件造火箭',
-      msP: '知情人士证实，它想念绿草和培根。凭着星际级的无聊和不屈的精神，它正把一辆退役的火星车改造成回家的座驾。',
-      f1k: '红色尘土', f1v: '到处都是', f2k: '消防栓', f3k: '邮政服务', f3v: '不存在', f4k: '士气', f4v: '坚不可摧',
-      msBox: '$QOGE 不只是一个 memecoin，它是这次任务的官方燃料。每多一位持有者 = 油箱里多一份燃料。',
-      tracker: '实时追踪', parts: '零件', rocket: '火箭', complete: '完成', installed: '已安装', addFuel: '加燃料 → 购买 $QOGE',
-      byTag: '生存指南', bySub: '如何购买 · 网络', byH1: '获取 $QOGE 只需', byH2: '4 步',
-      s1t: '准备钱包', s2t: '加满燃料', s3t: '兑换 $QOGE', s4t: '在 Discord 验证',
-      s1b: '安装 Pelagus（浏览器插件）或 Blip（手机 App），它们是 ' + chain + ' 钱包。像守护火星上最后一片培根一样保管好助记词。', s1pel: 'Pelagus · 浏览器', s1blip: 'Blip · 手机', s2b: '在交易所（例如 MEXC）购买 QUAI，并转入你的钱包。请留一点 QUAI 支付网络手续费。',
-      s3b: '在 Quainance 打开 $QOGE，连接钱包并点击 Swap：QUAI → $QOGE。请在 Quai 浏览器中核对下方的合约地址。', s3go: '在 Quainance 购买', s3ex: '在浏览器中核对', s4b: '加入我们的 Discord，在 #connect-wallet 频道连接钱包。你将获得 QOGE Holder 身份组，并解锁所有机组频道。',
-      caLabel: '合约地址',
-      tkTag: '数据一览', tkSub: '代币经济', tkH: '燃料参数', m1: '市值', m2: '价格', m3: '流动性', m4: '持有者', mLive: '实时数据 · QUAINANCE', mUpd: '更新于', chTitle: '价格 · 7 天', chVol: '成交量', chNow: '现在', chNoData: '暂无交易',
-      rmTag: '下期预告', rmSub: '路线图 · 节目单', rmH1: '火星 → 地球：', rmH2: '节目单', aired: '已播出 ✓', onAir: '● 直播中', upNext: '即将播出', rmProg: '持有者：{n} / {goal}', dlTag: '● 通讯中', dlSub: '每日 · 地面控制', dlTitle: '航行日志', dlDay: '第 {n} 天', dlSign: '—— Q.，被困火星', dlPS: '附：地面控制已有 {h} 位持有者。燃料价格 24 小时：{chg}。', dlUp: '上涨 {n}%', dlDown: '下跌 {n}%', dlFlat: '持平', dlStreakH: '你的连续访问', dlDays: '天连续', dlBest: '最佳：{n} · 访问：{v}', dlNext: '再 {n} 天 → {rank}', dlMax: '最高军衔。致敬。', shTitle: '你的任务卡', shShare: '分享图片', shCopyOpen: '复制图片并打开 X', shDownload: '下载图片', shHint: '图片已复制——粘贴到帖子里（Ctrl+V）', shHintFail: '复制失败——请下载图片并附加到帖子', shClose: '关闭', shRocket: '火箭完成度：{pct}%', dlShare: '在 X 上分享进度', dlShareText: '我是 $QOGE 任务的{rank}：连续 {n} 天与火星保持通讯 🚀 火箭已完成 {pct}%，{h} 位持有者已登船。加入地面控制：', dlTomorrow: '明天再来，保持连续记录。', dlSinceH: '自你上次访问以来', dlFirst: '首次联络！明天再来，看看有什么变化。', dlHolders: '持有者', dlPrice: '燃料价格', dl24h: '过去 24 小时', dlVol: '成交量', ranks: ['学员', '机械师', '飞行员', '领航员', '指挥官', '上将', '火星传奇'], dlBadgeTop: '$QOGE · 地面控制', dlBadgeDays: '连续 {n} 天', dlD: '天',
-      fqTag: '观众提问', fqH1: '你们问了。', fqH2: '我们汪了。',
-      cmH1: '加入救援队。', cmH2: '带它回家。', bubble: '快点，我的培根吃完了',
-      foot1: '© 2026 $QOGE · 一个没有内在价值、不承诺任何回报的 MEMECOIN。', foot2: '与 NASA 无关。只是一只狗。',
-      copy: '复制', copied: '已复制 ✓', awaiting: '等待燃料', at: '达到 ',
-      partNames: ['船体装甲（原火星车底盘）', '导航电脑', '着陆支架', '隔热罩', '主发动机', '燃料箱（$QOGE）'],
-      phase: '阶段', phases: [['拾荒', ['公平发射 ✓', '网站和社媒 ✓', '500 位持有者']], ['组装', ['1,000 位持有者', 'Telegram 和 X 达到 1,000 名成员', '表情包大赛和社区出击，奖励 $QOGE', '申请 CoinGecko 和 CoinMarketCap']], ['加油', ['2,500 位持有者', '提升 Quainance 流动性', '与 Quai 项目联名合作', 'QOGE 贴纸和表情包']], ['回家', ['5,000 位持有者', '上线 CoinGecko / CMC', 'DexScreener 支持 Quai 后上线', '无限培根 🥓']]],
-      ticker: ['NASA 拒绝置评', '火星消防栓短缺率达 100%', '狗狗通过无线电要培根', '$QOGE 持有者组成地面指挥中心'],
-      faqs: [['$QOGE 是什么？', '一个社区 memecoin，讲述第一只登上火星的狗的故事。每位持有者都是它回家火箭的燃料。'], ['团队有预留份额吗？', '没有。公平发射，无预售，无团队代币。火箭属于整个狗群。'], ['在哪条链上？', '$QOGE 运行在 ' + chain + ' 上。兑换前请务必在本网站核对合约地址。'], ['这是投资建议吗？', '不是。$QOGE 是一个没有内在价值、也没有预期收益的 meme。只投入你亏得起的钱。'], ['它什么时候能回家？', '等火箭造好的时候。请关注上方的建造进度。']],
-      lvHold: '地面指挥中心持有者：{n}', lvSteady: '燃料价格平稳，狗狗继续施工', lvUp: '燃料 24 小时上涨 {n}%', lvDown: '燃料 24 小时下跌 {n}%，施工继续', lvVol: '24 小时内流转 {n} QUAI 燃料', lvBudget: '任务预算：${n}'
-    };
-    const all = { en, ru, es, pt, zh };
+    const all = { en, ru };
     return all[this.state.lang] || en;
   }
   progressRef = el => { this.progEl = el; if (el && this.io) this.io.observe(el); };
@@ -913,11 +802,11 @@ class Component extends DCLogic {
               style: { background: 'transparent', border: 0, padding: 0, color: INK, fontFamily: "'IBM Plex Mono',monospace", fontSize: 12, textDecoration: 'underline', cursor: 'pointer', alignSelf: 'center' } }, t.shDownload + ' ↓')))));
   }
   // ---- Share card: 1200×675 PNG with today's log entry + rank badge (canvas, no server) ----
-  wrapLines(x, text, maxW, cjk) {
-    const units = cjk ? Array.from(text) : text.split(' ');
+  wrapLines(x, text, maxW) {
+    const units = text.split(' ');
     const lines = []; let cur = '';
     units.forEach(u => {
-      const next = cur ? cur + (cjk ? '' : ' ') + u : u;
+      const next = cur ? cur + ' ' + u : u;
       if (x.measureText(next).width > maxW && cur) { lines.push(cur); cur = u; } else cur = next;
     });
     if (cur) lines.push(cur);
@@ -927,9 +816,8 @@ class Component extends DCLogic {
     try { await Promise.all([document.fonts.load("900 60px 'Archivo'"), document.fonts.load("800 34px 'Archivo'"), document.fonts.load("500 22px 'IBM Plex Mono'")]); } catch (e) {}
     const W = 1200, H = 675, c = document.createElement('canvas'); c.width = W; c.height = H;
     const x = c.getContext('2d'), INK = '#141110', CREAM = '#f4f0ec', YEL = '#f5d33a', RED = '#e8473f', GREY = '#a59e97';
-    const cjk = L === 'zh';
-    const A = (w, s) => w + ' ' + s + "px 'Archivo', 'Noto Sans SC', 'Microsoft YaHei', sans-serif";
-    const M = s => '500 ' + s + "px 'IBM Plex Mono', 'Noto Sans SC', monospace";
+    const A = (w, s) => w + ' ' + s + "px 'Archivo', sans-serif";
+    const M = s => '500 ' + s + "px 'IBM Plex Mono', monospace";
     x.fillStyle = INK; x.fillRect(0, 0, W, H);
     // faint stars
     for (let k = 0; k < 70; k++) { const sx = (k * 997) % W, sy = (k * 571) % H; x.fillStyle = 'rgba(244,240,236,' + (0.08 + (k % 5) * 0.05) + ')'; x.fillRect(sx, sy, 2, 2); }
@@ -957,7 +845,7 @@ class Component extends DCLogic {
     x.fillStyle = CREAM; x.textAlign = 'right'; x.fillText(d.date, cx + cw - 18, cy + 29); x.textAlign = 'left';
     let qs = 50, lines;
     const quote = '“' + d.entry + '”';
-    for (;;) { x.font = A(800, qs); lines = this.wrapLines(x, quote, cw - 64, cjk); if (lines.length * qs * 1.22 <= ch - 140 || qs <= 24) break; qs -= 2; }
+    for (;;) { x.font = A(800, qs); lines = this.wrapLines(x, quote, cw - 64); if (lines.length * qs * 1.22 <= ch - 140 || qs <= 24) break; qs -= 2; }
     x.fillStyle = INK; lines.forEach((ln, k) => x.fillText(ln, cx + 32, cy + 44 + 30 + qs + k * qs * 1.22));
     x.font = M(20); x.fillStyle = '#6b635d'; x.fillText(t.dlSign, cx + 32, cy + ch - 34);
     // badge + rank (right column)
@@ -985,7 +873,7 @@ class Component extends DCLogic {
   // Language picker: one button with a dropdown (add more languages to LANGS + dict()).
   renderLang(L) {
     const e = React.createElement, INK = '#141110', CREAM = '#f4f0ec', mono = "'IBM Plex Mono',monospace";
-    const LANGS = [['en', 'EN', 'English'], ['es', 'ES', 'Español'], ['pt', 'PT', 'Português'], ['ru', 'RU', 'Русский'], ['zh', '中文', '中文（简体）']];
+    const LANGS = [['en', 'EN', 'English'], ['ru', 'RU', 'Русский']];
     const cur = LANGS.find(x => x[0] === L) || LANGS[0], open = this.state.langOpen;
     const globe = e('svg', { width: 14, height: 14, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2.2, 'aria-hidden': true },
       e('circle', { cx: 12, cy: 12, r: 9.5 }), e('path', { d: 'M2.5 12h19M12 2.5c2.6 2.8 3.9 6 3.9 9.5s-1.3 6.7-3.9 9.5c-2.6-2.8-3.9-6-3.9-9.5S9.4 5.3 12 2.5z' }));

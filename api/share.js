@@ -4,15 +4,11 @@
 export const config = { runtime: 'edge' };
 
 const TITLE = {
-  en: "$QOGE ship's log · day {d}", ru: 'Бортовой журнал $QOGE · день {d}', es: 'Diario de a bordo $QOGE · día {d}',
-  pt: 'Diário de bordo $QOGE · dia {d}', zh: '$QOGE 航行日志 · 第 {d} 天',
+  en: "$QOGE ship's log · day {d}", ru: 'Бортовой журнал $QOGE · день {d}',
 };
 const DESC = {
   en: 'A stranded dog is building a rocket home from Mars. Join ground control.',
   ru: 'Пёс застрял на Марсе и строит ракету домой. Присоединяйся к центру управления.',
-  es: 'Un perro atrapado en Marte construye un cohete para volver. Únete al centro de control.',
-  pt: 'Um cachorro preso em Marte constrói um foguete para voltar. Entre no controle da missão.',
-  zh: '一只被困火星的狗正在造火箭回家。加入地面控制。',
 };
 const int = (v, lo, hi, def) => { const n = parseInt(v, 10); return Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : def; };
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');

@@ -28,7 +28,7 @@ Context for picking this project up in a new chat.
 - `scripts/fetch-metrics.mjs` refreshes it from the Quainance API every 30 min
   in `.github/workflows/pages.yml`. Quainance API has no CORS, so the browser
   can't call it directly.
-- Languages: en, es, pt, ru, zh — dictionaries in dict() (each has `loc` and live
+- Languages: en, ru — dictionaries in dict() (each has `loc` and live
   headline templates lv*); picker in renderLang() (LANGS list); first visit picks
   the browser language, choice saved in localStorage 'qoge-lang'.
 - News ticker: `assets/news.js` (window.QOGE_NEWS, 146 puppy headlines per language,
