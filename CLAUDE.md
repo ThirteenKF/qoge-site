@@ -9,8 +9,8 @@ Context for picking this project up in a new chat.
   (masterhost.ru, renews ~4190 RUB/yr, auto-renew OFF). qoge.net (GoDaddy) was cancelled.
   DNS: A @ 216.198.79.1, CNAME www d29ba9e3571f7c77.vercel-dns-017.com.
 - Backup copy: https://thirteenkf.github.io/qoge-site/ (GitHub Pages via Actions workflow)
-- Local folder on the owner's PC: `C:\Users\0x13kf\Desktop\QOGE SITE\qoge-site`
-  (the parent `QOGE SITE` folder holds the original export — do not edit it)
+- Local folder on the owner's PC: `C:\Users\0x13kf\Desktop\qoge-site-main`
+  (restored from a zip on 2026-11-06: git init + fetch from GitHub; publish via tools/publish.bat works)
 
 ## Files
 - `index.html` — all markup, styles and logic (EN/RU dictionary, FAQ, roadmap,
@@ -86,3 +86,13 @@ Context for picking this project up in a new chat.
 - The owner runs `tools/publish.bat` (asks for the SSH key passphrase) →
   commit + push → Pages redeploys in ~1 min.
 - Keep `main` working; commit messages short, imperative, English.
+
+## Weekly digest (QNN Weekly, Telegram)
+- Structure, in order: 1) significant global news (AI, IT, crypto); 2) watchlist
+  projects; 3) $QOGE / Quai block (metrics from metrics.json, Mars Gum, site news).
+- Watchlist: QUAI, INJ, STRK, NEAR, QRL/QTC, AVAX, ICP, ALGO, ZEC, LINK, DASH,
+  ATOM, KSM, DOT, LTC.
+- "Significant" filter: affects money / tech / regulation — not price noise.
+  6–8 items max per digest, each item = new fact, new conclusion or a call to action.
+- Delivery: POST /api/telegram?action=draft (DIGEST_SECRET) -> owner approves
+  in a private chat -> posts to the channel (see api/telegram.mjs).

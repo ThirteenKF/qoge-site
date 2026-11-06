@@ -61,8 +61,14 @@ const timingSafeEq = (a, b) => {
   return d === 0;
 };
 
+// Digest texts use mini-markdown ([label](url) links, **bold**); rendered to Telegram HTML on send.
+const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const render = s => esc(s)
+  .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2">$1</a>')
+  .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
+
 async function publish(text) {
-  return tg('sendMessage', { chat_id: CHANNEL, text, link_preview_options: { is_disabled: false } });
+  return tg('sendMessage', { chat_id: CHANNEL, text: render(text), parse_mode: 'HTML', link_preview_options: { is_disabled: false } });
 }
 
 // store a draft and show it to the owner with buttons
@@ -72,7 +78,8 @@ async function newDraft(text, source) {
   if (!OWNER) throw new Error('TELEGRAM_OWNER_ID is not set');
   await tg('sendMessage', {
     chat_id: OWNER,
-    text,
+    text: render(text),
+    parse_mode: 'HTML',
     link_preview_options: { is_disabled: true },
     reply_markup: { inline_keyboard: [[
       { text: '✅ Опубликовать в канал', callback_data: 'pub:' + id },
