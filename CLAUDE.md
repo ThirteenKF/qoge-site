@@ -70,6 +70,12 @@ Context for picking this project up in a new chat.
   `ru/NN.webp`, 1600x900) + speaker notes, EN/RU toggle (shares localStorage 'qoge-lang', `?lang=ru` works),
   PDF downloads, og.jpg preview. Generated from the Claude Slides decks by a script in Claude's workspace.
   New report = new folder `research/<project>/` + a card in the hub. Main page links it via nav5 + footer.
+- INJ report v2 "The Leaky Bucket / Дырявое ведро" (research/inj/, Nov 9, 2026): 30 slides EN+RU, both PDFs.
+  Key facts: on-chain supply 122.9M INJ (not 100M), issuance ~5.4M/yr vs ~0.35M burned, INJC ETF live since Nov 5.
+  Slides were rendered by a script in Claude's workspace (not in the repo); edit = re-render all 60 webp + PDFs.
+- Deploy check: if the live site does not change ~2 min after a push, look at Vercel deployments
+  (GitHub API /repos/ThirteenKF/qoge-site/deployments?environment=Production). On Nov 9 Vercel skipped one push;
+  a new push re-triggered it. Images written by the device bridge carry a C2PA chunk (+~5.7KB) — harmless.
 - Mobile layout: `@media (max-width:767px)` block in index.html helmet styles.
 
 ## Links

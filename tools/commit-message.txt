@@ -1,7 +1,7 @@
-Rename INJ research to "The Leaky Bucket", fix hub card and PDFs
+Add INJ v2 notes to CLAUDE.md, re-trigger Vercel deploy
 
-- Hub card title: The Burn Book -> The Leaky Bucket / Дырявое ведро
-- New cover slide with the title (EN + RU), rebuilt both PDFs
+Vercel skipped the previous push (9bfd504); this commit re-triggers
+the deploy of the renamed INJ report, hub card and PDFs.
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01K147gCJvatrcQ7zCd5Mvvq
