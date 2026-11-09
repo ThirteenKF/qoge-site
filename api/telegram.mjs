@@ -39,6 +39,7 @@ async function redis(...cmd) {
   return j.result;
 }
 const DRAFT = (id) => 'tg:draft:' + id;
+const LASTIMG = 'tg:lastimg'; // sticky cover: survives text corrections from the owner
 const WEEK = 7 * 24 * 3600;
 
 // ---------- Telegram Bot API ----------
@@ -67,25 +68,50 @@ const render = s => esc(s)
   .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2">$1</a>')
   .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
 
-async function publish(text) {
-  return tg('sendMessage', { chat_id: CHANNEL, text: render(text), parse_mode: 'HTML', link_preview_options: { is_disabled: false } });
+async function publish(d) {
+  if (d.img) {
+    await tg('sendPhoto', { chat_id: CHANNEL, photo: d.img, caption: render(d.title || ''), parse_mode: 'HTML' });
+  }
+  return tg('sendMessage', { chat_id: CHANNEL, text: render(d.t), parse_mode: 'HTML', link_preview_options: { is_disabled: false } });
 }
 
-// store a draft and show it to the owner with buttons
-async function newDraft(text, source) {
+// drafts are stored as JSON {t, img, title}; plain-string values from older versions still work
+async function getDraft(id) {
+  const v = await redis('GET', DRAFT(id));
+  if (!v) return null;
+  if (v.startsWith('{')) { try { const o = JSON.parse(v); return { t: o.t, img: o.img || '', title: o.title || '' }; } catch {} }
+  return { t: v, img: '', title: '' };
+}
+
+// store a draft and show it to the owner with buttons (on the cover photo when present)
+async function newDraft(text, source, image = '', title = '') {
   const id = Date.now().toString(36);
-  await redis('SET', DRAFT(id), text, 'EX', WEEK);
+  await redis('SET', DRAFT(id), JSON.stringify({ t: text, img: image, title }), 'EX', WEEK);
+  if (image) await redis('SET', LASTIMG, image, 'EX', WEEK);
   if (!OWNER) throw new Error('TELEGRAM_OWNER_ID is not set');
-  await tg('sendMessage', {
-    chat_id: OWNER,
-    text: render(text),
-    parse_mode: 'HTML',
-    link_preview_options: { is_disabled: true },
-    reply_markup: { inline_keyboard: [[
-      { text: '✅ Опубликовать в канал', callback_data: 'pub:' + id },
-      { text: '🗑 Отклонить', callback_data: 'del:' + id },
-    ]] },
-  });
+  if (image) {
+    await tg('sendPhoto', {
+      chat_id: OWNER,
+      photo: image,
+      caption: render(title || text.split('\n')[0]),
+      parse_mode: 'HTML',
+      reply_markup: { inline_keyboard: [[
+        { text: '✅ Опубликовать в канал', callback_data: 'pub:' + id },
+        { text: '🗑 Отклонить', callback_data: 'del:' + id },
+      ]] },
+    });
+  } else {
+    await tg('sendMessage', {
+      chat_id: OWNER,
+      text: render(text),
+      parse_mode: 'HTML',
+      link_preview_options: { is_disabled: true },
+      reply_markup: { inline_keyboard: [[
+        { text: '✅ Опубликовать в канал', callback_data: 'pub:' + id },
+        { text: '🗑 Отклонить', callback_data: 'del:' + id },
+      ]] },
+    });
+  }
   await tg('sendMessage', {
     chat_id: OWNER,
     text: `⬆️ Черновик (${source}), ${text.length} символов. Нажми «Опубликовать» или пришли исправленный текст целиком — сделаю новый черновик.`,
@@ -100,14 +126,17 @@ async function draftEndpoint(request) {
   let body;
   try { body = await request.json(); } catch { return json({ ok: false, error: 'bad json' }, 400); }
   const text = String(body.text || '').trim();
+  const image = String(body.image || '').trim();
+  const title = String(body.title || '').trim();
   if (text.length < 50) return json({ ok: false, error: 'text too short' }, 400);
   if (text.length > 4096) return json({ ok: false, error: `text too long: ${text.length} > 4096` }, 400);
+  if (image && !/^https:\/\//.test(image)) return json({ ok: false, error: 'image must be an https URL' }, 400);
   if (env.TELEGRAM_AUTOPUBLISH === '1') {
-    const m = await publish(text);
+    const m = await publish({ t: text, img: image, title });
     if (OWNER) await tg('sendMessage', { chat_id: OWNER, text: `✅ Дайджест опубликован в канале (сообщение ${m.message_id}).` });
     return json({ ok: true, published: true, message_id: m.message_id });
   }
-  const id = await newDraft(text, body.title || 'QNN Weekly');
+  const id = await newDraft(text, 'QNN Weekly', image, title);
   return json({ ok: true, published: false, draft: id });
 }
 
@@ -123,11 +152,11 @@ async function webhook(request) {
     const from = String(q.from?.id || '');
     if (from !== OWNER) { await tg('answerCallbackQuery', { callback_query_id: q.id, text: 'Нет доступа' }); return new Response('ok'); }
     const [act, id] = String(q.data || '').split(':');
-    const text = await redis('GET', DRAFT(id));
-    if (!text) { await tg('answerCallbackQuery', { callback_query_id: q.id, text: 'Черновик устарел или уже обработан' }); return new Response('ok'); }
+    const d = await getDraft(id);
+    if (!d) { await tg('answerCallbackQuery', { callback_query_id: q.id, text: 'Черновик устарел или уже обработан' }); return new Response('ok'); }
     await redis('DEL', DRAFT(id)); // one tap = one post, no double posting
     if (act === 'pub') {
-      const m = await publish(text);
+      const m = await publish(d);
       await tg('answerCallbackQuery', { callback_query_id: q.id, text: 'Опубликовано ✅' });
       await tg('editMessageReplyMarkup', { chat_id: q.message.chat.id, message_id: q.message.message_id, reply_markup: { inline_keyboard: [[{ text: `✅ Опубликовано (№${m.message_id})`, callback_data: 'done' }]] } });
     } else {
@@ -151,7 +180,8 @@ async function webhook(request) {
           : `🐕 Привет! Твой Telegram ID: ${from}\nВладелец канала: впиши его в Vercel как TELEGRAM_OWNER_ID и сделай Redeploy.`,
       });
     } else if (from === OWNER && text.length >= 200) {
-      await newDraft(text, 'исправленный');
+      const lastImg = await redis('GET', LASTIMG).catch(() => '');
+      await newDraft(text, 'исправленный', typeof lastImg === 'string' ? lastImg : '');
     } else if (from === OWNER) {
       await tg('sendMessage', { chat_id: msg.chat.id, text: 'Чтобы исправить черновик, пришли его текст целиком (от 200 символов).' });
     }

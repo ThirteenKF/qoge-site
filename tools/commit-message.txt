@@ -1,8 +1,1 @@
-INJ research: plain-fact notes, cleaner cover and supply math slide
-
-- Rewrite slide notes as plain statements (no "corrected in v2" wording)
-- Cover badge and supply-math footnote without version references
-- Rebuild both PDFs
-
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
-Claude-Session: https://claude.ai/code/session_01K147gCJvatrcQ7zCd5Mvvq
+Add cover image support to Telegram digest bot

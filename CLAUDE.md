@@ -102,3 +102,6 @@ Context for picking this project up in a new chat.
   6–8 items max per digest, each item = new fact, new conclusion or a call to action.
 - Delivery: POST /api/telegram?action=draft (DIGEST_SECRET) -> owner approves
   in a private chat -> posts to the channel (see api/telegram.mjs).
+- Optional cover image: add "image" (https URL, e.g. /assets/xxx.png on the site)
+  and "title" (short caption shown on the photo) to the draft JSON. Published as
+  photo + text pair; the image survives text corrections from the owner.
