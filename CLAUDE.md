@@ -82,7 +82,7 @@ Context for picking this project up in a new chat.
 - X: https://x.com/QOGEofficial
 - Telegram: https://t.me/QOGEofficial
 - Contract (Quai Network): 0x0048848cA70eA1560577B4725A84b23B6bC589e2
-- Discord: https://discord.gg/eHVA8rJ2J (replaced the old Chart button)
+- Discord: https://discord.gg/YgM6HKaQzG (permanent invite, never expires; replaced the old Chart button)
 - Quainance button (replaced DexScreener — it does not list Quai Network yet)
 - Wallets in how-to-buy: Pelagus https://www.pelaguswallet.io/ , Blip https://blippay.me/
 

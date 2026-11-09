@@ -1,7 +1,7 @@
-Add INJ v2 notes to CLAUDE.md, re-trigger Vercel deploy
+Switch Discord links to the permanent invite
 
-Vercel skipped the previous push (9bfd504); this commit re-triggers
-the deploy of the renamed INJ report, hub card and PDFs.
+Replace the expired discord.gg/eHVA8rJ2J with discord.gg/YgM6HKaQzG
+on the main page, the research hub, all five reports, README and CLAUDE.md.
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01K147gCJvatrcQ7zCd5Mvvq
