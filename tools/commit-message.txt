@@ -1,0 +1,7 @@
+Rename INJ research to "The Leaky Bucket", fix hub card and PDFs
+
+- Hub card title: The Burn Book -> The Leaky Bucket / Дырявое ведро
+- New cover slide with the title (EN + RU), rebuilt both PDFs
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01K147gCJvatrcQ7zCd5Mvvq
