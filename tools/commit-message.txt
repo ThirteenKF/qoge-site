@@ -1,4 +1,4 @@
-Add THORChain research EN version and QUAI tip address on all research pages
+Redirect research pages to trailing slash so relative slide paths load
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01K147gCJvatrcQ7zCd5Mvvq
