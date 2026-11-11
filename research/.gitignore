@@ -1,0 +1,5 @@
+# research/thorchain was excluded in .git/info/exclude while it was a draft; publish it
+!thorchain/
+# working notes stay local
+thorchain/notes.md
+thorchain/BRIEF.md
