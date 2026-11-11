@@ -1,1 +1,4 @@
-Add cover image support to Telegram digest bot
+Add THORChain (RUNE) research #06, RU
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01K147gCJvatrcQ7zCd5Mvvq
