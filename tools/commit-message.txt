@@ -1,4 +1,4 @@
-Publish THORChain research page files
+Add THORChain research EN version and QUAI tip address on all research pages
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01K147gCJvatrcQ7zCd5Mvvq

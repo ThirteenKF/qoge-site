@@ -139,11 +139,15 @@ body{background:var(--ink) url(../research-bg.webp) center top/cover fixed no-re
       <div class="support" id="support">
         <div><h2><span data-en="Support the creator" data-ru="Поддержать создателя">Support the creator</span> 💛</h2>
         <p data-en="These breakdowns are free. If this one helped you, you can send a tip — it keeps new research coming." data-ru="Эти разборы бесплатные. Если этот был полезен, можно отправить донат — это помогает выпускать новые ресёрчи.">These breakdowns are free. If this one helped you, you can send a tip — it keeps new research coming.</p></div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+        <div><span class="net" data-en="QUAI / Quai Network" data-ru="QUAI / сеть Quai">QUAI / Quai Network</span>
+        <div class="addr"><code id="tipaddr-quai">0x004d46bb973CF4160C95cd8F88cbDDb581201Dfe</code><button type="button" class="btn tipcopy" data-copy="tipaddr-quai"><span data-en="Copy" data-ru="Копировать">Copy</span></button></div></div>
         <div><span class="net" data-en="ETH / any EVM network" data-ru="ETH / любая EVM-сеть">ETH / any EVM network</span>
-        <div class="addr"><code id="tipaddr">0xFf916a74d7E1540A4fD91D302568692c07cFf6A3</code><button type="button" class="btn" id="tipcopy"><span data-en="Copy" data-ru="Копировать">Copy</span></button></div></div>
+        <div class="addr"><code id="tipaddr">0xFf916a74d7E1540A4fD91D302568692c07cFf6A3</code><button type="button" class="btn tipcopy" data-copy="tipaddr"><span data-en="Copy" data-ru="Копировать">Copy</span></button></div></div>
+        </div>
       </div>
-      <script>document.getElementById('tipcopy').addEventListener('click',function(){var b=this,a=document.getElementById('tipaddr').textContent;
-        (navigator.clipboard?navigator.clipboard.writeText(a):Promise.reject()).catch(function(){var t=document.createElement('textarea');t.value=a;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove()}).finally(function(){var s=b.firstElementChild,old=s.innerHTML;s.innerHTML='✓';setTimeout(function(){s.innerHTML=old},1500)})});</script>
+      <script>document.querySelectorAll('.tipcopy').forEach(function(btn){btn.addEventListener('click',function(){var b=this,a=document.getElementById(b.dataset.copy).textContent;
+        (navigator.clipboard?navigator.clipboard.writeText(a):Promise.reject()).catch(function(){var t=document.createElement('textarea');t.value=a;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove()}).finally(function(){var s=b.firstElementChild,old=s.innerHTML;s.innerHTML='✓';setTimeout(function(){s.innerHTML=old},1500)})})});</script>
     </main>
     <footer class="q mono"><div class="wrap"><span>© 2026 $QOGE · QNN Research</span><span  data-en="Not financial advice · DYOR" data-ru="Не финансовый совет · DYOR">Not financial advice · DYOR</span><span data-en="Background photo: NASA/JPL-Caltech/MSSS" data-ru="Фото фона: NASA/JPL-Caltech/MSSS">Background photo: NASA/JPL-Caltech/MSSS</span></div></footer>
     <script>
