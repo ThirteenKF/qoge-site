@@ -1,5 +1,8 @@
 # research/thorchain was excluded in .git/info/exclude while it was a draft; publish it
 !thorchain/
+# research/link is also listed in .git/info/exclude; publish it
+!link/
 # working notes stay local
 thorchain/notes.md
 thorchain/BRIEF.md
+link/notes.md

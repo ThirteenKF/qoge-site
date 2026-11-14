@@ -1,4 +1,4 @@
-Redirect research pages to trailing slash so relative slide paths load
+Add Chainlink (LINK) research #07 page
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01K147gCJvatrcQ7zCd5Mvvq
