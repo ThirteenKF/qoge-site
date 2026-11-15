@@ -1,4 +1,4 @@
-Rename Chainlink research, redesign Noahs Ark slides
+Match QUAI, NEAR and Starknet page header colors to their slides
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01K147gCJvatrcQ7zCd5Mvvq
