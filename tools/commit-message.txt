@@ -1,8 +1,0 @@
-Rewrite research slide notes with term explanations (RU+EN)
-
-Expand notes for QUAI, NEAR, Starknet, Noah's Ark, THORChain, LINK and
-Injective: what the slide shows, terms explained, why it matters.
-Add source links to NEAR slides; split notes into paragraphs.
-
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
-Claude-Session: https://claude.ai/code/session_01K147gCJvatrcQ7zCd5Mvvq
