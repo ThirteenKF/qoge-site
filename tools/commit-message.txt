@@ -1,4 +1,4 @@
-Match QUAI, NEAR and Starknet page header colors to their slides
+Make the scroll tracker a draggable animated rocket with a doge porthole
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01K147gCJvatrcQ7zCd5Mvvq
