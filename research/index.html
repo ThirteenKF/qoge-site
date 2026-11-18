@@ -99,6 +99,11 @@ header.q .buy:hover{background:var(--ink);color:var(--yel)}
 .chip{font-size:12px;font-weight:800;padding:3px 8px;border:1px solid #4a4340;color:#cfc8c1}
 .card p{font-size:16px;color:#e6e0da}
 .card.hide,.feat.hide{display:none}
+.tick{display:none}
+.sub .btn{border:0;border-radius:999px;color:#fff;text-shadow:0 1px 1px rgba(0,60,10,.35);background:linear-gradient(110deg,#1f9d3a,#3cc94e,#86e35a,#2fb24a,#1f9d3a);background-size:300% 100%;box-shadow:0 6px 18px rgba(40,170,60,.45),inset 0 1px 0 rgba(255,255,255,.4);animation:subFlow 3s linear infinite;transition:transform .15s}
+.sub .btn:hover{background:linear-gradient(110deg,#1f9d3a,#3cc94e,#86e35a,#2fb24a,#1f9d3a);background-size:300% 100%;color:#fff;transform:translateY(-2px)}
+@keyframes subFlow{to{background-position:300% 0}}
+@media (prefers-reduced-motion:reduce){.sub .btn{animation:none}}
 @media (max-width:860px){.feat{grid-template-columns:1fr}.feat img{border-right:0;border-bottom:4px solid var(--yel);height:auto}}
 @media (max-width:640px){
  header.q .buy{padding:0 10px;font-size:12px}
@@ -106,7 +111,9 @@ header.q .buy:hover{background:var(--ink);color:var(--yel)}
  .grid{grid-template-columns:1fr!important;gap:14px!important}
  .card:not(.soon){display:grid;grid-template-columns:120px 1fr;align-items:stretch}
  .card:not(.soon).hide{display:none}
- .card:not(.soon) img{height:100%;object-fit:cover;object-position:left center;aspect-ratio:auto;border-bottom:0;border-right:3px solid var(--paper)}
+ .card:not(.soon) img{display:none}
+ .tick{display:flex;align-items:center;justify-content:center;border-right:3px solid var(--paper);font-weight:900;font-stretch:115%;font-size:24px;letter-spacing:.02em}
+ .x{aspect-ratio:auto;border-bottom:0;border-right:3px solid var(--paper)}
  .card .b{padding:12px 12px 14px;gap:6px}
  .card h2{font-size:18px}
  .card p{font-size:14px;line-height:1.4}
@@ -132,7 +139,7 @@ header.q .buy:hover{background:var(--ink);color:var(--yel)}
   <p class="lead" data-en="Plain-language breakdowns of crypto projects: where the tokens come from, where they go, what moves the price and what could break. Every number is sourced. EN + RU." data-ru="Разборы криптопроектов простыми словами: откуда берутся токены, куда уходят, что двигает цену и что может сломаться. У каждой цифры есть источник. EN + RU.">Plain-language breakdowns of crypto projects: where the tokens come from, where they go, what moves the price and what could break. Every number is sourced. EN + RU.</p>
 </section>
 <a class="feat" href="zec/" data-t="priv">
-  <img src="zec/en/01.webp" data-img="zec/LANG/01.webp" alt="Money Behind a Shield cover" width="1600" height="900">
+  <img src="zec/en/01.webp" data-img="zec/LANG/01.webp" alt="Money Behind a Shield" width="1600" height="900">
   <div class="b">
     <span class="new" data-en="New breakdown" data-ru="Новый разбор">New breakdown</span>
     <span class="m mono" data-en="#08 · ZEC · Nov 18, 2026 · 31 slides" data-ru="#08 · ZEC · 18.11.2026 · 31 слайд"></span>
@@ -149,6 +156,7 @@ header.q .buy:hover{background:var(--ink);color:var(--yel)}
 <div class="filters" role="group"><button type="button" data-f="all" aria-pressed="true" data-en="All" data-ru="Все">All</button><button type="button" data-f="priv" aria-pressed="false" data-en="Privacy" data-ru="Приватность">Privacy</button><button type="button" data-f="l1" aria-pressed="false" data-en="L1 &amp; L2" data-ru="L1 и L2">L1 & L2</button><button type="button" data-f="defi" aria-pressed="false" data-en="DeFi" data-ru="DeFi">DeFi</button><button type="button" data-f="q" aria-pressed="false" data-en="Quantum safety" data-ru="Квантовая защита">Quantum safety</button><button type="button" data-f="infra" aria-pressed="false" data-en="Infrastructure" data-ru="Инфраструктура">Infrastructure</button></div>
 <div class="grid" id="grid">
   <a class="card" href="link/" data-t="infra">
+    <span class="tick" style="background:#c2cceb;color:#141110">LINK</span>
     <img src="link/en/01.webp" data-img="link/LANG/01.webp" alt="The Banks Came. The Token Stayed. cover" width="1600" height="900" loading="lazy">
     <div class="b">
       <span class="m mono" data-en="#07 · LINK · Nov 14, 2026 · 29 slides" data-ru="#07 · LINK · 14.11.2026 · 29 слайдов"></span>
@@ -158,6 +166,7 @@ header.q .buy:hover{background:var(--ink);color:var(--yel)}
     </div>
   </a>
   <a class="card" href="thorchain/" data-t="defi">
+    <span class="tick" style="background:#4adecb;color:#141110">RUNE</span>
     <img src="thorchain/en/01.webp" data-img="thorchain/LANG/01.webp" alt="The Price of Neutrality cover" width="1600" height="900" loading="lazy">
     <div class="b">
       <span class="m mono" data-en="#06 · RUNE · Nov 11, 2026 · 31 slides" data-ru="#06 · RUNE · 11.11.2026 · 31 слайд"></span>
@@ -167,6 +176,7 @@ header.q .buy:hover{background:var(--ink);color:var(--yel)}
     </div>
   </a>
   <a class="card" href="inj/" data-t="defi l1">
+    <span class="tick" style="background:#101f28;color:#f4f0ec">INJ</span>
     <img src="inj/en/01.webp" data-img="inj/LANG/01.webp" alt="The Leaky Bucket cover" width="1600" height="900" loading="lazy">
     <div class="b">
       <span class="m mono" data-en="#05 · INJ · upd. Nov 9, 2026 · 30 slides" data-ru="#05 · INJ · обн. 09.11.2026 · 30 слайдов"></span>
@@ -176,6 +186,7 @@ header.q .buy:hover{background:var(--ink);color:var(--yel)}
     </div>
   </a>
   <a class="card" href="noahs-ark/" data-t="q">
+    <span class="tick" style="background:#194868;color:#f4f0ec">QRL</span>
     <img src="noahs-ark/en/01.webp" data-img="noahs-ark/LANG/01.webp" alt="Noah’s Ark: a bunker for institutions cover" width="1600" height="900" loading="lazy">
     <div class="b">
       <span class="m mono" data-en="#04 · QRL · QTC · Oct 22, 2026 · 40 slides" data-ru="#04 · QRL · QTC · 22.10.2026 · 40 слайдов"></span>
@@ -185,6 +196,7 @@ header.q .buy:hover{background:var(--ink);color:var(--yel)}
     </div>
   </a>
   <a class="card" href="near/" data-t="l1">
+    <span class="tick" style="background:#0f3e31;color:#f4f0ec">NEAR</span>
     <img src="near/en/01.webp" data-img="near/LANG/01.webp" alt="Big Brother’s Shadow cover" width="1600" height="900" loading="lazy">
     <div class="b">
       <span class="m mono" data-en="#03 · NEAR · Oct 17, 2026 · 31 slides" data-ru="#03 · NEAR · 17.10.2026 · 31 слайд"></span>
@@ -194,6 +206,7 @@ header.q .buy:hover{background:var(--ink);color:var(--yel)}
     </div>
   </a>
   <a class="card" href="starknet/" data-t="l1 q">
+    <span class="tick" style="background:#3a2e48;color:#f4f0ec">STRK</span>
     <img src="starknet/en/01.webp" data-img="starknet/LANG/01.webp" alt="Phoenix or Ashes cover" width="1600" height="900" loading="lazy">
     <div class="b">
       <span class="m mono" data-en="#02 · STRK · upd. Oct 23, 2026 · 36 slides" data-ru="#02 · STRK · обн. 23.10.2026 · 36 слайдов"></span>
@@ -203,6 +216,7 @@ header.q .buy:hover{background:var(--ink);color:var(--yel)}
     </div>
   </a>
   <a class="card" href="quai/" data-t="l1">
+    <span class="tick" style="background:#432e27;color:#f4f0ec">QUAI</span>
     <img src="quai/en/01.webp" data-img="quai/LANG/01.webp" alt="QUAI tokenomics cover" width="1600" height="900" loading="lazy">
     <div class="b">
       <span class="m mono" data-en="#01 · QUAI · Oct 15, 2026 · 26 slides" data-ru="#01 · QUAI · 15.10.2026 · 26 слайдов"></span>
