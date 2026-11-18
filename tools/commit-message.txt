@@ -1,4 +1,4 @@
-Flip tracker rocket at the ends of the page
+Add Zcash (ZEC) research #08
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01K147gCJvatrcQ7zCd5Mvvq
