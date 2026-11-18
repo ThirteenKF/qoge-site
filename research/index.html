@@ -60,8 +60,8 @@ body{background:var(--ink) url(research-bg.webp) center top/cover fixed no-repea
 @media (max-width:767px){body{background-attachment:scroll;background-size:auto 100vh}}
 .hero{padding:44px 0 8px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:28px;margin-top:36px}
-.card{display:flex;flex-direction:column;background:#1d1a19;border:4px solid var(--paper);box-shadow:8px 8px 0 var(--red);transition:transform .15s}
-.card:hover{transform:translate(-3px,-3px)}
+.card{display:flex;flex-direction:column;background:#1d1a19;border:4px solid var(--paper);transition:transform .15s,border-color .15s}
+.card:hover{transform:translate(-3px,-3px);border-color:var(--yel)}
 .card img{display:block;width:100%;height:auto;aspect-ratio:16/9;border-bottom:4px solid var(--paper)}
 .card .b{padding:18px 18px 22px;display:flex;flex-direction:column;gap:10px}
 .card h2{margin:0;font-weight:900;font-stretch:110%;font-size:26px;line-height:1.05;text-transform:uppercase}
@@ -73,13 +73,56 @@ body{background:var(--ink) url(research-bg.webp) center top/cover fixed no-repea
 .soon:hover{transform:none}
 .soon h2{color:#8a827b}
 
+header.q .buy{display:flex;align-items:center;background:var(--yel);color:var(--ink);padding:0 18px;border-left:4px solid var(--ink);font-size:14px;text-transform:uppercase;white-space:nowrap}
+header.q .buy:hover{background:var(--ink);color:var(--yel)}
+.feat{display:grid;grid-template-columns:1.25fr 1fr;margin-top:36px;background:#1d1a19;border:4px solid var(--yel);transition:transform .15s}
+.feat:hover{transform:translate(-3px,-3px)}
+.feat img{display:block;width:100%;height:100%;object-fit:cover;aspect-ratio:16/9;border-right:4px solid var(--yel)}
+.feat .b{padding:24px 26px;display:flex;flex-direction:column;gap:12px;justify-content:center}
+.feat .new{align-self:flex-start;background:var(--yel);color:var(--ink);font-weight:900;font-size:13px;text-transform:uppercase;padding:5px 10px}
+.feat h2{margin:0;font-weight:900;font-stretch:115%;font-size:clamp(28px,3vw,40px);line-height:1;text-transform:uppercase}
+.feat .k{margin:0;font-size:19px;line-height:1.4;font-weight:700;color:var(--paper)}
+.feat .d{margin:0;font-size:15px;line-height:1.5;color:#cfc8c1}
+.feat .go.btn{margin-left:auto;padding:10px 16px;font-size:14px}
+.sub{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;margin-top:28px;padding:18px 22px;border:2px solid #3a3431;background:rgba(20,17,16,.85)}
+.sub b{display:block;font-size:18px;text-transform:uppercase;font-weight:900}
+.sub > div > span{display:block;margin-top:4px;font-size:15px;color:#cfc8c1}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-top:36px}
+.filters button{font:inherit;font-weight:800;font-size:14px;padding:8px 14px;border:2px solid #4a4340;background:rgba(20,17,16,.85);color:var(--paper);cursor:pointer}
+.filters button:hover{border-color:var(--paper)}
+.filters button[aria-pressed=true]{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+.grid{margin-top:20px!important}
+.card .b{flex:1}
+.card .m,.feat .m{font-size:13px!important;letter-spacing:.08em!important;color:#bdb5ad!important}
+.card .row,.feat .row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:auto;padding-top:6px}
+.card .row .go{margin-left:auto;margin-top:0}
+.chip{font-size:12px;font-weight:800;padding:3px 8px;border:1px solid #4a4340;color:#cfc8c1}
+.card p{font-size:16px;color:#e6e0da}
+.card.hide,.feat.hide{display:none}
+@media (max-width:860px){.feat{grid-template-columns:1fr}.feat img{border-right:0;border-bottom:4px solid var(--yel);height:auto}}
+@media (max-width:640px){
+ header.q .buy{padding:0 10px;font-size:12px}
+ header.q .crumb{visibility:hidden}
+ .grid{grid-template-columns:1fr!important;gap:14px!important}
+ .card:not(.soon){display:grid;grid-template-columns:120px 1fr;align-items:stretch}
+ .card:not(.soon).hide{display:none}
+ .card:not(.soon) img{height:100%;object-fit:cover;object-position:left center;aspect-ratio:auto;border-bottom:0;border-right:3px solid var(--paper)}
+ .card .b{padding:12px 12px 14px;gap:6px}
+ .card h2{font-size:18px}
+ .card p{font-size:14px;line-height:1.4}
+ .card .m{font-size:12px!important}
+ .card .chip{display:none}
+ .feat .b{padding:18px}
+ .feat .d{display:none}
+}
 </style>
 </head>
 <body>
 <header class="q">
   <a class="logo" href="../"><img src="../assets/logo.jpg" alt="$QOGE logo"><span class="t">QNN</span></a>
-  <nav class="crumb mono"><a href="../">$QOGE</a><span class="sep">/</span><span>Research</span></nav>
+  <nav class="crumb mono"><a href="../">$QOGE</a><span class="sep">/</span><span data-en="Crypto Research" data-ru="Крипторесёрч">Crypto Research</span></nav>
   <div class="lang" role="group" aria-label="Language"><button type="button" data-l="en">EN</button><button type="button" data-l="ru">RU</button></div>
+  <a class="buy" href="../#buy" data-en="Buy $QOGE" data-ru="Купить $QOGE">Buy $QOGE</a>
 </header>
 
 <main class="wrap">
@@ -88,83 +131,90 @@ body{background:var(--ink) url(research-bg.webp) center top/cover fixed no-repea
   <h1><span style="color:inherit" data-en="Crypto projects," data-ru="Криптопроекты">Crypto projects,</span> <span data-en="no hype" data-ru="без хайпа">no hype</span></h1>
   <p class="lead" data-en="Plain-language breakdowns of crypto projects: where the tokens come from, where they go, what moves the price and what could break. Every number is sourced. EN + RU." data-ru="Разборы криптопроектов простыми словами: откуда берутся токены, куда уходят, что двигает цену и что может сломаться. У каждой цифры есть источник. EN + RU.">Plain-language breakdowns of crypto projects: where the tokens come from, where they go, what moves the price and what could break. Every number is sourced. EN + RU.</p>
 </section>
-<div class="grid">
-  <a class="card" href="zec/">
-    <img src="zec/en/01.webp" data-img="zec/LANG/01.webp" alt="Zcash — Money Behind a Shield cover" width="1600" height="900" loading="lazy">
+<a class="feat" href="zec/" data-t="priv">
+  <img src="zec/en/01.webp" data-img="zec/LANG/01.webp" alt="Money Behind a Shield cover" width="1600" height="900">
+  <div class="b">
+    <span class="new" data-en="New breakdown" data-ru="Новый разбор">New breakdown</span>
+    <span class="m mono" data-en="#08 · ZEC · Nov 18, 2026 · 31 slides" data-ru="#08 · ZEC · 18.11.2026 · 31 слайд"></span>
+    <h2 data-en="Money Behind a Shield" data-ru="Деньги под щитом">Money Behind a Shield</h2>
+    <p class="k" data-en="ETFs and leverage hold the price, not network users" data-ru="Цену держат ETF и плечи, а не пользователи сети">ETFs and leverage hold the price, not network users</p>
+    <p class="d" data-en="Optional privacy that won an ETF: shielded pools and the Orchard bug, Ironwood and NU7, the ECC split, weekly ETF flows, who mines and sells ZEC, mining cost, holders, Monero, myths and scenarios." data-ru="Приватность по желанию, которая получила ETF: шилд-пулы и баг Orchard, Ironwood и NU7, раскол ECC, потоки ETF по неделям, кто майнит и продаёт ZEC, себестоимость, держатели, Monero, мифы и сценарии.">Optional privacy that won an ETF: shielded pools and the Orchard bug, Ironwood and NU7, the ECC split, weekly ETF flows, who mines and sells ZEC, mining cost, holders, Monero, myths and scenarios.</p>
+    <div class="row"><span class="chip" data-en="Privacy" data-ru="Приватность">Privacy</span><span class="go btn" data-en="Read the breakdown →" data-ru="Читать разбор →">Read the breakdown →</span></div>
+  </div>
+</a>
+<div class="sub">
+  <div><b data-en="Don’t miss the next breakdown" data-ru="Не пропусти следующий разбор">Don’t miss the next breakdown</b><span data-en="New breakdowns and QNN Weekly — on Telegram" data-ru="Новые разборы и QNN Weekly — в Telegram">New breakdowns and QNN Weekly — on Telegram</span></div>
+  <a class="btn" href="https://t.me/QOGEofficial" target="_blank" rel="noopener"><span data-en="Subscribe on Telegram" data-ru="Подписаться в Telegram">Subscribe on Telegram</span> ↗</a>
+</div>
+<div class="filters" role="group"><button type="button" data-f="all" aria-pressed="true" data-en="All" data-ru="Все">All</button><button type="button" data-f="priv" aria-pressed="false" data-en="Privacy" data-ru="Приватность">Privacy</button><button type="button" data-f="l1" aria-pressed="false" data-en="L1 &amp; L2" data-ru="L1 и L2">L1 & L2</button><button type="button" data-f="defi" aria-pressed="false" data-en="DeFi" data-ru="DeFi">DeFi</button><button type="button" data-f="q" aria-pressed="false" data-en="Quantum safety" data-ru="Квантовая защита">Quantum safety</button><button type="button" data-f="infra" aria-pressed="false" data-en="Infrastructure" data-ru="Инфраструктура">Infrastructure</button></div>
+<div class="grid" id="grid">
+  <a class="card" href="link/" data-t="infra">
+    <img src="link/en/01.webp" data-img="link/LANG/01.webp" alt="The Banks Came. The Token Stayed. cover" width="1600" height="900" loading="lazy">
     <div class="b">
-      <span class="m mono" data-en="#08 · ZEC · Nov 18, 2026 · 31 slides" data-ru="#08 · ZEC · 18.11.2026 · 31 слайд">#08 · ZEC · Nov 18, 2026 · 31 slides</span>
-      <h2  data-en="Money Behind a Shield" data-ru="Деньги под щитом">Money Behind a Shield</h2>
-      <p  data-en="Optional privacy that won an ETF: shielded pools and the Orchard bug, Ironwood and NU7, the ECC split, weekly ETF flows, who mines and sells ZEC, mining cost, holders, Monero, myths and scenarios." data-ru="Приватность по желанию, которая получила ETF: шилд-пулы и баг Orchard, Ironwood и NU7, раскол ECC, потоки ETF по неделям, кто майнит и продаёт ZEC, себестоимость, держатели, Monero, мифы и сценарии.">Optional privacy that won an ETF: shielded pools and the Orchard bug, Ironwood and NU7, the ECC split, weekly ETF flows, who mines and sells ZEC, mining cost, holders, Monero, myths and scenarios.</p>
-      <span class="go" data-en="Read →" data-ru="Читать →">Read →</span>
+      <span class="m mono" data-en="#07 · LINK · Nov 14, 2026 · 29 slides" data-ru="#07 · LINK · 14.11.2026 · 29 слайдов"></span>
+      <h2 data-en="The Banks Came. The Token Stayed." data-ru="Банки пришли, токен остался">The Banks Came. The Token Stayed.</h2>
+      <p data-en="The best business in crypto, but the token gets little of it" data-ru="Лучший бизнес в крипте, но токену от него достаётся мало">The best business in crypto, but the token gets little of it</p>
+      <div class="row"><span class="chip" data-en="Infrastructure" data-ru="Инфраструктура">Infrastructure</span><span class="go" data-en="Read →" data-ru="Читать →">Read →</span></div>
     </div>
   </a>
-  <a class="card" href="link/">
-    <img src="link/en/01.webp" data-img="link/LANG/01.webp" alt="Chainlink — The Banks Came. The Token Stayed. cover" width="1600" height="900" loading="lazy">
+  <a class="card" href="thorchain/" data-t="defi">
+    <img src="thorchain/en/01.webp" data-img="thorchain/LANG/01.webp" alt="The Price of Neutrality cover" width="1600" height="900" loading="lazy">
     <div class="b">
-      <span class="m mono" data-en="#07 · LINK · Nov 14, 2026 · 29 slides" data-ru="#07 · LINK · 14.11.2026 · 29 слайдов">#07 · LINK · Nov 14, 2026 · 29 slides</span>
-      <h2  data-en="The Banks Came. The Token Stayed." data-ru="Банки пришли, токен остался">The Banks Came. The Token Stayed.</h2>
-      <p  data-en="The best business in crypto and a token that doesn’t feel it: Swift, DTCC and Schwab, the Reserve vs quarterly unlocks to Binance, staking, ETFs, the LayerZero exodus, the 2029 cliff, catalysts and scenarios." data-ru="Лучший бизнес в крипте и токен, который этого не чувствует: Swift, DTCC и Schwab, Reserve против квартальных разлоков на Binance, стейкинг, ETF, исход с LayerZero, «обрыв» 2029 года, катализаторы и сценарии.">The best business in crypto and a token that doesn’t feel it: Swift, DTCC and Schwab, the Reserve vs quarterly unlocks to Binance, staking, ETFs, the LayerZero exodus, the 2029 cliff, catalysts and scenarios.</p>
-      <span class="go" data-en="Read →" data-ru="Читать →">Read →</span>
+      <span class="m mono" data-en="#06 · RUNE · Nov 11, 2026 · 31 slides" data-ru="#06 · RUNE · 11.11.2026 · 31 слайд"></span>
+      <h2 data-en="The Price of Neutrality" data-ru="Цена нейтральности">The Price of Neutrality</h2>
+      <p data-en="Rising on hacks signals liquidity, not health" data-ru="Рост на взломах — признак ликвидности, а не здоровья">Rising on hacks signals liquidity, not health</p>
+      <div class="row"><span class="chip" data-en="DeFi" data-ru="DeFi">DeFi</span><span class="go" data-en="Read →" data-ru="Читать →">Read →</span></div>
     </div>
   </a>
-  <a class="card" href="thorchain/">
-    <img src="thorchain/en/01.webp" data-img="thorchain/LANG/01.webp" alt="THORChain — The Price of Neutrality cover" width="1600" height="900" loading="lazy">
+  <a class="card" href="inj/" data-t="defi l1">
+    <img src="inj/en/01.webp" data-img="inj/LANG/01.webp" alt="The Leaky Bucket cover" width="1600" height="900" loading="lazy">
     <div class="b">
-      <span class="m mono" data-en="#06 · RUNE · Nov 11, 2026 · 31 slides" data-ru="#06 · RUNE · 11.11.2026 · 31 слайд">#06 · RUNE · Nov 11, 2026 · 31 slides</span>
-      <h2  data-en="The Price of Neutrality" data-ru="Цена нейтральности">The Price of Neutrality</h2>
-      <p  data-en="Why RUNE rises on hacks: the Binance hack and the FBI request, the THORFi collapse and TCY, ADR 023, every exploit since 2021, quarterly revenue, privacy coins, catalysts and scenarios." data-ru="Почему RUNE растёт на взломах: взлом Binance и запрос ФБР, крах THORFi и TCY, ADR 023, все взломы с 2021 года, выручка по кварталам, приватные монеты, катализаторы и сценарии.">Why RUNE rises on hacks: the Binance hack and the FBI request, the THORFi collapse and TCY, ADR 023, every exploit since 2021, quarterly revenue, privacy coins, catalysts and scenarios.</p>
-      <span class="go" data-en="Read →" data-ru="Читать →">Read →</span>
+      <span class="m mono" data-en="#05 · INJ · upd. Nov 9, 2026 · 30 slides" data-ru="#05 · INJ · обн. 09.11.2026 · 30 слайдов"></span>
+      <h2 data-en="The Leaky Bucket" data-ru="Дырявое ведро">The Leaky Bucket</h2>
+      <p data-en="Burns exist, but supply still grows ≈4% a year" data-ru="Сжигания есть, но предложение всё равно растёт на ≈4% в год">Burns exist, but supply still grows ≈4% a year</p>
+      <div class="row"><span class="chip" data-en="DeFi" data-ru="DeFi">DeFi</span><span class="chip" data-en="L1 &amp; L2" data-ru="L1 и L2">L1 & L2</span><span class="go" data-en="Read →" data-ru="Читать →">Read →</span></div>
     </div>
   </a>
-  <a class="card" href="inj/">
-    <img src="inj/en/01.webp" data-img="inj/LANG/01.webp" alt="Injective — INJ explained simply cover" width="1600" height="900" loading="lazy">
+  <a class="card" href="noahs-ark/" data-t="q">
+    <img src="noahs-ark/en/01.webp" data-img="noahs-ark/LANG/01.webp" alt="Noah’s Ark: a bunker for institutions cover" width="1600" height="900" loading="lazy">
     <div class="b">
-      <span class="m mono" data-en="#05 · INJ · updated Nov 9, 2026 · 30 slides" data-ru="#05 · INJ · обновлено 09.11.2026 · 30 слайдов">#05 · INJ · updated Nov 9, 2026 · 30 slides</span>
-      <h2  data-en="The Leaky Bucket" data-ru="Дырявое ведро">The Leaky Bucket</h2>
-      <p  data-en="The on-chain orderbook, the real 122.9M INJ supply and why it still grows, 7.3M burned, competitors and valuation, the new INJC ETF on Nasdaq, risks and price scenarios." data-ru="Ончейн-ордербук, реальное предложение 122,9 млн INJ и почему оно растёт, 7,3 млн сожжено, конкуренты и оценка, новый ETF INJC на Nasdaq, риски и сценарии цены.">The on-chain orderbook, the real 122.9M INJ supply and why it still grows, 7.3M burned, competitors and valuation, the new INJC ETF on Nasdaq, risks and price scenarios.</p>
-      <span class="go" data-en="Read →" data-ru="Читать →">Read →</span>
+      <span class="m mono" data-en="#04 · QRL · QTC · Oct 22, 2026 · 40 slides" data-ru="#04 · QRL · QTC · 22.10.2026 · 40 слайдов"></span>
+      <h2 data-en="Noah’s Ark: a bunker for institutions" data-ru="Ноев ковчег: бункер для институционалов">Noah’s Ark: a bunker for institutions</h2>
+      <p data-en="A quantum break of bitcoin is a “when”. The best refuge today is QRL" data-ru="Квантовый взлом биткоина — вопрос «когда». Лучшее убежище сегодня — QRL">A quantum break of bitcoin is a “when”. The best refuge today is QRL</p>
+      <div class="row"><span class="chip" data-en="Quantum safety" data-ru="Квантовая защита">Quantum safety</span><span class="go" data-en="Read →" data-ru="Читать →">Read →</span></div>
     </div>
   </a>
-  <a class="card" href="noahs-ark/">
-    <img src="noahs-ark/en/01.webp" data-img="noahs-ark/LANG/01.webp" alt="Noah’s Ark — a bunker for institutions cover" width="1600" height="900" loading="lazy">
+  <a class="card" href="near/" data-t="l1">
+    <img src="near/en/01.webp" data-img="near/LANG/01.webp" alt="Big Brother’s Shadow cover" width="1600" height="900" loading="lazy">
     <div class="b">
-      <span class="m mono" data-en="#04 · QRL · QTC · Oct 22, 2026 · 40 slides" data-ru="#04 · QRL · QTC · 22.10.2026 · 40 слайдов">#04 · QRL · QTC · Oct 22, 2026 · 40 slides</span>
-      <h2  data-en="Noah’s Ark: a bunker for institutions" data-ru="Ноев ковчег: бункер для институционалов">Noah’s Ark: a bunker for institutions</h2>
-      <p  data-en="The quantum threat to Bitcoin, top-5 post-quantum refuges, full reviews of QRL and Quantus, price charts and forecasts." data-ru="Квантовая угроза биткоину, топ-5 постквантовых убежищ, полные разборы QRL и Quantus, графики и прогнозы цены.">The quantum threat to Bitcoin, top-5 post-quantum refuges, full reviews of QRL and Quantus, price charts and forecasts.</p>
-      <span class="go" data-en="Read →" data-ru="Читать →">Read →</span>
+      <span class="m mono" data-en="#03 · NEAR · Oct 17, 2026 · 31 slides" data-ru="#03 · NEAR · 17.10.2026 · 31 слайд"></span>
+      <h2 data-en="Big Brother’s Shadow" data-ru="Тень большого брата">Big Brother’s Shadow</h2>
+      <p data-en="A real business via Intents, but the token is still inflationary" data-ru="Настоящий бизнес через Intents, но токен всё ещё инфляционный">A real business via Intents, but the token is still inflationary</p>
+      <div class="row"><span class="chip" data-en="L1 &amp; L2" data-ru="L1 и L2">L1 & L2</span><span class="go" data-en="Read →" data-ru="Читать →">Read →</span></div>
     </div>
   </a>
-  <a class="card" href="near/">
-    <img src="near/en/01.webp" data-img="near/LANG/01.webp" alt="NEAR — Big Brother’s Shadow cover" width="1600" height="900" loading="lazy">
+  <a class="card" href="starknet/" data-t="l1 q">
+    <img src="starknet/en/01.webp" data-img="starknet/LANG/01.webp" alt="Phoenix or Ashes cover" width="1600" height="900" loading="lazy">
     <div class="b">
-      <span class="m mono" data-en="#03 · NEAR · Oct 17, 2026 · 31 slides" data-ru="#03 · NEAR · 17.10.2026 · 31 слайд">#03 · NEAR · Oct 17, 2026 · 31 slides</span>
-      <h2  data-en="Big Brother’s Shadow" data-ru="Тень большого брата">Big Brother’s Shadow</h2>
-      <p  data-en="NEAR Intents and the buyback, AI agents, post-quantum keys, Quantus, ZEC and Bitcoin whales, ETFs, price scenarios." data-ru="NEAR Intents и выкуп, ИИ-агенты, постквантовые ключи, Quantus, ZEC и биткоин-киты, ETF, сценарии цены.">NEAR Intents and the buyback, AI agents, post-quantum keys, Quantus, ZEC and Bitcoin whales, ETFs, price scenarios.</p>
-      <span class="go" data-en="Read →" data-ru="Читать →">Read →</span>
+      <span class="m mono" data-en="#02 · STRK · upd. Oct 23, 2026 · 36 slides" data-ru="#02 · STRK · обн. 23.10.2026 · 36 слайдов"></span>
+      <h2 data-en="Phoenix or Ashes" data-ru="Феникс или пепел">Phoenix or Ashes</h2>
+      <p data-en="Strong tech, weak economics: revenue doesn’t reach holders" data-ru="Сильная технология, слабая экономика: доход не идёт держателям">Strong tech, weak economics: revenue doesn’t reach holders</p>
+      <div class="row"><span class="chip" data-en="L1 &amp; L2" data-ru="L1 и L2">L1 & L2</span><span class="chip" data-en="Quantum safety" data-ru="Квантовая защита">Quantum safety</span><span class="go" data-en="Read →" data-ru="Читать →">Read →</span></div>
     </div>
   </a>
-  <a class="card" href="starknet/">
-    <img src="starknet/en/01.webp" data-img="starknet/LANG/01.webp" alt="Starknet — Phoenix or Ashes cover" width="1600" height="900" loading="lazy">
-    <div class="b">
-      <span class="m mono" data-en="#02 · Starknet · updated Oct 23, 2026 · 36 slides" data-ru="#02 · Starknet · обновлено 23.10.2026 · 36 слайдов">#02 · Starknet · updated Oct 23, 2026 · 36 slides</span>
-      <h2  data-en="Phoenix or Ashes" data-ru="Феникс или пепел">Phoenix or Ashes</h2>
-      <p  data-en="Revenue, the biggest app leaving for Arc, layoffs, whales, quantum safety and the L1 vote, a forecast with probabilities — hype or tech?" data-ru="Выручка, уход крупнейшего приложения на Arc, сокращения, киты, квантовая защита и L1, прогноз с вероятностями — хайп или технология?">Revenue, the biggest app leaving for Arc, layoffs, whales, quantum safety and the L1 vote, a forecast with probabilities — hype or tech?</p>
-      <span class="go" data-en="Read →" data-ru="Читать →">Read →</span>
-    </div>
-  </a>
-  <a class="card" href="quai/">
+  <a class="card" href="quai/" data-t="l1">
     <img src="quai/en/01.webp" data-img="quai/LANG/01.webp" alt="QUAI tokenomics cover" width="1600" height="900" loading="lazy">
     <div class="b">
-      <span class="m mono" data-en="#01 · Oct 15, 2026 · 26 slides" data-ru="#01 · 15.10.2026 · 26 слайдов">#01 · Oct 15, 2026 · 26 slides</span>
-      <h2  data-en="QUAI tokenomics" data-ru="Токеномика QUAI">QUAI tokenomics</h2>
-      <p  data-en="Issuance vs burns, SOAP buybacks, the break-even price, demand and risks." data-ru="Выпуск против сжигания, выкуп SOAP, безынфляционная цена, спрос и риски.">Issuance vs burns, SOAP buybacks, the break-even price, demand and risks.</p>
-      <span class="go" data-en="Read →" data-ru="Читать →">Read →</span>
+      <span class="m mono" data-en="#01 · QUAI · Oct 15, 2026 · 26 slides" data-ru="#01 · QUAI · 15.10.2026 · 26 слайдов"></span>
+      <h2 data-en="QUAI tokenomics" data-ru="Токеномика QUAI">QUAI tokenomics</h2>
+      <p data-en="Supply got fixed, demand not yet" data-ru="Предложение починили, спрос — пока нет">Supply got fixed, demand not yet</p>
+      <div class="row"><span class="chip" data-en="L1 &amp; L2" data-ru="L1 и L2">L1 & L2</span><span class="go" data-en="Read →" data-ru="Читать →">Read →</span></div>
     </div>
   </a>
   <div class="card soon">
-    <h2  data-en="Next project — soon" data-ru="Следующий проект — скоро">Next project — soon</h2>
-    <p><span  data-en="Want a breakdown of a specific project? Suggest it in the Discord." data-ru="Хочешь разбор конкретного проекта? Предложи его в Discord.">Want a breakdown of a specific project? Suggest it in the Discord.</span></p>
-    <a class="go" href="https://discord.gg/YgM6HKaQzG" target="_blank" rel="noopener">Discord ↗</a>
+    <h2 data-en="Next project — soon" data-ru="Следующий проект — скоро">Next project — soon</h2>
+    <p><span data-en="Want a breakdown of a specific project? Suggest it in the Discord, or subscribe so you don’t miss it." data-ru="Хочешь разбор конкретного проекта? Предложи его в Discord или подпишись, чтобы не пропустить выход.">Want a breakdown of a specific project?</span></p>
+    <div class="row" style="margin-top:4px"><a class="go" href="https://discord.gg/YgM6HKaQzG" target="_blank" rel="noopener">Discord ↗</a><a class="go" href="https://t.me/QOGEofficial" target="_blank" rel="noopener">Telegram ↗</a></div>
   </div>
 </div>
 </main>
@@ -188,6 +238,10 @@ function setLang(l,save){
   if(window.render) window.render(l);
 }
 document.querySelectorAll('.lang button').forEach(function(b){b.onclick=function(){setLang(b.dataset.l,true)}});
+
+document.querySelectorAll('.filters button').forEach(function(bt){bt.onclick=function(){var f=bt.dataset.f;
+ document.querySelectorAll('.filters button').forEach(function(x){x.setAttribute('aria-pressed',x===bt)});
+ document.querySelectorAll('.feat,.card:not(.soon)').forEach(function(c){var t=(c.dataset.t||'').split(' ');c.classList.toggle('hide',f!=='all'&&t.indexOf(f)<0)});};});
 
 setLang(getLang(),false);
 </script>
