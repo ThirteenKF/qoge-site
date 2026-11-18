@@ -1,4 +1,4 @@
-Replace research header block with green pill button
+Polish homepage: fix hero wrap, reorder sections, calmer buttons
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01K147gCJvatrcQ7zCd5Mvvq

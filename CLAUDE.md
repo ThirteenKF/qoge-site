@@ -47,7 +47,9 @@ Context for picking this project up in a new chat.
   of badgeSvg()). package.json only lists @vercel/og for the functions; the site has no build step.
   "Download picture" link still makes the same card in the browser (makeShareCard(), canvas)., and "since your last visit" / last-24h deltas.
   No server: streak lives in localStorage 'qoge-visit'. To add log entries: append to every list.
-- NFT teaser banner (#nft, between the ticker strip and #daily): QOGE Mars Gum collection (100 rover cards,
+- Page order (Nov 2026): hero → ticker → #legend → #mission → #buy → #tokenomics → #roadmap → #nft → #faq → #daily → community.
+- Header research button: green pill .q-res/.q-pill, text t.resBtn.
+- NFT teaser banner (#nft, between #roadmap and #faq): QOGE Mars Gum collection (100 rover cards,
   files in `QOGE SITE\nft\mars-gum`), image assets/mars-gum-pack.webp, texts ng* in every language.
   Mint is LIVE (holder whitelist, 99 QUAI, 1 per wallet): launchpad
   https://launchpad.bazarr.xyz/mint/0x003880cbfaeb5050edbb61dcc4f8fd226826f4d8 , trading on https://www.bazarr.xyz/ .
