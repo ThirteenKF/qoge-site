@@ -1080,5 +1080,54 @@ class Component extends DCLogic {
   window.addEventListener('scroll',flip,{passive:true}); window.addEventListener('load',flip);
 })();
 </script>
+<script>
+/* QOGE calculator: how many QOGE for N QUAI (constant-product pool estimate). Vanilla JS, re-mounts if the page re-renders. */
+(function(){
+  var Y='oklch(0.88 0.17 95)';
+  var T={ru:{h:'Сколько QOGE я получу?',s:'По текущей цене пула на Quainance. Обновляется вместе с цифрами сайта.',get:'Ты получишь примерно',imp:'сдвиг цены',lt:'меньше 1%',warn:'Пул маленький ($L): крупная покупка заметно поднимает цену. Учитывай это при покупке.',note:'Оценка с комиссией пула 0,3%. Точную сумму покажет Quainance перед обменом.',loc:'ru-RU'},
+         en:{h:'How much QOGE will I get?',s:'At the current Quainance pool price. Updates with the site numbers.',get:'You will get about',imp:'price impact',lt:'under 1%',warn:'The pool is small ($L): a big buy moves the price noticeably. Keep that in mind.',note:'Estimate includes the 0.3% pool fee. Quainance shows the exact amount before the swap.',loc:'en-US'}};
+  function lang(){return document.documentElement.lang==='ru'?'ru':'en'}
+  function m(){return window.QOGE_METRICS}
+  function build(){
+    var buy=document.getElementById('buy'), M=m(); if(!buy||!M||!M.priceQuai||!M.liquidityUsd) return;
+    var old=document.getElementById('qcalc'); var L=lang();
+    if(old&&old.dataset.l===L) return; if(old) old.remove();
+    var h2=buy.querySelector('h2'); if(!h2) return; var anchor=h2.parentNode.nextElementSibling||h2.parentNode;
+    var t=T[L], c=document.createElement('div'); c.id='qcalc'; c.dataset.l=L;
+    c.innerHTML='<div><div class="qc-h">'+t.h+'</div><div class="qc-s">'+t.s+'</div>'+
+      '<label class="qc-in"><input id="qcIn" type="number" min="1" inputmode="decimal" value="1000" aria-label="QUAI"><span>QUAI</span></label>'+
+      '<div class="qc-q">'+[100,1000,5000,10000].map(function(v){return '<button type="button" data-v="'+v+'">'+v.toLocaleString(t.loc)+'</button>'}).join('')+'</div></div>'+
+      '<div id="qcOut" class="qc-out"></div>';
+    anchor.parentNode.insertBefore(c,anchor);
+    var inp=c.querySelector('#qcIn'); inp.oninput=calc;
+    c.querySelectorAll('.qc-q button').forEach(function(b){b.onclick=function(){inp.value=b.dataset.v;calc()}});
+    calc();
+  }
+  function calc(){
+    var M=m(), out=document.getElementById('qcOut'), inp=document.getElementById('qcIn'); if(!M||!out||!inp) return;
+    var t=T[lang()], x=Math.max(0,parseFloat(inp.value)||0);
+    var qUsd=M.priceUsd/M.priceQuai, Rq=M.liquidityUsd/2/qUsd, Rt=M.liquidityUsd/2/M.priceUsd;
+    var got=Rt*x/(Rq+x)*0.997, spot=x/M.priceQuai, imp=spot?(1-got/spot)*100:0;
+    out.innerHTML='<div class="qc-l">'+t.get+'</div><div class="qc-v">'+Math.round(got).toLocaleString(t.loc)+' QOGE</div>'+
+      '<div class="qc-u">≈ $'+(x*qUsd).toFixed(2)+' · '+t.imp+' '+(imp<1?t.lt:'≈ '+imp.toFixed(0)+'%')+'</div>'+
+      (imp>=5?'<div class="qc-w">'+t.warn.replace('$L','$'+Math.round(M.liquidityUsd))+'</div>':'')+
+      '<div class="qc-n">'+t.note+'</div>';
+  }
+  var st=document.createElement('style');
+  st.textContent='#qcalc,#qcalc *{box-sizing:border-box}#qcalc{margin-top:28px;border:4px solid #141110;background:#fff;box-shadow:8px 8px 0 #141110;padding:22px 24px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:24px;align-items:center;color:#141110}'+
+   '#qcalc .qc-h{font-weight:900;font-size:24px;text-transform:uppercase}#qcalc .qc-s{margin-top:6px;font-size:15px;color:#4a403b}'+
+   '#qcalc .qc-in{display:flex;align-items:center;gap:10px;margin-top:16px;width:100%;border:3px solid #141110;padding:0 14px;height:56px;max-width:340px}'+
+   '#qcalc .qc-in input{flex:1;min-width:0;border:0;outline:0;font:900 24px Archivo,sans-serif;background:transparent;color:#141110}#qcalc .qc-in span{font-weight:900}'+
+   '#qcalc .qc-q{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}#qcalc .qc-q button{font:800 14px Archivo,sans-serif;border:2px solid #141110;background:#f4f0ec;color:#141110;padding:6px 10px;cursor:pointer}#qcalc .qc-q button:hover{background:#141110;color:#f4f0ec}'+
+   '#qcalc .qc-out{background:#141110;color:#f4f0ec;padding:20px 22px}#qcalc .qc-l{font-family:"IBM Plex Mono",monospace;font-size:13px;color:#cfc8c1}'+
+   '#qcalc .qc-v{font-weight:900;font-size:clamp(28px,3vw,40px);color:'+Y+';line-height:1.1;margin-top:4px;overflow-wrap:anywhere}#qcalc .qc-u{margin-top:8px;font-size:15px}'+
+   '#qcalc .qc-w{margin-top:10px;font-size:14px;color:#ffb3a8}#qcalc .qc-n{margin-top:12px;font-family:"IBM Plex Mono",monospace;font-size:12px;color:#a59e97}'+
+   '@media (max-width:767px){#qcalc{grid-template-columns:minmax(0,1fr);padding:18px;box-shadow:5px 5px 0 #141110}}';
+  document.head.appendChild(st);
+  var tries=0, iv=setInterval(function(){build(); if(++tries>40) clearInterval(iv)},500);
+  new MutationObserver(function(){if(!document.getElementById('qcalc')||document.getElementById('qcalc').dataset.l!==lang()) build(); else calc();}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+  new MutationObserver(function(){if(!document.getElementById('qcalc')) build()}).observe(document.body,{childList:true,subtree:true});
+})();
+</script>
 </body>
 </html>
