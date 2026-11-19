@@ -72,6 +72,7 @@ a:hover{color:oklch(0.72 0.17 40)}
 button{font-family:inherit}
 :not(.q-tracker *)[style*="font-size: 10px"],:not(.q-tracker *)[style*="font-size: 11px"]{font-size:12px!important}
 [style*="IBM Plex Mono"][style*="font-size: 12px"]{font-size:13px!important}
+#roadmap .q-rm-row:last-of-type .q-rm-body > span:first-child{color:#3AA6D9}
 @keyframes qpillFlow{to{background-position:300% 0}}
 @keyframes qpillShine{0%,55%{left:-60px}100%{left:110%}}
 @media (prefers-reduced-motion:reduce){.q-pill,.q-pill::after{animation:none!important}}
@@ -231,10 +232,10 @@ button{font-family:inherit}
 <section class="q-pr" id="mission" data-screen-label="Mission News" style="position:relative;background:linear-gradient(180deg,rgba(14,8,8,.92) 0%,rgba(14,8,8,.78) 60%,rgba(14,8,8,.55) 100%),url(assets/mars-bg.webp) 88% bottom/cover no-repeat;color:#f4f0ec;padding:clamp(72px,10vw,140px) clamp(16px,4vw,56px);padding-right:clamp(112px,8vw,140px);display:flex;flex-direction:column;gap:48px;border-bottom:4px solid #141110">
   <div style="display:flex;flex-direction:column;gap:20px;max-width:980px">
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-      <span style="background:oklch(0.62 0.21 25);color:#f4f0ec;padding:6px 14px;font-weight:900;font-size:14px;text-transform:uppercase;white-space:nowrap;transform:skewX(-8deg)">{{ t.msTag }}</span>
+      <span style="background:#E4572E;color:#f4f0ec;padding:6px 14px;font-weight:900;font-size:14px;text-transform:uppercase;white-space:nowrap;transform:skewX(-8deg)">{{ t.msTag }}</span>
       <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;white-space:nowrap;color:#cfc8c1">{{ t.msSub }}</span>
     </div>
-    <h2 style="margin:0;font-weight:900;font-size:clamp(34px,4.8vw,76px);line-height:.95;letter-spacing:-.02em;text-transform:uppercase;text-wrap:balance">{{ t.msH1 }} <span style="color:oklch(0.88 0.17 95)">{{ t.msH2 }}</span></h2>
+    <h2 style="margin:0;font-weight:900;font-size:clamp(34px,4.8vw,76px);line-height:.95;letter-spacing:-.02em;text-transform:uppercase;text-wrap:balance">{{ t.msH1 }} <span style="color:#E4572E">{{ t.msH2 }}</span></h2>
   </div>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:clamp(24px,3vw,40px);align-items:start">
     <div style="display:flex;flex-direction:column;gap:24px">
@@ -244,17 +245,17 @@ button{font-family:inherit}
       </div>
       <div style="background:oklch(0.88 0.17 95);color:#141110;border:4px solid #141110;box-shadow:6px 6px 0 #f4f0ec;padding:20px 22px;max-width:520px;font-weight:800;font-size:19px;line-height:1.35">{{ t.msBox }}</div>
     </div>
-    <div ref="{{ progressRef }}" style="background:#f4f0ec;color:#141110;border:4px solid #141110;box-shadow:8px 8px 0 oklch(0.62 0.21 25);display:flex;flex-direction:column">
+    <div ref="{{ progressRef }}" style="background:#f4f0ec;color:#141110;border:4px solid #141110;box-shadow:8px 8px 0 #E4572E;display:flex;flex-direction:column">
       <div style="display:flex;justify-content:space-between;align-items:stretch;background:#141110;color:#f4f0ec;font-weight:900;text-transform:uppercase;font-size:14px">
-        <span style="background:oklch(0.62 0.21 25);padding:10px 14px;white-space:nowrap">{{ t.tracker }}</span>
+        <span style="background:#E4572E;padding:10px 14px;white-space:nowrap">{{ t.tracker }}</span>
         <span style="padding:10px 14px;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:12px;display:flex;align-items:center;white-space:nowrap">{{ partsLabel }}</span>
       </div>
       <div style="padding:24px 24px 8px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">
-        <div style="font-weight:900;font-size:clamp(72px,9vw,128px);line-height:.82;letter-spacing:-.03em;font-variant-numeric:tabular-nums">{{ progressShown }}<span style="color:oklch(0.62 0.21 25)">%</span></div>
+        <div style="font-weight:900;font-size:clamp(72px,9vw,128px);line-height:.82;letter-spacing:-.03em;font-variant-numeric:tabular-nums">{{ progressShown }}<span style="color:#E4572E">%</span></div>
         <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em;text-align:right;line-height:1.5">{{ t.rocket }}<br>{{ t.complete }}</div>
       </div>
       <div style="margin:12px 24px 20px;height:18px;border:3px solid #141110;background:#fff;position:relative">
-        <div style="position:absolute;inset:0 auto 0 0;width:{{ progressWidth }};background:oklch(0.62 0.21 25)"></div>
+        <div style="position:absolute;inset:0 auto 0 0;width:{{ progressWidth }};background:#E4572E"></div>
       </div>
       <div style="display:flex;flex-direction:column;padding:0 24px 20px">
         <sc-for list="{{ parts }}" as="p" hint-placeholder-count="6">
@@ -324,14 +325,14 @@ button{font-family:inherit}
   <a href="{{ mSource }}" target="_blank" rel="noopener" style="align-self:flex-start;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;color:#141110;border-bottom:2px solid #141110;padding-bottom:2px" style-hover="color:oklch(0.62 0.21 25)">● {{ t.mLive }} · {{ t.mUpd }} {{ mUpdated }} ↗</a>
 </section>
 
-<section class="q-pr" id="roadmap" data-screen-label="Roadmap News" style="background:#141110;color:#f4f0ec;padding:clamp(72px,10vw,140px) clamp(16px,4vw,56px);padding-right:clamp(112px,8vw,140px);display:flex;flex-direction:column;gap:48px;border-bottom:4px solid #141110">
+<section class="q-pr" id="roadmap" data-screen-label="Roadmap News" style="background:#13233F;background-image:radial-gradient(1.5px 1.5px at 12% 18%,rgba(255,255,255,.55),transparent),radial-gradient(1px 1px at 33% 72%,rgba(255,255,255,.45),transparent),radial-gradient(1.5px 1.5px at 58% 26%,rgba(255,255,255,.4),transparent),radial-gradient(1px 1px at 81% 64%,rgba(255,255,255,.5),transparent),radial-gradient(1px 1px at 91% 12%,rgba(255,255,255,.4),transparent),radial-gradient(1.5px 1.5px at 6% 88%,rgba(255,255,255,.4),transparent),radial-gradient(1px 1px at 47% 92%,rgba(255,255,255,.35),transparent),radial-gradient(ellipse at 80% 0%,#1d3a66 0%,#13233F 55%,#0b1528 100%);color:#f4f0ec;padding:clamp(72px,10vw,140px) clamp(16px,4vw,56px);padding-right:clamp(112px,8vw,140px);display:flex;flex-direction:column;gap:48px;border-bottom:4px solid #141110">
   
   <div style="display:flex;flex-direction:column;gap:20px;max-width:980px">
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-      <span style="background:oklch(0.62 0.21 25);color:#f4f0ec;padding:6px 14px;font-weight:900;font-size:14px;text-transform:uppercase;white-space:nowrap;transform:skewX(-8deg)">{{ t.rmTag }}</span>
+      <span style="background:#E4572E;color:#f4f0ec;padding:6px 14px;font-weight:900;font-size:14px;text-transform:uppercase;white-space:nowrap;transform:skewX(-8deg)">{{ t.rmTag }}</span>
       <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;white-space:nowrap;color:#cfc8c1">{{ t.rmSub }}</span>
     </div>
-    <h2 style="margin:0;font-weight:900;font-size:clamp(34px,4.8vw,76px);line-height:.95;letter-spacing:-.02em;text-transform:uppercase;text-wrap:balance">{{ t.rmH1 }} <span style="color:oklch(0.88 0.17 95)">{{ t.rmH2 }}</span></h2>
+    <h2 style="margin:0;font-weight:900;font-size:clamp(34px,4.8vw,76px);line-height:.95;letter-spacing:-.02em;text-transform:uppercase;text-wrap:balance">{{ t.rmH1a }} <span style="color:#3AA6D9">{{ t.rmH1b }}</span> <span style="color:oklch(0.88 0.17 95)">{{ t.rmH2 }}</span></h2>
   </div>
   <div style="display:flex;flex-direction:column;border:4px solid #f4f0ec">
     <sc-for list="{{ phases }}" as="ph" hint-placeholder-count="4">
@@ -347,7 +348,7 @@ button{font-family:inherit}
         </div>
         <div class="q-rm-badge" style="display:flex;align-items:center;padding:0 18px">
           <sc-if value="{{ ph.isDone }}" hint-placeholder-val="{{ false }}"><span style="background:oklch(0.88 0.17 95);color:#141110;padding:6px 10px;font-weight:900;font-size:12px;white-space:nowrap">{{ t.aired }}</span></sc-if>
-          <sc-if value="{{ ph.isLive }}" hint-placeholder-val="{{ false }}"><span style="background:oklch(0.62 0.21 25);color:#f4f0ec;padding:6px 10px;font-weight:900;font-size:12px;white-space:nowrap">{{ t.onAir }}</span></sc-if>
+          <sc-if value="{{ ph.isLive }}" hint-placeholder-val="{{ false }}"><span style="background:#E4572E;color:#f4f0ec;padding:6px 10px;font-weight:900;font-size:12px;white-space:nowrap">{{ t.onAir }}</span></sc-if>
           <sc-if value="{{ ph.isQueued }}" hint-placeholder-val="{{ true }}"><span style="border:2px solid #f4f0ec;padding:4px 10px;font-weight:900;font-size:12px;white-space:nowrap">{{ t.upNext }}</span></sc-if>
         </div>
       </div>
@@ -455,7 +456,7 @@ class Component extends DCLogic {
       s3b: 'Open $QOGE on Quainance, connect your wallet and press Swap: QUAI → $QOGE. Check the contract address below in the Quai explorer.', s3go: 'Buy on Quainance', s3ex: 'Check in explorer', s4b: 'Join our Discord and connect your wallet in #connect-wallet. You get the QOGE Holder role and every crew channel opens up.',
       caLabel: 'CONTRACT ADDRESS',
       tkTag: 'By the numbers', tkSub: 'TOKENOMICS', tkH: 'The fuel specs', m1: 'MARKET CAP', m2: 'PRICE', m3: 'LIQUIDITY', m4: 'HOLDERS', mLive: 'LIVE DATA · QUAINANCE', mUpd: 'UPDATED', chTitle: 'PRICE · 7D', chVol: 'VOL', chNow: 'NOW', chNoData: 'No trades yet',
-      rmTag: 'Coming up next', rmSub: 'ROADMAP · TV GUIDE', rmH1: 'Mars → Earth:', rmH2: 'the schedule', aired: 'AIRED ✓', onAir: '● ON AIR', upNext: 'UP NEXT', rmProg: 'Holders: {n} / {goal}', dlTag: '● On the radio', dlSub: 'DAILY · GROUND CONTROL', dlTitle: "Ship's log", dlDay: 'day {n}', dlSign: '— Q., stranded on Mars', dlPS: 'P.S. {h} holders in ground control. Fuel price {chg} in 24h.', dlUp: 'up {n}%', dlDown: 'down {n}%', dlFlat: 'steady', dlStreakH: 'Your streak', dlDays: 'days in a row', dlBest: 'Best: {n} · visits: {v}', dlNext: '{n} more days → {rank}', dlMax: 'Top rank. Respect.', shTitle: 'Your mission card', shShare: 'Share the picture', shCopyOpen: 'Copy picture & open X', shDownload: 'Download picture', shHint: 'Picture copied — paste it into your post (Ctrl+V)', shHintFail: "Couldn't copy the picture — download it and attach it to your post", shClose: 'Close', shRocket: 'Rocket built: {pct}%', dlShare: 'Share progress on X', dlShareText: 'I\'m a {rank} of the $QOGE mission: {n} days in a row on the radio with Mars 🚀 Rocket {pct}% built, {h} holders on board. Join ground control:', dlTomorrow: 'Come back tomorrow to keep the streak.', dlSinceH: 'Since your last visit', dlFirst: 'First contact! Come back tomorrow and we will show what changed.', dlHolders: 'Holders', dlPrice: 'Fuel price', dl24h: 'Last 24 hours', dlVol: 'Volume', ranks: ['Cadet', 'Mechanic', 'Pilot', 'Navigator', 'Commander', 'Admiral', 'Mars legend'], dlBadgeTop: '$QOGE · GROUND CONTROL', dlBadgeDays: '{n} days in a row', dlD: 'd',
+      rmTag: 'Coming up next', rmSub: 'ROADMAP · TV GUIDE', rmH1: 'Mars → Earth:', rmH1a: 'Mars →', rmH1b: 'Earth:', rmH2: 'the schedule', aired: 'AIRED ✓', onAir: '● ON AIR', upNext: 'UP NEXT', rmProg: 'Holders: {n} / {goal}', dlTag: '● On the radio', dlSub: 'DAILY · GROUND CONTROL', dlTitle: "Ship's log", dlDay: 'day {n}', dlSign: '— Q., stranded on Mars', dlPS: 'P.S. {h} holders in ground control. Fuel price {chg} in 24h.', dlUp: 'up {n}%', dlDown: 'down {n}%', dlFlat: 'steady', dlStreakH: 'Your streak', dlDays: 'days in a row', dlBest: 'Best: {n} · visits: {v}', dlNext: '{n} more days → {rank}', dlMax: 'Top rank. Respect.', shTitle: 'Your mission card', shShare: 'Share the picture', shCopyOpen: 'Copy picture & open X', shDownload: 'Download picture', shHint: 'Picture copied — paste it into your post (Ctrl+V)', shHintFail: "Couldn't copy the picture — download it and attach it to your post", shClose: 'Close', shRocket: 'Rocket built: {pct}%', dlShare: 'Share progress on X', dlShareText: 'I\'m a {rank} of the $QOGE mission: {n} days in a row on the radio with Mars 🚀 Rocket {pct}% built, {h} holders on board. Join ground control:', dlTomorrow: 'Come back tomorrow to keep the streak.', dlSinceH: 'Since your last visit', dlFirst: 'First contact! Come back tomorrow and we will show what changed.', dlHolders: 'Holders', dlPrice: 'Fuel price', dl24h: 'Last 24 hours', dlVol: 'Volume', ranks: ['Cadet', 'Mechanic', 'Pilot', 'Navigator', 'Commander', 'Admiral', 'Mars legend'], dlBadgeTop: '$QOGE · GROUND CONTROL', dlBadgeDays: '{n} days in a row', dlD: 'd',
       fqTag: 'Viewer questions', fqH1: 'You asked.', fqH2: 'We barked.',
       cmH1: 'Join the rescue team.', cmH2: 'Bring him home.', bubble: 'pls hurry, i\'m out of bacon',
       foot1: '© 2026 $QOGE · A MEMECOIN WITH NO INTRINSIC VALUE OR EXPECTATION OF RETURN.', foot2: 'NOT AFFILIATED WITH NASA. JUST A DOG.',
@@ -492,7 +493,7 @@ class Component extends DCLogic {
       s3b: 'Открой $QOGE на Quainance, подключи кошелёк и нажми Swap: QUAI → $QOGE. Сверь адрес контракта ниже в эксплорере Quai.', s3go: 'Купить на Quainance', s3ex: 'Проверить в эксплорере', s4b: 'Зайди в наш Discord и подключи кошелёк в канале #connect-wallet. Получишь роль QOGE Holder, и откроются все каналы экипажа.',
       caLabel: 'АДРЕС КОНТРАКТА',
       tkTag: 'В цифрах', tkSub: 'ТОКЕНОМИКА', tkH: 'Характеристики топлива', m1: 'КАПИТАЛИЗАЦИЯ', m2: 'ЦЕНА', m3: 'ЛИКВИДНОСТЬ', m4: 'ХОЛДЕРЫ', mLive: 'ЖИВЫЕ ДАННЫЕ · QUAINANCE', mUpd: 'ОБНОВЛЕНО', chTitle: 'ЦЕНА · 7 ДНЕЙ', chVol: 'ОБЪЁМ', chNow: 'СЕЙЧАС', chNoData: 'Сделок пока нет',
-      rmTag: 'Далее в эфире', rmSub: 'РОАДМАП · ТЕЛЕПРОГРАММА', rmH1: 'Марс → Земля:', rmH2: 'расписание', aired: 'В ЭФИРЕ БЫЛО ✓', onAir: '● В ЭФИРЕ', upNext: 'СКОРО', rmProg: 'Холдеры: {n} / {goal}', dlTag: '● На связи', dlSub: 'КАЖДЫЙ ДЕНЬ · ЦЕНТР УПРАВЛЕНИЯ', dlTitle: 'Бортовой журнал', dlDay: 'день {n}', dlSign: '— Q., застрял на Марсе', dlPS: 'P.S. В центре управления {h} холдеров. Цена топлива за сутки: {chg}.', dlUp: '+{n}%', dlDown: '−{n}%', dlFlat: 'без изменений', dlStreakH: 'Твоя серия', dlDays: 'дн. подряд', dlBest: 'Рекорд: {n} · визитов: {v}', dlNext: 'Ещё {n} дн. → {rank}', dlMax: 'Высшее звание. Уважение.', shTitle: 'Твоя карточка миссии', shShare: 'Поделиться картинкой', shCopyOpen: 'Скопировать картинку и открыть X', shDownload: 'Скачать картинку', shHint: 'Картинка скопирована — вставь её в пост (Ctrl+V)', shHintFail: 'Не получилось скопировать — скачай картинку и прикрепи к посту', shClose: 'Закрыть', shRocket: 'Ракета собрана: {pct}%', dlShare: 'Поделиться прогрессом в X', dlShareText: 'Я {rank} миссии $QOGE: {n} дн. подряд на связи с Марсом 🚀 Ракета собрана на {pct}%, на борту {h} холдеров. Присоединяйся к центру управления:', dlTomorrow: 'Заходи завтра, чтобы не прервать серию.', dlSinceH: 'С твоего прошлого визита', dlFirst: 'Первый контакт! Заходи завтра — покажем, что изменилось.', dlHolders: 'Холдеры', dlPrice: 'Цена топлива', dl24h: 'За 24 часа', dlVol: 'Объём', ranks: ['Стажёр', 'Механик', 'Пилот', 'Штурман', 'Командир', 'Адмирал', 'Легенда Марса'], dlBadgeTop: '$QOGE · ЦЕНТР УПРАВЛЕНИЯ', dlBadgeDays: '{n} дн. подряд', dlD: 'дн',
+      rmTag: 'Далее в эфире', rmSub: 'РОАДМАП · ТЕЛЕПРОГРАММА', rmH1: 'Марс → Земля:', rmH1a: 'Марс →', rmH1b: 'Земля:', rmH2: 'расписание', aired: 'В ЭФИРЕ БЫЛО ✓', onAir: '● В ЭФИРЕ', upNext: 'СКОРО', rmProg: 'Холдеры: {n} / {goal}', dlTag: '● На связи', dlSub: 'КАЖДЫЙ ДЕНЬ · ЦЕНТР УПРАВЛЕНИЯ', dlTitle: 'Бортовой журнал', dlDay: 'день {n}', dlSign: '— Q., застрял на Марсе', dlPS: 'P.S. В центре управления {h} холдеров. Цена топлива за сутки: {chg}.', dlUp: '+{n}%', dlDown: '−{n}%', dlFlat: 'без изменений', dlStreakH: 'Твоя серия', dlDays: 'дн. подряд', dlBest: 'Рекорд: {n} · визитов: {v}', dlNext: 'Ещё {n} дн. → {rank}', dlMax: 'Высшее звание. Уважение.', shTitle: 'Твоя карточка миссии', shShare: 'Поделиться картинкой', shCopyOpen: 'Скопировать картинку и открыть X', shDownload: 'Скачать картинку', shHint: 'Картинка скопирована — вставь её в пост (Ctrl+V)', shHintFail: 'Не получилось скопировать — скачай картинку и прикрепи к посту', shClose: 'Закрыть', shRocket: 'Ракета собрана: {pct}%', dlShare: 'Поделиться прогрессом в X', dlShareText: 'Я {rank} миссии $QOGE: {n} дн. подряд на связи с Марсом 🚀 Ракета собрана на {pct}%, на борту {h} холдеров. Присоединяйся к центру управления:', dlTomorrow: 'Заходи завтра, чтобы не прервать серию.', dlSinceH: 'С твоего прошлого визита', dlFirst: 'Первый контакт! Заходи завтра — покажем, что изменилось.', dlHolders: 'Холдеры', dlPrice: 'Цена топлива', dl24h: 'За 24 часа', dlVol: 'Объём', ranks: ['Стажёр', 'Механик', 'Пилот', 'Штурман', 'Командир', 'Адмирал', 'Легенда Марса'], dlBadgeTop: '$QOGE · ЦЕНТР УПРАВЛЕНИЯ', dlBadgeDays: '{n} дн. подряд', dlD: 'дн',
       fqTag: 'Вопросы зрителей', fqH1: 'Вы спросили.', fqH2: 'Мы гавкнули.',
       cmH1: 'Вступай в спасательную команду.', cmH2: 'Верни его домой.', bubble: 'поторопитесь, бекон кончился',
       foot1: '© 2026 $QOGE · МЕМКОИН БЕЗ ВНУТРЕННЕЙ ЦЕННОСТИ И ОЖИДАНИЯ ДОХОДА.', foot2: 'НЕ СВЯЗАН С NASA. ПРОСТО СОБАКА.',
