@@ -1,3 +1,7 @@
 {
-  "rewrites": [{ "source": "/m", "destination": "/api/share" }]
+  "rewrites": [
+    { "source": "/m", "destination": "/api/share" },
+    { "source": "/weekly", "destination": "/api/weekly" },
+    { "source": "/weekly/:n", "destination": "/api/weekly?n=:n" }
+  ]
 }

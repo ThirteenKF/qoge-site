@@ -1,9 +1,13 @@
 // QOGE Telegram bot: posts the weekly "QNN Weekly" digest to the QOGE Telegram channel.
 //
-// Flow (safe by default): Claude prepares the digest every Sunday -> POST /api/telegram?action=draft
+// Flow (safe by default): Claude prepares the digest every Monday -> POST /api/telegram?action=draft
+// (or the owner pastes the text to the bot)
 // -> the bot sends the draft to the owner in a private chat with buttons
 //    [✅ Опубликовать] [🗑 Отклонить]  -> one tap posts it to the channel.
 // To fix a draft: send the bot the corrected full text as a normal message -> new draft with buttons.
+// Every published digest is archived in Redis (tg:issues) -> public archive:
+//   GET /api/telegram?action=issues&limit=N  (JSON, newest first; the weekly Claude task reads it as memory)
+//   https://www.qoge.fun/weekly  (HTML archive, api/weekly.mjs)
 // Set TELEGRAM_AUTOPUBLISH=1 to skip the approval step and post straight to the channel.
 //
 // Vercel env vars (Project -> Settings -> Environment Variables):
@@ -41,6 +45,29 @@ async function redis(...cmd) {
 const DRAFT = (id) => 'tg:draft:' + id;
 const LASTIMG = 'tg:lastimg'; // sticky cover: survives text corrections from the owner
 const WEEK = 7 * 24 * 3600;
+const ISSUES = 'tg:issues';   // list of published digests, JSON, newest first
+const ISSUE_NO = 'tg:issue_no';
+
+// archive a published digest; never breaks publishing
+async function archive(d, msgId) {
+  try {
+    const head = String(d.t).split('\n')[0];
+    const m = head.match(/#\s*(\d+)/);
+    let n;
+    if (m) {
+      n = +m[1];
+      const cur = +(await redis('GET', ISSUE_NO) || 0);
+      if (n > cur) await redis('SET', ISSUE_NO, String(n));
+    } else n = await redis('INCR', ISSUE_NO);
+    const entry = { n, date: new Date().toISOString().slice(0, 10), title: (d.title || head).slice(0, 200), t: d.t, msg: msgId };
+    await redis('LPUSH', ISSUES, JSON.stringify(entry));
+    await redis('LTRIM', ISSUES, '0', '199');
+  } catch (e) { console.error('archive', e); }
+}
+export async function listIssues(limit = 10) {
+  const raw = await redis('LRANGE', ISSUES, '0', String(Math.max(0, limit - 1)));
+  return (raw || []).map(v => { try { return JSON.parse(v); } catch { return null; } }).filter(Boolean);
+}
 
 // ---------- Telegram Bot API ----------
 async function tg(method, payload) {
@@ -72,7 +99,9 @@ async function publish(d) {
   if (d.img) {
     await tg('sendPhoto', { chat_id: CHANNEL, photo: d.img, caption: render(d.title || ''), parse_mode: 'HTML' });
   }
-  return tg('sendMessage', { chat_id: CHANNEL, text: render(d.t), parse_mode: 'HTML', link_preview_options: { is_disabled: false } });
+  const m = await tg('sendMessage', { chat_id: CHANNEL, text: render(d.t), parse_mode: 'HTML', link_preview_options: { is_disabled: false } });
+  await archive(d, m.message_id);
+  return m;
 }
 
 // drafts are stored as JSON {t, img, title}; plain-string values from older versions still work
@@ -176,7 +205,7 @@ async function webhook(request) {
       await tg('sendMessage', {
         chat_id: msg.chat.id,
         text: own
-          ? '🐕 QOGE News bot на связи. Каждое воскресенье сюда придёт черновик QNN Weekly с кнопкой «Опубликовать».'
+          ? '🐕 QOGE News bot на связи. Каждый понедельник сюда придёт черновик QNN Weekly с кнопкой «Опубликовать».'
           : `🐕 Привет! Твой Telegram ID: ${from}\nВладелец канала: впиши его в Vercel как TELEGRAM_OWNER_ID и сделай Redeploy.`,
       });
     } else if (from === OWNER && text.length >= 200) {
@@ -202,6 +231,13 @@ export async function POST(request) {
 
 export async function GET(request) {
   const q = new URL(request.url).searchParams;
+  if (q.get('action') === 'issues') {
+    try {
+      const limit = Math.min(52, Math.max(1, parseInt(q.get('limit') || '10', 10) || 10));
+      const issues = await listIssues(limit);
+      return new Response(JSON.stringify({ ok: true, count: issues.length, issues }), { headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 's-maxage=300', 'access-control-allow-origin': '*' } });
+    } catch (e) { return json({ ok: false, error: e.message }, 500); }
+  }
   if (q.get('action') !== 'setup') return new Response('QOGE Telegram bot is alive 🐶');
   try {
     if (!env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_WEBHOOK_SECRET) return json({ ok: false, error: 'set TELEGRAM_BOT_TOKEN and TELEGRAM_WEBHOOK_SECRET in Vercel first' }, 400);

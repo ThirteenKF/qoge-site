@@ -96,14 +96,17 @@ Context for picking this project up in a new chat.
 - Keep `main` working; commit messages short, imperative, English.
 
 ## Weekly digest (QNN Weekly, Telegram)
-- Structure, in order: 1) significant global news (AI, IT, crypto); 2) watchlist
-  projects; 3) $QOGE / Quai block (metrics from metrics.json, Mars Gum, site news).
-- Watchlist: QUAI, INJ, STRK, NEAR, QRL/QTC, AVAX, ICP, ALGO, ZEC, LINK, DASH,
-  ATOM, KSM, DOT, LTC.
-- "Significant" filter: affects money / tech / regulation — not price noise.
-  6–8 items max per digest, each item = new fact, new conclusion or a call to action.
-- Delivery: POST /api/telegram?action=draft (DIGEST_SECRET) -> owner approves
-  in a private chat -> posts to the channel (see api/telegram.mjs).
+- FULL INSTRUCTIONS: `tools/qnn-weekly.md` (single source of truth; public raw URL
+  https://raw.githubusercontent.com/ThirteenKF/qoge-site/main/tools/qnn-weekly.md — any Claude account can follow it).
+- Every Monday ~9:40 Europe/Samara a scheduled Claude task prepares the RU digest + EN X thread and sends them
+  to the owner; the owner pastes the text to the bot -> draft with "Опубликовать" -> channel.
+- Structure: Главное (3, up to 5) + $QOGE line -> Цифра недели -> Мир -> Watchlist -> Слух недели (verdict +
+  last week's rumor) -> Ещё за неделю -> $QOGE/Quai -> Календарь -> one CTA (rotation). <= 3900 chars.
+- Watchlist: QUAI, INJ, STRK, NEAR, QRL/QTC, AVAX, ICP, ALGO, ZEC, LINK, DASH, ATOM, KSM, DOT, LTC.
+- Memory: every published digest is archived by api/telegram.mjs (Redis tg:issues, numbered from the
+  "QNN Weekly #N" first line). Public: GET /api/telegram?action=issues&limit=N (JSON) and /weekly, /weekly/N
+  (api/weekly.mjs, rewrites in vercel.json).
+- Direct delivery: POST /api/telegram?action=draft (DIGEST_SECRET) -> owner approves in a private chat.
 - Optional cover image: add "image" (https URL, e.g. /assets/xxx.png on the site)
   and "title" (short caption shown on the photo) to the draft JSON. Published as
   photo + text pair; the image survives text corrections from the owner.
