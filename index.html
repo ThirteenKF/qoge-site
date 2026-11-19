@@ -1097,11 +1097,11 @@ class Component extends DCLogic {
 })();
 </script>
 <script>
-/* QOGE tracker marks: section stops (from the header nav) on the Mars-Earth rail. Vanilla JS, outside the React tree. */
+/* QOGE tracker marks: section stops (from the header nav) on the Mars-Earth rail. Vanilla JS; re-inserted into the rail if React re-renders. */
 (function(){
   var OR='oklch(0.72 0.17 40)';
   var css=document.createElement('style');
-  css.textContent='#qmarks{position:fixed;z-index:41;pointer-events:none}'+
+  css.textContent='#qmarks{position:absolute;left:0;top:0;bottom:0;width:1px;pointer-events:none}'+
     '#qmarks a{position:absolute;left:0;width:0;height:0;pointer-events:auto;text-decoration:none}'+
     '#qmarks i{position:absolute;left:-6px;top:-6px;width:12px;height:12px;border-radius:50%;background:#141110;border:2px solid #6d6560;box-sizing:border-box;transition:transform .15s,background .15s,border-color .15s}'+
     '#qmarks b{position:absolute;right:52px;top:-11px;height:22px;line-height:22px;padding:0 9px;border-radius:999px;background:rgba(20,17,16,.92);border:1px solid #3a3431;color:#cfc8c1;font:700 11px/22px "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;opacity:0;transform:translateX(6px);transition:opacity .15s,transform .15s}'+
@@ -1111,7 +1111,7 @@ class Component extends DCLogic {
     '#qmarks.peek b{opacity:.9;transform:none}'+
     '@media (max-width:767px){#qmarks{display:none!important}}';
   document.head.appendChild(css);
-  var box=document.createElement('div'); box.id='qmarks'; document.body.appendChild(box);
+  var box=document.createElement('div'); box.id='qmarks';
   function rail(){ var t=document.querySelector('.q-tracker'); return t && t.querySelector('.q-rocket') && t.querySelector('.q-rocket').parentElement; }
   function maxS(){ var el=document.scrollingElement||document.documentElement; return Math.max(1, el.scrollHeight-window.innerHeight); }
   function headH(){ var h=document.querySelector('.q-head'); return h? h.offsetHeight : 0; }
@@ -1120,8 +1120,9 @@ class Component extends DCLogic {
   function layout(){
     var r=rail(), t=document.querySelector('.q-tracker');
     if(!r || !t || getComputedStyle(t).display==='none'){ box.style.display='none'; return; }
+    /* inside the rail, before the rocket: the rocket is painted over the dots */
+    if(box.parentNode!==r || box.nextSibling===null){ r.insertBefore(box, r.querySelector('.q-rocket')); sig=''; }
     var b=r.getBoundingClientRect(); box.style.display='block';
-    box.style.left=b.left+'px'; box.style.top=b.top+'px'; box.style.height=b.height+'px'; box.style.width='1px';
     var S=secs(), M=maxS(), H=headH();
     var s2=S.map(function(s){ return s.id+s.t; }).join('|')+b.height+M;
     if(s2!==sig){
