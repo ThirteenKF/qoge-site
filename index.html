@@ -68,6 +68,21 @@ a:hover{color:oklch(0.72 0.17 40)}
 .q-pill .arr{display:inline-block;transition:transform .2s}
 .q-res:hover .q-pill{transform:translateY(-2px);box-shadow:0 10px 24px rgba(40,170,60,.55),inset 0 1px 0 rgba(255,255,255,.4)}
 .q-res:hover .q-pill .arr{transform:translateX(4px)}
+/* ---- tablet / small laptop: header fits without clipping the nav ---- */
+@media (min-width:768px) and (max-width:1199px){
+  .q-head > a:first-child{padding:10px 14px!important;font-size:19px!important}
+  .q-head > a:first-child img{width:30px!important;height:30px!important}
+  .q-nav{gap:14px!important;padding:0 12px!important;font-size:13px!important}
+  .q-res{padding:0 10px}
+  .q-pill{padding:0 14px 0 12px;font-size:13px;gap:8px}
+  .q-pill .arr{display:none}
+  .q-head > a:last-child{padding:0 14px!important;font-size:13px!important}
+  .q-head > .q-lang{padding:0 8px!important}
+}
+@media (min-width:768px) and (max-width:979px){
+  .q-nav{display:none!important}
+  .q-res{margin-left:auto}
+}
 /* readability: no tiny text, buttons use site font */
 button{font-family:inherit}
 :not(.q-tracker *)[style*="font-size: 10px"],:not(.q-tracker *)[style*="font-size: 11px"]{font-size:12px!important}
@@ -1079,6 +1094,59 @@ class Component extends DCLogic {
     if(p>=0.995) c.add('q-rk-up'); else if(p<=0.005) c.remove('q-rk-up');
   }
   window.addEventListener('scroll',flip,{passive:true}); window.addEventListener('load',flip);
+})();
+</script>
+<script>
+/* QOGE tracker marks: section stops (from the header nav) on the Mars-Earth rail. Vanilla JS, outside the React tree. */
+(function(){
+  var OR='oklch(0.72 0.17 40)';
+  var css=document.createElement('style');
+  css.textContent='#qmarks{position:fixed;z-index:41;pointer-events:none}'+
+    '#qmarks a{position:absolute;left:0;width:0;height:0;pointer-events:auto;text-decoration:none}'+
+    '#qmarks i{position:absolute;left:-6px;top:-6px;width:12px;height:12px;border-radius:50%;background:#141110;border:2px solid #6d6560;box-sizing:border-box;transition:transform .15s,background .15s,border-color .15s}'+
+    '#qmarks b{position:absolute;right:52px;top:-11px;height:22px;line-height:22px;padding:0 9px;border-radius:999px;background:rgba(20,17,16,.92);border:1px solid #3a3431;color:#cfc8c1;font:700 11px/22px "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;opacity:0;transform:translateX(6px);transition:opacity .15s,transform .15s}'+
+    '#qmarks a:hover i,#qmarks a.on i{background:'+OR+';border-color:'+OR+';transform:scale(1.25)}'+
+    '#qmarks a:hover b,#qmarks a.on b{opacity:1;transform:none}'+
+    '#qmarks a.on b{color:#fff;border-color:'+OR+'}'+
+    '#qmarks.peek b{opacity:.9;transform:none}'+
+    '@media (max-width:767px){#qmarks{display:none!important}}';
+  document.head.appendChild(css);
+  var box=document.createElement('div'); box.id='qmarks'; document.body.appendChild(box);
+  function rail(){ var t=document.querySelector('.q-tracker'); return t && t.querySelector('.q-rocket') && t.querySelector('.q-rocket').parentElement; }
+  function maxS(){ var el=document.scrollingElement||document.documentElement; return Math.max(1, el.scrollHeight-window.innerHeight); }
+  function headH(){ var h=document.querySelector('.q-head'); return h? h.offsetHeight : 0; }
+  function secs(){ return [].slice.call(document.querySelectorAll('.q-nav a[href^="#"]')).map(function(a){ return {id:a.getAttribute('href').slice(1), t:(a.textContent||'').trim()}; }).filter(function(s){ return document.getElementById(s.id); }); }
+  var sig='';
+  function layout(){
+    var r=rail(), t=document.querySelector('.q-tracker');
+    if(!r || !t || getComputedStyle(t).display==='none'){ box.style.display='none'; return; }
+    var b=r.getBoundingClientRect(); box.style.display='block';
+    box.style.left=b.left+'px'; box.style.top=b.top+'px'; box.style.height=b.height+'px'; box.style.width='1px';
+    var S=secs(), M=maxS(), H=headH();
+    var s2=S.map(function(s){ return s.id+s.t; }).join('|')+b.height+M;
+    if(s2!==sig){
+      sig=s2; box.innerHTML='';
+      S.forEach(function(s){
+        var y=window.scrollY+document.getElementById(s.id).getBoundingClientRect().top-H;
+        var p=Math.min(1,Math.max(0,y/M));
+        var a=document.createElement('a'); a.href='#'+s.id; a.dataset.id=s.id; a.dataset.p=p; a.setAttribute('aria-label',s.t);
+        a.style.top=(p*100)+'%'; a.innerHTML='<i></i><b>'+s.t.replace(/</g,'&lt;')+'</b>';
+        a.addEventListener('click',function(e){ e.preventDefault(); var el=document.getElementById(s.id); window.scrollTo({top:window.scrollY+el.getBoundingClientRect().top-H, behavior:'smooth'}); });
+        box.appendChild(a);
+      });
+    }
+    active();
+  }
+  function active(){
+    var p=window.scrollY/maxS(), best=null;
+    [].forEach.call(box.children,function(a){ if(+a.dataset.p<=p+0.01) best=a; });
+    [].forEach.call(box.children,function(a){ a.classList.toggle('on', a===best); });
+  }
+  var tk=document.querySelector('.q-tracker');
+  document.addEventListener('pointerover',function(e){ var t=document.querySelector('.q-tracker'); box.classList.toggle('peek', !!(t && (t.contains(e.target)||box.contains(e.target)))); });
+  window.addEventListener('scroll',function(){ requestAnimationFrame(active); },{passive:true});
+  window.addEventListener('resize',layout); window.addEventListener('load',layout);
+  setInterval(layout,1000); layout();
 })();
 </script>
 <script>
