@@ -1,1 +1,1 @@
-Add Quainance DEX liquidity to the QUAI dashboard
+Clarify QUAI dashboard (EN/RU): buyback vs coverage, residual note, wording
