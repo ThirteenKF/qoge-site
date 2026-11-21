@@ -1,1 +1,1 @@
-Clarify QUAI dashboard (EN/RU): buyback vs coverage, residual note, wording
+Add history to the QUAI dashboard: backfilled coverage and SOAP revenue, daily Redis records

@@ -353,6 +353,7 @@ function assemble(p) {
     out.supply = {
       ...s, days: s.days,
       d30: { days: last.length, mined, burned, net, change, other, unlocked: in30, otherRest: other != null ? other - in30 : null,
+        coverage: other != null && mined + Math.max(0, other) > 0 ? burned / (mined + Math.max(0, other)) : null,
         netInflationYr: last.length ? net / last.length * 365 / s.supply : null },
       unlocks: {
         locked: future.reduce((a, u) => a + u.quai, 0), next: future[0] || null, last: past[past.length - 1] || null,
@@ -381,10 +382,42 @@ async function getJson(url) {
   return res.json();
 }
 
+// ---------- history (Upstash Redis, same database as the Discord/Telegram bots) ----------
+// One record per UTC day in hash quai:hist, overwritten on every run, so the last run of the day wins.
+// A daily Vercel cron (vercel.json) makes sure every day gets at least one run.
+const R_URL = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+const R_TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+async function redis(...cmd) {
+  const r = await fetch(R_URL, { method: 'POST', headers: { authorization: 'Bearer ' + R_TOKEN, 'content-type': 'application/json' }, body: JSON.stringify(cmd) });
+  const j = await r.json();
+  if (j.error) throw new Error('redis: ' + j.error);
+  return j.result;
+}
+function dayRecord(d) {
+  const n = v => (v == null || !isFinite(v) ? undefined : Math.round(v * 1000) / 1000);
+  return JSON.stringify({
+    p: n(d.market?.price), mc: n(d.market?.mcap), v: n(d.market?.vol24), du: n(d.market?.depthUp), dd: n(d.market?.depthDown),
+    dx: n(d.dex?.poolUsd), dxv: n(d.dex?.vol24), tvl: n(d.dex?.tvl),
+    cov: n(d.supply?.d30?.coverage), b30: n(d.supply?.d30?.burned), sup: n(d.supply?.supply), lk: n(d.supply?.unlocks?.locked),
+    r30: n(d.soap?.last30), lu: n(d.recon?.leakUsd), bs: n(d.recon?.burnShare),
+    hf: n(d.hashference?.requests), x4: n(d.x402?.payments), tx: n(d.network?.txToday),
+  });
+}
+async function history(data) {
+  if (!R_URL || !R_TOKEN) return null;
+  await redis('HSET', 'quai:hist', new Date().toISOString().slice(0, 10), dayRecord(data));
+  const flat = await redis('HGETALL', 'quai:hist') || [];
+  const out = [];
+  for (let i = 0; i < flat.length; i += 2) { try { out.push([flat[i], JSON.parse(flat[i + 1])]); } catch (e) {} }
+  return out.sort((a, b) => (a[0] < b[0] ? -1 : 1));
+}
+
 module.exports = async (req, res) => {
   try {
     const data = assemble(await collect(getJson));
-    res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
+    try { data.history = await history(data); } catch (e) { data.historyError = String(e.message || e).slice(0, 200); }
+    const cron = /[?&]save=1/.test(req.url || '');
+    res.setHeader('Cache-Control', cron ? 'no-store' : 'public, s-maxage=3600, stale-while-revalidate=86400');
     res.status(200).json(data);
   } catch (err) {
     res.setHeader('Cache-Control', 'no-store');

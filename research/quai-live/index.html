@@ -166,10 +166,11 @@ footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12p
     <a href="#supply" data-en="Supply" data-ru="Предложение">Supply</a>
     <a href="#soap" data-en="SOAP audit" data-ru="Проверка SOAP">SOAP audit</a>
     <a href="#market" data-en="Liquidity" data-ru="Ликвидность">Liquidity</a>
+    <a href="#hist" data-en="History" data-ru="История">History</a>
     <a href="#eco" data-en="Ecosystem" data-ru="Экосистема">Ecosystem</a>
     <a href="#method" data-en="Method" data-ru="Методика">Method</a>
   </nav>
-  <h2 style="margin:30px 0 0;font-family:'Unbounded',sans-serif;font-weight:800;font-size:clamp(20px,2.6vw,30px);letter-spacing:.04em;text-transform:uppercase" data-en="The main thing, last 30 days" data-ru="Главное за 30 дней">The main thing</h2>
+  <h2 style="margin:30px 0 0;font-family:'Unbounded',sans-serif;font-weight:800;font-size:clamp(20px,2.6vw,30px);letter-spacing:.04em;text-transform:uppercase" data-en="Key takeaways, last 30 days" data-ru="Главное за 30 дней">Key takeaways</h2>
   <div class="events mono" id="events"></div>
   <div class="verd" id="verdicts"></div>
 </section>
@@ -196,6 +197,7 @@ footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12p
       <h3 data-en="Supply balance, last 30 days" data-ru="Баланс предложения за 30 дней">Supply balance</h3>
       <div class="sub mono" data-en="million QUAI · what added QUAI and what removed it" data-ru="млн QUAI · что добавило QUAI и что убрало">million QUAI</div>
       <div class="wfc" id="waterfall"></div>
+      <p class="note" data-en="“Qi→QUAI &amp; other” is not measured directly: it is the supply change minus mining, burns and unlocks. Most of it is likely Qi→QUAI conversions, but the exact source is unknown." data-ru="«Qi→QUAI и прочее» не измеряется напрямую: это изменение предложения минус майнинг, сжигания и разлок. Скорее всего, в основном это конвертации Qi→QUAI, но точный источник неизвестен.">Residual.</p>
     </div>
     <div class="panel cov" style="margin-top:0" id="coverage"></div>
   </div>
@@ -265,6 +267,29 @@ footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12p
   <div class="panel"><h3 data-en="Exchanges" data-ru="Биржи">Exchanges</h3><div class="tbl" id="exTable"></div></div>
 </section>
 
+<section class="s" id="hist">
+  <h2 data-en="History" data-ru="История">History</h2>
+  <p class="k" data-en="How the key numbers change over time. Buyback coverage and SOAP revenue are rebuilt day by day from January 2026; order-book depth and the Quainance pool are recorded once a day from November 21, 2026." data-ru="Как главные цифры меняются со временем. Покрытие выкупом и выручка SOAP восстановлены по дням с января 2026 года; глубина стаканов и пул Quainance записываются раз в день с 21 ноября 2026 года.">History.</p>
+  <div class="duo">
+    <div class="panel"><h3 data-en="Buyback coverage, rolling 30 days" data-ru="Покрытие выкупом, скользящие 30 дней">Buyback coverage</h3>
+      <div class="sub mono" data-en="share of new QUAI burned by SOAP · supply.qu.ai" data-ru="доля новых QUAI, которую сжёг SOAP · supply.qu.ai">share</div>
+      <div class="chart" id="hCov"></div>
+      <p class="note" data-en="Dips are months with large genesis unlocks (yellow marks); the largest was Feb 2, 2026, about +181M QUAI. 100% would mean burns fully offset new supply." data-ru="Провалы — месяцы крупных разлоков генезиса (жёлтые отметки); самый большой — 2 февр. 2026, около +181 млн QUAI. 100% значило бы, что сжигание полностью перекрывает новые монеты.">Dips are unlock months.</p></div>
+    <div class="panel"><h3 data-en="SOAP revenue, rolling 30 days" data-ru="Выручка SOAP, скользящие 30 дней">SOAP revenue</h3>
+      <div class="sub mono" data-en="USD · soap.qu.ai" data-ru="USD · soap.qu.ai">USD</div>
+      <div class="chart" id="hRev"></div>
+      <p class="note" data-en="The money the buyback has to work with. It peaked in February and has been falling since." data-ru="Сколько денег есть у выкупа. Пик был в феврале, с тех пор выручка падает.">Revenue.</p></div>
+  </div>
+  <div class="duo">
+    <div class="panel"><h3 data-en="Order-book depth, +2%" data-ru="Глубина стаканов, +2%">Depth</h3>
+      <div class="sub mono" data-en="USD, all exchanges · CoinGecko · daily" data-ru="USD, все биржи · CoinGecko · раз в день">USD</div>
+      <div class="chart" id="hDepth"></div></div>
+    <div class="panel"><h3 data-en="QUAI/USDT pool on Quainance" data-ru="Пул QUAI/USDT на Quainance">Pool</h3>
+      <div class="sub mono" data-en="USD · on-chain reserves · daily" data-ru="USD · резервы в блокчейне · раз в день">USD</div>
+      <div class="chart" id="hPool"></div></div>
+  </div>
+</section>
+
 <section class="s" id="eco">
   <h2 data-en="Ecosystem" data-ru="Экосистема">Ecosystem</h2>
   <p class="k" data-en="Hashference is an AI API you can pay for with mining, QUAI or Qi; x402 Work lets apps pay for requests with a few seconds of computation. Both are built by the Quai team." data-ru="Hashference — ИИ-API с оплатой майнингом, QUAI или Qi; x402 Work позволяет платить за запросы несколькими секундами вычислений. Оба сделаны командой Quai.">Ecosystem.</p>
@@ -285,6 +310,7 @@ footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12p
 <div class="tip" id="tip"></div>
 
 <script src="../../assets/quai-dash.js"></script>
+<script src="../../assets/quai-hist.js"></script>
 <script>
 (function(){
 var SNAP = window.QUAI_DASH || {};
@@ -297,18 +323,18 @@ var T = {
 evBurn:'Last burn', evBurnV:function(b,d){return date(b.t)+' · '+num(b.quai)+' QUAI · '+ago(d);},
   evUnl:'Next unlock', evUnlV:function(u,d){return date(u.t)+' · '+num(u.quai)+' QUAI · '+inDays(d);},
   evLeak:'Transfers out of SOAP not burned', evLeakV:function(t){return t?'none since '+date(t):'none';},
-  vBuy:'SOAP buyback', vInf:'Supply growth, 12 months', vLiq:'Liquidity', vDem:'Demand: Hashference',
+  vBuy:'SOAP buyback: revenue burned', vInf:'Supply growth, 12 months', vLiq:'Liquidity', vDem:'Demand: Hashference',
   stGood:'Working', stWarn:'Watch', stBad:'Risk', stUp:'Growing', stFlat:'Flat', stDown:'Falling',
-  vBuyP:function(r){return 'In 30 days, burns worth '+usd(r.last30.burnedUsd)+' out of '+usd(r.last30.revenue)+' revenue. All time: '+pct(r.burnShare)+'.';},
+  vBuyP:function(r,c){return 'In 30 days, '+usd(r.last30.burnedUsd)+' of the '+usd(r.last30.revenue)+' revenue went to burns (all time: '+pct(r.burnShare)+').'+(c!=null?' That is the share of revenue; it offsets only '+pct(c)+' of new supply, see Buyback coverage.':'');},
   vInfP:function(n,u){return 'Mining minus burns gives '+pctS(n)+', genesis unlocks add '+pctS(u)+' over 12 months.';},
   vLiqP:function(m){return 'Order books hold '+usd(m.depthUp)+' within +2%. A $5,000 buy moves the price '+pct1(m.impact[1].allEx)+'–'+pct1(m.impact[1].oneEx)+'.';},
   vDemP:function(a,b){return Math.round(a).toLocaleString(loc())+' requests in 7 days vs '+num(b)+' the week before.';},
   dPrice:'QUAI price', dPriceS:function(m){return '30 days · 24h '+sgn(m.ch24)+' · low '+px(m.atl)+' ('+date(m.atlDate)+')';}, dPriceC:'30 days', dPriceI:'Daily close, CoinGecko',
   dRev:'SOAP revenue, 30 d', dRevS:function(so){return 'vs previous 30 days ('+usd(so.prev30)+') · 7 days: '+usd(so.last7);}, dRevC:'by month since Dec 2025', dRevI:'Rewards from BCH, DOGE, LTC and RVN blocks, the team\'s own figure',
-  dBurn:'Burned, 30 d', dBurnS:function(r){return 'QUAI worth '+usd(r.last30.burnedUsd);}, dBurnC:'QUAI by month (current one partial)', dBurnI:'Transfers to the burn address plus QUAI sent to the gas burner',
+  dBurn:'Burned, 30 d', dBurnS:function(r){return 'QUAI worth '+usd(r.last30.burnedUsd);}, dBurnC:'QUAI by month (current month partial)', dBurnI:'Transfers to the burn address plus QUAI sent to the gas burner',
   dHf:'Hashference, 7 days', dHfS:function(b){return 'requests vs '+num(b)+' the week before';}, dHfC:'requests per day, 30 days', dHfI:'AI API requests paid with mining, QUAI or Qi',
   ofRev:'of revenue',
-  wMined:'Mined', wUnl:'Genesis unlock', wConv:'Qi→QUAI & other', wBurn:'Burned by SOAP', wNet:'Net change',
+  wMined:'Mined', wUnl:'Genesis unlock', wConv:'Qi→QUAI & other (residual)', wBurn:'Burned by SOAP', wNet:'Net change',
   covT:'Buyback coverage', covP:function(b,n){return 'In 30 days '+num(n)+' new QUAI appeared; SOAP burned '+num(b)+' of them.';},
   covNow:'Burned per day', covNeed:'Needed for zero growth', covRev:'SOAP revenue per day', covTyp:'Month without a big unlock',
   covTypV:function(c){return '~'+pct(c)+' coverage';},
@@ -333,20 +359,21 @@ evBurn:'Last burn', evBurnV:function(b,d){return date(b.t)+' · '+num(b.quai)+' 
   soapW:'SOAP wallet', other2:'other wallet',
   gas:function(r,w){return 'Not counted above as a leak: '+num(r.gasQuai)+' QUAI ('+usd(r.gasUsd)+') went from the SOAP wallet to a wallet that burns it through gas fees by calling a contract that only wastes gas'+(w&&w.gasBurner&&w.gasBurner.lastTx?' (last call '+date(w.gasBurner.lastTx)+')':'')+'. It is included in “burned”.';},
   imp:function(u){return 'Market buy of '+usd(u);}, impD:function(a,b){return 'one exchange: ~'+pct1(a)+' · split across all: ~'+pct1(b);},
+  hWait:function(d){return 'Recording since '+d+' — the chart appears after a few days of data.';}, hCov:'Coverage', hRev:'SOAP revenue, 30 d', hDepth:'Depth +2%', hPool:'Pool',
   dxPool:'QUAI/USDT pool, Quainance', dxPoolD:function(d){return num(d.usdt)+' USDT + '+num(d.quai)+' QUAI · ±2%: '+usd(d.depthUp)+' / '+usd(d.depthDown);},
   dxImp:'$500 market buy on the DEX', dxImpD:function(d){return '$5,000 would push the price ×'+(1+d.impact[1].pct/100).toFixed(1)+' · x·y=k pool, 0.3% fee';},
   dxTvl:'All Quainance pools (TVL)', dxTvlD:function(d){return 'swaps: 24h '+usd(d.vol24)+' · 30 d '+usd(d.vol30)+' (DefiLlama)';},
   dxShare:'DEX share of trading, 24h', dxShareD:'Share of QUAI trading that went through the DEX on Quai itself; the rest is centralized exchanges',
   depth:'Depth within ±2%', depthD:function(u,d){return usd(u)+' to buy · '+usd(d)+' to sell, all exchanges';},
   ex:'Exchange', pair:'Pair', spread:'Spread', dUp:'+2% depth', dDn:'−2% depth',
-  hfReq:'Hashference requests, 30 d', hfTok:'AI tokens processed', hfTokD:'by Hashference, last 30 days', hfDev:'active devices 7 d: ', hfFund:'Hashference credit from staking', hfFundD:function(f){return 'QUAI staking '+pct(f.staking)+' · QUAI/Qi deposits '+pct(f.deposits)+' · mining '+pct(f.mining);},
+  hfReq:'Hashference requests, 30 d', hfTok:'AI tokens processed', hfTokD:'by Hashference, last 30 days', hfDev:function(n){return n+' active devices in 7 days';}, hfFund:'Hashference credit from staking', hfFundD:function(f){return 'QUAI staking '+pct(f.staking)+' · QUAI/Qi deposits '+pct(f.deposits)+' · mining '+pct(f.mining);},
   stk:'Staked in Hashference', stkD:function(p){return 'QUAI locked for AI credit ('+p+')';},
   x402:'x402 Work payments, 30 d', x402D:function(x){return 'of them Hashference: '+x.hashference+' · services: '+x.services;},
   txs:'Transactions today', txsAll:'Transactions, all time', addrD:function(n){return 'Quai addresses: '+num(n.addresses)+(n.qiAddresses?' · Qi: '+num(n.qiAddresses):'');}, txsD:function(n){return 'all time: '+num(n.totalTx)+' · addresses: '+num(n.addresses);},
   req:'Requests',
   src:[
    'Revenue: SOAP dashboard API (soap.qu.ai) — the Quai team\'s own figures, by month.',
-   'Burns: every transfer into the burn address 0x0050AF…0000 on <a href="https://quaiscan.io/address/0x0050AF0000000000000000000000000000000000" target="_blank" rel="noopener">Quaiscan</a>, plus QUAI the SOAP wallet sent to the gas-burner wallet. Valued at the CoinGecko daily close on the burn day; buying happens a few days earlier, so this is a slightly low estimate while the price falls.',
+   'Burns: every transfer into the burn address 0x0050AF…0000 from the block explorer (<a href="https://quaiscan.io/address/0x0050AF0000000000000000000000000000000000" target="_blank" rel="noopener">Quaiscan</a> or explorer.qu.ai), plus QUAI the SOAP wallet sent to the gas-burner wallet. Valued at the CoinGecko daily close on the burn day; buying happens a few days earlier, so this is a slightly low estimate while the price falls.',
    '“Sent elsewhere”: transfers out of the <a href="https://quaiscan.io/address/0x0053bcdc4F5Af4B35079d4D091fCD1D86A958D06" target="_blank" rel="noopener">SOAP wallet</a> that did not go to the burn address or the gas burner, minus what the same address later burned or sent back. Who owns those wallets is unknown.',
    'Supply, mining and daily burns: supply.qu.ai API. Price, volume and ±2% depth: CoinGecko. Hashference and x402: their public /stats APIs.',
    'Quainance DEX: QUAI/USDT pool reserves read straight from the chain (getReserves on the pair contract via rpc.quai.network); price impact by the constant-product formula with the 0.3% fee. All-pool TVL and swap volume: DefiLlama.',
@@ -357,18 +384,18 @@ evBurn:'Last burn', evBurnV:function(b,d){return date(b.t)+' · '+num(b.quai)+' 
 evBurn:'Последнее сжигание', evBurnV:function(b,d){return date(b.t)+' · '+num(b.quai)+' QUAI · '+ago(d);},
   evUnl:'Следующий разлок', evUnlV:function(u,d){return date(u.t)+' · '+num(u.quai)+' QUAI · '+inDays(d);},
   evLeak:'Переводы с SOAP не на сжигание', evLeakV:function(t){return t?'нет с '+date(t):'нет';},
-  vBuy:'Выкуп SOAP', vInf:'Рост предложения за год', vLiq:'Ликвидность', vDem:'Спрос: Hashference',
+  vBuy:'Выкуп SOAP: доля выручки на сжигание', vInf:'Рост предложения за год', vLiq:'Ликвидность', vDem:'Спрос: Hashference',
   stGood:'Работает', stWarn:'Внимание', stBad:'Риск', stUp:'Растёт', stFlat:'Стоит', stDown:'Падает',
-  vBuyP:function(r){return 'За 30 дней сожжено QUAI на '+usd(r.last30.burnedUsd)+' из '+usd(r.last30.revenue)+' выручки. За всё время — '+pct(r.burnShare)+'.';},
+  vBuyP:function(r,c){return 'За 30 дней на сжигание ушло '+usd(r.last30.burnedUsd)+' из '+usd(r.last30.revenue)+' выручки (за всё время — '+pct(r.burnShare)+').'+(c!=null?' Это доля выручки, а новых монет сжигание перекрывает только '+pct(c)+' — см. «Покрытие выкупом».':'');},
   vInfP:function(n,u){return 'Майнинг за вычетом сжигания даёт '+pctS(n)+', разлоки генезиса ещё '+pctS(u)+' за 12 месяцев.';},
-  vLiqP:function(m){return 'Столько денег стоит в стаканах бирж в пределах +2% от цены. Покупка на $5 000 сдвинет цену на '+pct1(m.impact[1].allEx)+'–'+pct1(m.impact[1].oneEx)+'.';},
+  vLiqP:function(m){return 'Столько денег стоит в стаканах бирж в пределах +2% от цены. Покупка на $5 000 сдвинет цену на '+pct1(m.impact[1].allEx)+'–'+pct1(m.impact[1].oneEx)+'.';},
   vDemP:function(a,b){return Math.round(a).toLocaleString(loc())+' запросов за 7 дней против '+num(b)+' неделей раньше.';},
   dPrice:'Цена QUAI', dPriceS:function(m){return 'за 30 дней · 24 ч '+sgn(m.ch24)+' · минимум '+px(m.atl)+' ('+date(m.atlDate)+')';}, dPriceC:'30 дней', dPriceI:'Закрытие дня, CoinGecko',
   dRev:'Выручка SOAP, 30 дн.', dRevS:function(so){return 'к прошлым 30 дням ('+usd(so.prev30)+') · за 7 дней: '+usd(so.last7);}, dRevC:'по месяцам с дек. 2025', dRevI:'Награды за блоки BCH, DOGE, LTC и RVN — цифра самой команды',
   dBurn:'Сожжено, 30 дн.', dBurnS:function(r){return 'QUAI на '+usd(r.last30.burnedUsd);}, dBurnC:'QUAI по месяцам (текущий неполный)', dBurnI:'Переводы на адрес сжигания плюс QUAI, отправленные на сжигатель газа',
   dHf:'Hashference, 7 дней', dHfS:function(b){return 'запросов против '+num(b)+' неделей раньше';}, dHfC:'запросы по дням, 30 дней', dHfI:'Запросы к ИИ-API с оплатой майнингом, QUAI или Qi',
   ofRev:'от выручки',
-  wMined:'Намайнено', wUnl:'Разлок генезиса', wConv:'Qi→QUAI и прочее', wBurn:'Сожжено SOAP', wNet:'Итого',
+  wMined:'Намайнено', wUnl:'Разлок генезиса', wConv:'Qi→QUAI и прочее (остаток)', wBurn:'Сожжено SOAP', wNet:'Итого',
   covT:'Покрытие выкупом', covP:function(b,n){return 'За 30 дней появилось '+num(n)+' новых QUAI, SOAP сжёг из них '+num(b)+'.';},
   covNow:'Сжигается в день', covNeed:'Нужно для нулевого роста', covRev:'Выручка SOAP в день', covTyp:'В месяц без крупного разлока',
   covTypV:function(c){return 'покрытие ~'+pct(c);},
@@ -393,13 +420,14 @@ evBurn:'Последнее сжигание', evBurnV:function(b,d){return date(
   soapW:'кошелёк SOAP', other2:'другой кошелёк',
   gas:function(r,w){return 'Не считается утечкой: '+num(r.gasQuai)+' QUAI ('+usd(r.gasUsd)+') ушли с кошелька SOAP на кошелёк, который сжигает их через комиссии — вызывает контракт, который только тратит газ'+(w&&w.gasBurner&&w.gasBurner.lastTx?' (последний вызов '+date(w.gasBurner.lastTx)+')':'')+'. Это входит в «сожжено».';},
   imp:function(u){return 'Покупка по рынку на '+usd(u);}, impD:function(a,b){return 'на одной бирже: ~'+pct1(a)+' · на всех сразу: ~'+pct1(b);},
+  hWait:function(d){return 'Запись идёт с '+d+' — график появится, когда накопится несколько дней.';}, hCov:'Покрытие', hRev:'Выручка SOAP, 30 дн.', hDepth:'Глубина +2%', hPool:'Пул',
   dxPool:'Пул QUAI/USDT, Quainance', dxPoolD:function(d){return num(d.usdt)+' USDT + '+num(d.quai)+' QUAI · ±2%: '+usd(d.depthUp)+' / '+usd(d.depthDown);},
-  dxImp:'Покупка на $500 на DEX', dxImpD:function(d){return 'на $5 000 цена вырастет в '+dc((1+d.impact[1].pct/100).toFixed(1))+' раза · пул x·y=k, комиссия 0,3%';},
+  dxImp:'Покупка на $500 на DEX', dxImpD:function(d){return 'на $5 000 цена вырастет в '+dc((1+d.impact[1].pct/100).toFixed(1))+' раза · пул x·y=k, комиссия 0,3%';},
   dxTvl:'Все пулы Quainance (TVL)', dxTvlD:function(d){return 'обмены: 24 ч '+usd(d.vol24)+' · 30 дн. '+usd(d.vol30)+' (DefiLlama)';},
   dxShare:'Доля DEX в торгах, 24 ч', dxShareD:'Какая часть торгов QUAI за сутки прошла через DEX в самой сети Quai, остальное — централизованные биржи',
   depth:'Глубина в пределах ±2%', depthD:function(u,d){return usd(u)+' на покупку · '+usd(d)+' на продажу, все биржи';},
   ex:'Биржа', pair:'Пара', spread:'Спред', dUp:'Глубина +2%', dDn:'Глубина −2%',
-  hfReq:'Запросы к Hashference, 30 дн.', hfTok:'Обработано ИИ-токенов', hfTokD:'Hashference за 30 дней', hfDev:'активных устройств за 7 дн.: ', hfFund:'Кредиты Hashference из стейкинга', hfFundD:function(f){return 'стейкинг QUAI '+pct(f.staking)+' · пополнения QUAI/Qi '+pct(f.deposits)+' · майнинг '+pct(f.mining);},
+  hfReq:'Запросы к Hashference, 30 дн.', hfTok:'Обработано ИИ-токенов', hfTokD:'Hashference за 30 дней', hfDev:function(n){return 'активных устройств за 7 дней: '+n;}, hfFund:'Кредиты Hashference из стейкинга', hfFundD:function(f){return 'стейкинг QUAI '+pct(f.staking)+' · пополнения QUAI/Qi '+pct(f.deposits)+' · майнинг '+pct(f.mining);},
   stk:'В стейкинге Hashference', stkD:function(p){return 'QUAI заблокировано ради ИИ-кредитов ('+p+')';},
   x402:'Оплаты x402 Work, 30 дн.', x402D:function(x){return 'из них Hashference: '+x.hashference+' · сервисов: '+x.services;},
   txs:'Транзакций сегодня', txsAll:'Транзакций за всё время', addrD:function(n){return 'адресов Quai: '+num(n.addresses)+(n.qiAddresses?' · Qi: '+num(n.qiAddresses):'');}, txsD:function(n){return 'всего: '+num(n.totalTx)+' · адресов: '+num(n.addresses);},
@@ -538,6 +566,19 @@ function renderWaterfall(s,m){ var d=s.d30; if(d.unlocked==null){ $('waterfall')
 }
 
 // ---------- render ----------
+function renderHist(){ var B=window.QUAI_HIST_BASE, H=D.history||[], days=[];
+  if(B){ var d0=new Date(B.from+'T00:00:00Z'); for(var i=0;i<B.cov.length;i++) days.push(new Date(d0.getTime()+i*864e5).toISOString().slice(0,10)); }
+  var series=function(baseArr,key){ var pts=B&&baseArr?days.map(function(d,i){return [d,baseArr[i]];}):[]; var last=pts.length?pts[pts.length-1][0]:'';
+    H.forEach(function(h){ if(h[0]>last&&h[1][key]!=null) pts.push([h[0],h[1][key]]); }); return pts.filter(function(p){return p[1]!=null;}); };
+  var UNL=[['2026-02-02',181e6],['2026-03-04',51892587],['2026-04-03',13642587],['2026-05-03',13141025],['2026-06-02',13680731],['2026-07-02',12976319],['2026-08-01',13123261],['2026-08-31',12596288],['2026-09-30',13103525],['2026-10-30',12578525]].map(function(u){return {d:u[0],q:u[1]};});
+  var cov=series(B&&B.cov,'cov'), rev=series(B&&B.rev30,'r30');
+  if(cov.length>1) lineChart($('hCov'),cov,'#e3262b',function(v){return Math.round(v*100)+'%';},function(v){return t('hCov')+': '+pct(v);},{unl:UNL});
+  if(rev.length>1) lineChart($('hRev'),rev,'#2e97ca',function(v){return usd(v);},function(v){return t('hRev')+': '+usd(v);});
+  var start=dayLabel('2026-11-21');
+  [['hDepth','du','#f2f2f2','hDepth'],['hPool','dx','#5bd16a','hPool']].forEach(function(c){ var pts=series(null,c[1]);
+    if(pts.length>=3) lineChart($(c[0]),pts,c[2],function(v){return usd(v);},function(v){return t(c[3])+': '+usd(v);});
+    else $(c[0]).innerHTML='<p class="note" style="padding:40px 0;text-align:center">'+T[L].hWait(start)+'</p>'; });
+}
 function render(){
   var m=D.market, r=D.recon, s=D.supply, so=D.soap, w=D.wallets, n=D.network, hf=D.hashference, x=D.x402;
   // status
@@ -554,7 +595,7 @@ function render(){
   var vd=[];
   function vcard(k,name,val,para){ var c=ST[k]; var lab={good:'stGood',warn:'stWarn',bad:'stBad',up:'stUp',flat:'stFlat',down:'stDown'}[k];
     return '<div class="vc" style="border-top-color:'+c[0]+'"><div class="st" style="color:'+c[0]+'">'+ICO[c[1]]+'<span>'+t(lab)+'</span></div><div class="n">'+name+'</div><div class="v">'+val+'</div><p>'+para+'</p></div>'; }
-  if(r){ var sh=r.last30.revenue?r.last30.burnedUsd/r.last30.revenue:null; vd.push(vcard(sh>=.8?'good':sh>=.5?'warn':'bad',t('vBuy'),pct(sh),T[L].vBuyP(r))); }
+  if(r){ var sh=r.last30.revenue?r.last30.burnedUsd/r.last30.revenue:null; var sd=s&&s.d30, cv=sd&&sd.unlocked!=null?sd.burned/(sd.mined+sd.unlocked+Math.max(0,sd.otherRest||0)):null; vd.push(vcard(sh>=.8?'good':sh>=.5?'warn':'bad',t('vBuy'),pct(sh),T[L].vBuyP(r,cv))); }
   if(s&&s.unlocks&&s.unlocks.dilution12!=null){ var di=s.unlocks.dilution12, ni=s.d30.net/s.d30.days*365/s.supply; vd.push(vcard(di<.03?'good':di<.1?'warn':'bad',t('vInf'),pctS(di),T[L].vInfP(ni,s.unlocks.next12Pct))); }
   if(m) vd.push(vcard(m.depthUp<1e4?'bad':m.depthUp<5e4?'warn':'good',t('vLiq'),usd(m.depthUp),T[L].vLiqP(m)));
   if(hf){ var dd=hf.daily, a7=dd.slice(-7).reduce(function(x,y){return x+y[1];},0), b7=dd.slice(-14,-7).reduce(function(x,y){return x+y[1];},0), rt=b7?a7/b7:null;
@@ -666,7 +707,7 @@ function render(){
 
   // ecosystem
   var h5='';
-  if(hf){ h5+=tile(t('hfReq'),num(hf.daily.reduce(function(a,d){return a+d[1];},0)),t('hfDev')+hf.devices7d);
+  if(hf){ h5+=tile(t('hfReq'),num(hf.daily.reduce(function(a,d){return a+d[1];},0)),T[L].hfDev(hf.devices7d));
     h5+=tile(t('hfTok'),num(hf.tokens),t('hfTokD'));
     h5+=tile(t('hfFund'),pct(hf.funding.staking),T[L].hfFundD(hf.funding)); }
   if(w) h5+=tile(t('stk'),num(w.staking.balance)+' QUAI',T[L].stkD(hf&&hf.stakingPlans?hf.stakingPlans.map(function(p){return num(p[0])+' → $'+p[1]+(L==='ru'?'/мес':'/mo');}).join(', '):''));
@@ -676,6 +717,7 @@ function render(){
   if(hf) barChart($('hfChart'),hf.daily.map(function(d){return dayLabel(d[0]);}),[{color:'#2e97ca',vals:hf.daily.map(function(d){return d[1];})}],
     function(v){return num(v);},function(i){return '<b>'+dayLabel(hf.daily[i][0])+'</b><br>'+t('req')+': '+num(hf.daily[i][1]);},5);
 
+  renderHist();
   $('srcList').innerHTML=T[L].src.map(function(s){return '<li>'+s+'</li>';}).join('');
 }
 

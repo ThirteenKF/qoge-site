@@ -95,6 +95,12 @@ Context for picking this project up in a new chat.
   (token0 USDT 6 dec, token1 WQUAI) reserves via POST rpc.quai.network/cyprus1 quai_call getReserves (0x0902f1ac);
   impact by x*y=k with 0.3% fee; all-pool TVL + swap volume from api.llama.fi (/tvl/quainance, /summary/dexs/quainance);
   DEX share = Quainance 24h volume / (CoinGecko volume + it).
+  History section (#hist): assets/quai-hist.js (window.QUAI_HIST_BASE) = backfill Jan 17 – Nov 20, 2026 of rolling-30-day
+  buyback coverage (burns / (mined + max(0, other supply growth)), supply.qu.ai) and SOAP revenue (soap.qu.ai daily);
+  newer days come from Redis hash quai:hist (one JSON per UTC day: p, mc, v, du, dd, dx, dxv, tvl, cov, b30, sup, lk, r30, lu,
+  bs, hf, x4, tx), written by api/quai.js on every run (same KV_REST_API_* env as the bots) and returned as data.history.
+  Daily Vercel cron in vercel.json hits /api/quai?save=1 at 23:50 UTC so every day gets a record. Depth and pool charts
+  show a "recording since" note until 3 days exist.
   Header link: nav item "QUAI Live" (t.navLive, .q-live) after Q&A in index.html. Layout is fluid: .wrap up to 1760px, grids auto-fit, .duo pairs panels side by side from ~1300px.
 - Deploy check: if the live site does not change ~2 min after a push, look at Vercel deployments
   (GitHub API /repos/ThirteenKF/qoge-site/deployments?environment=Production). On Nov 9 Vercel skipped one push;
