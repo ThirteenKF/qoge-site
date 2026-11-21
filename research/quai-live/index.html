@@ -25,7 +25,7 @@
   --s1:#2e97ca;--s2:#ea3c3f;--s0:#6b625d;--txt2:#cfc8c1;--grid:#2f2a28}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--ink);color:var(--paper);font-family:'Archivo',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-body{background:var(--ink) url(../research-bg.webp) center top/cover fixed no-repeat}
+body{background:#0a0606 url(../../assets/quai-live-bg.webp) center top/cover fixed no-repeat}
 @media (max-width:767px){body{background-attachment:scroll;background-size:auto 100vh}}
 a{color:inherit}
 .mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
@@ -42,7 +42,7 @@ header.q .crumb .sep{color:#8a827b}
 header.q .buy{display:flex;align-items:center;background:var(--yel);color:var(--ink);padding:0 18px;border-left:4px solid var(--ink);font-size:14px;text-transform:uppercase;white-space:nowrap}
 header.q .buy:hover{background:var(--ink);color:var(--yel)}
 @media (max-width:640px){header.q .logo span.t{display:none} header.q .crumb{font-size:12px;padding:0 10px} .lang button{padding:0 10px} header.q .buy{display:none}}
-.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+.wrap{max-width:1760px;margin:0 auto;padding:0 clamp(16px,3vw,48px)}
 .tag{display:inline-block;background:var(--red);color:var(--paper);padding:6px 14px;font-weight:900;font-size:14px;text-transform:uppercase;transform:skewX(-8deg)}
 h1{margin:18px 0 0;font-weight:900;font-stretch:115%;font-size:clamp(36px,6vw,72px);line-height:.95;letter-spacing:-.01em;text-transform:uppercase;text-wrap:balance}
 h1 span{color:var(--yel)}
@@ -50,15 +50,17 @@ h1 span{color:var(--yel)}
 .status{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:16px;font-size:12px;letter-spacing:.08em;color:var(--mute);text-transform:uppercase}
 .dot{width:9px;height:9px;border-radius:50%;background:#5bd16a;box-shadow:0 0 0 3px rgba(91,209,106,.2)}
 .dot.snap{background:#d6b42a;box-shadow:0 0 0 3px rgba(214,180,42,.2)}
-nav.tabs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:8px;margin-top:28px;padding:10px 0;background:linear-gradient(var(--ink) 70%,transparent)}
+nav.tabs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:8px;margin-top:28px;padding:10px 0;background:linear-gradient(#0a0606 70%,transparent)}
 nav.tabs a{font-weight:800;font-size:14px;padding:8px 14px;border:2px solid #4a4340;background:rgba(20,17,16,.9);text-decoration:none}
 nav.tabs a:hover{border-color:var(--paper)}
 section.s{margin-top:44px;scroll-margin-top:120px}
 section.s>h2{margin:0;font-weight:900;font-stretch:110%;font-size:clamp(26px,3.6vw,40px);text-transform:uppercase;line-height:1}
 section.s>p.k{margin:10px 0 0;color:var(--txt2);font-size:16px;line-height:1.5;max-width:820px}
-.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:18px}
-.tiles.c4{grid-template-columns:repeat(4,minmax(0,1fr))}
-@media (max-width:860px){.tiles,.tiles.c4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px;margin-top:18px}
+@media (max-width:520px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.duo{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,620px),1fr));gap:16px;margin-top:16px;align-items:start}
+.duo>.panel{margin-top:0}
+.panel .tiles{grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr))}
 @media (max-width:420px){.tile .v{font-size:22px}.tile{padding:12px}}
 .tile{background:var(--card);border:2px solid #3a3431;padding:14px 16px}
 .tile .l{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
@@ -88,20 +90,18 @@ th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute
 th:first-child,td:first-child{text-align:left}
 td a{color:var(--yel)}
 .note{margin-top:10px;font-size:13px;color:var(--mute);line-height:1.5}
-.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:16px}
 .panel,.cols>*{min-width:0}
-@media (max-width:860px){.cols{grid-template-columns:1fr}}
 details.t{margin-top:8px}details.t summary{cursor:pointer;font-size:13px;color:var(--mute)}
-.events{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:22px}
+.events{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:10px;margin-top:22px}
 .ev{display:flex;align-items:center;gap:10px;padding:10px 14px;border:2px solid #3a3431;background:rgba(29,26,25,.92)}
 .ev svg{flex:none}.ev .l{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}.ev .v{font-size:14px;font-weight:700;margin-top:2px}
-.verd{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:12px}
+.verd{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px;margin-top:12px}
 .vc{display:flex;flex-direction:column;gap:10px;padding:18px;background:var(--card);border:2px solid #3a3431;border-top-width:6px}
 .vc .st{display:flex;align-items:center;gap:8px;font-weight:900;font-size:13px;text-transform:uppercase;letter-spacing:.04em}
 .vc .n{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
 .vc .v{font-weight:900;font-size:34px;line-height:1;font-stretch:105%}
 .vc p{margin:0;font-size:14px;line-height:1.5;color:var(--txt2)}
-@media (max-width:960px){.verd{grid-template-columns:repeat(2,minmax(0,1fr))}.events{grid-template-columns:minmax(0,1fr)}}
 .dt{display:flex;flex-direction:column;gap:8px;padding:16px 16px 12px;background:var(--card);border:2px solid #3a3431;min-width:0}
 .dt .h{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .dt .h .l{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
@@ -112,8 +112,9 @@ details.t{margin-top:8px}details.t summary{cursor:pointer;font-size:13px;color:v
 .dt .s{font-size:13px;color:var(--txt2);line-height:1.4}
 .dt .sp{margin-top:4px}.dt .sp svg{display:block;width:100%;height:52px}
 .dt .cap{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
-.wf{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,1fr);gap:16px;margin-top:16px}
-@media (max-width:860px){.wf{grid-template-columns:minmax(0,1fr)}}
+.wf{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin-top:16px}
+.wf>.panel:first-child{grid-column:span 2}
+@media (max-width:700px){.wf>.panel:first-child{grid-column:auto}}
 .wfc{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:34px}
 .wfc .col{display:flex;flex-direction:column;gap:8px}
 .wfc .plot{position:relative;height:260px;border-bottom:1px solid #4a4340}
@@ -184,6 +185,7 @@ footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12p
     </div>
     <div class="panel cov" style="margin-top:0" id="coverage"></div>
   </div>
+  <div class="duo">
   <div class="panel">
     <h3 data-en="Mined vs burned per day, last 30 days" data-ru="Намайнено и сожжено по дням, 30 дней">Mined vs burned</h3>
     <div class="sub mono" data-en="QUAI · supply.qu.ai" data-ru="QUAI · supply.qu.ai">QUAI</div>
@@ -197,6 +199,7 @@ footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12p
     <div class="chart" id="unlockChart"></div>
     <details class="t"><summary data-en="Show as table" data-ru="Показать таблицей">Show as table</summary><div class="tbl" id="unlockTable"></div></details>
   </div>
+  </div>
 </section>
 
 <section class="s" id="soap">
@@ -209,6 +212,7 @@ footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12p
     <div class="legend" id="splitLegend"></div>
   </div>
   <div class="tiles c4" id="soapTiles"></div>
+  <div class="duo">
   <div class="panel">
     <h3 data-en="Which chains feed the buyback" data-ru="Какие сети кормят выкуп">Which chains feed the buyback</h3>
     <div class="sub" id="mixSub"></div>
@@ -221,6 +225,7 @@ footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12p
     <div class="legend" id="soapLegend"></div>
     <div class="chart" id="soapChart"></div>
     <details class="t"><summary data-en="Show as table" data-ru="Показать таблицей">Show as table</summary><div class="tbl" id="soapTable"></div></details>
+  </div>
   </div>
   <div class="cols">
     <div class="panel">

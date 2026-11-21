@@ -48,7 +48,8 @@ Context for picking this project up in a new chat.
   "Download picture" link still makes the same card in the browser (makeShareCard(), canvas)., and "since your last visit" / last-24h deltas.
   No server: streak lives in localStorage 'qoge-visit'. To add log entries: append to every list.
 - Page order (Nov 2026): hero → ticker → #legend → #mission → #buy → #tokenomics → #roadmap → #nft → #faq → #daily → community.
-- Header research button: green pill .q-res/.q-pill, text t.resBtn.
+- Header research button: .q-res/.q-pill, ink block with yellow icon, no animation (red offset shadow on hover), text t.resBtn.
+  "QUAI Live" nav item: .q-live, outlined ink box with a static red dot. Research hub Telegram button: plain yellow .btn.
 - NFT teaser banner (#nft, between #roadmap and #faq): QOGE Mars Gum collection (100 rover cards,
   files in `QOGE SITE\nft\mars-gum`), image assets/mars-gum-pack.webp, texts ng* in every language.
   Mint is LIVE (holder whitelist, 99 QUAI, 1 per wallet): launchpad
@@ -87,7 +88,7 @@ Context for picking this project up in a new chat.
   staking 0x0009ac4b…896a. Genesis unlocks: UNLOCKS constant in api/quai.js, copied from supply.qu.ai's JS bundle
   (GENESIS_UNLOCK_SCHEDULE; month m unlocks at block m*518400) — update it if the team changes the schedule. SOURCES in api/quai.js are plain JS, so the snapshot can be rebuilt by running them
   in a browser on each source's own origin. Card in the research hub before the QUAI report.
-  Header link: nav item "QUAI Live" (t.navLive, pulsing green .q-dot) after Q&A in index.html.
+  Header link: nav item "QUAI Live" (t.navLive, .q-live) after Q&A in index.html. Layout is fluid: .wrap up to 1760px, grids auto-fit, .duo pairs panels side by side from ~1300px.
 - Deploy check: if the live site does not change ~2 min after a push, look at Vercel deployments
   (GitHub API /repos/ThirteenKF/qoge-site/deployments?environment=Production). On Nov 9 Vercel skipped one push;
   a new push re-triggered it. Images written by the device bridge carry a C2PA chunk (+~5.7KB) — harmless.

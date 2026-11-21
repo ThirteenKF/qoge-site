@@ -39,7 +39,7 @@ header.q .crumb .sep{color:#8a827b}
 .lang{display:flex;align-items:stretch;border-left:4px solid var(--ink)}
 .lang button{font:inherit;font-weight:900;font-size:14px;border:0;background:transparent;color:var(--ink);padding:0 14px;cursor:pointer}
 .lang button[aria-pressed=true]{background:var(--ink);color:var(--yel)}
-.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+.wrap{max-width:1760px;margin:0 auto;padding:0 clamp(16px,3vw,48px)}
 .tag{display:inline-block;background:var(--red);color:var(--paper);padding:6px 14px;font-weight:900;font-size:14px;text-transform:uppercase;transform:skewX(-8deg)}
 h1{margin:18px 0 0;font-weight:900;font-stretch:115%;font-size:clamp(36px,6vw,76px);line-height:.95;letter-spacing:-.01em;text-transform:uppercase;text-wrap:balance}
 h1 span{color:var(--yel)}
@@ -100,8 +100,8 @@ header.q .buy:hover{background:var(--ink);color:var(--yel)}
 .card p{font-size:16px;color:#e6e0da}
 .card.hide,.feat.hide{display:none}
 .tick{display:none}
-.sub .btn{border:0;border-radius:999px;color:#fff;text-shadow:0 1px 1px rgba(0,60,10,.35);background:linear-gradient(110deg,#1f9d3a,#3cc94e,#86e35a,#2fb24a,#1f9d3a);background-size:300% 100%;box-shadow:0 6px 18px rgba(40,170,60,.45),inset 0 1px 0 rgba(255,255,255,.4);animation:subFlow 3s linear infinite;transition:transform .15s}
-.sub .btn:hover{background:linear-gradient(110deg,#1f9d3a,#3cc94e,#86e35a,#2fb24a,#1f9d3a);background-size:300% 100%;color:#fff;transform:translateY(-2px)}
+.sub .btn{background:var(--yel);color:var(--ink);border-color:var(--yel)}
+.sub .btn:hover{background:transparent;color:var(--yel)}
 @keyframes subFlow{to{background-position:300% 0}}
 @media (prefers-reduced-motion:reduce){.sub .btn{animation:none}}
 @media (max-width:860px){.feat{grid-template-columns:1fr}.feat img{border-right:0;border-bottom:4px solid var(--yel);height:auto}}
