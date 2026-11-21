@@ -17,6 +17,11 @@ const A = {
 const SCAN = 'https://quaiscan.io/api/v2';
 const EXP = 'https://explorer.qu.ai/api'; // official explorer, used when Quaiscan refuses the server (HTTP 403)
 const CG = 'https://api.coingecko.com/api/v3';
+const RPC = 'https://rpc.quai.network/cyprus1';
+const LLAMA = 'https://api.llama.fi';
+// Quainance AMM pair QUAI/USDT (token0 = USDT, 6 decimals; token1 = WQUAI, 18 decimals). Fee 0.3%.
+const DEX_PAIR = '0x0021f5cc862ebb0252ba209266f2fabbc7592e83';
+const DEX_FEE = 0.003;
 
 // Genesis unlock schedule after the Singularity and Polaris forks, taken from the team's supply tracker
 // (supply.qu.ai, GENESIS_UNLOCK_SCHEDULE = post-Singularity schedule minus FOUNDER_UNLOCKS from month 22).
@@ -167,6 +172,25 @@ const SOURCES2 = {
 };
 Object.assign(SOURCES, SOURCES2);
 
+// Quainance (DEX on Quai): QUAI/USDT pool reserves read from the chain (getReserves),
+// all-protocol TVL and swap volume from DefiLlama.
+SOURCES.dex = async function dex(get) {
+  const r = await fetch(RPC, { method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'quai_call', params: [{ to: DEX_PAIR, data: '0x0902f1ac' }, 'latest'] }) });
+  if (!r.ok) throw new Error('quai rpc -> HTTP ' + r.status);
+  const hex = ((await r.json()).result || '').slice(2);
+  if (hex.length < 128) throw new Error('getReserves: empty result');
+  const usdt = Number(BigInt('0x' + hex.slice(0, 64))) / 1e6;
+  const quai = Number(BigInt('0x' + hex.slice(64, 128))) / 1e18;
+  const out = { pair: DEX_PAIR, usdt, quai };
+  try {
+    const v = await get(`${LLAMA}/summary/dexs/quainance?excludeTotalDataChart=true&excludeTotalDataChartBreakdown=true`);
+    Object.assign(out, { vol24: v.total24h, vol7: v.total7d, vol30: v.total30d });
+  } catch (e) { out.volError = String(e.message || e).slice(0, 120); }
+  try { out.tvl = Number(await get(`${LLAMA}/tvl/quainance`)); } catch (e) { out.tvlError = String(e.message || e).slice(0, 120); }
+  return out;
+};
+
 // ---------- helpers ----------
 function lc(s) { return (s || '').toLowerCase(); }
 function unix(iso) { return Math.floor(Date.parse(iso) / 1000); }
@@ -214,6 +238,16 @@ function assemble(p) {
   const out = { updatedAt: new Date().toISOString(), addresses: A };
   for (const k of Object.keys(SOURCES)) if (!ok(k)) out[k + 'Error'] = p[k]?.error || 'missing';
 
+  if (ok('dex')) {
+    const d = p.dex, price = d.usdt / d.quai;
+    // Constant-product pool: buying with X USDT (after the 0.3% fee) moves the price by ((R+X)/R)^2 - 1.
+    const buyImpact = usd => { const x = usd * (1 - DEX_FEE); return (Math.pow((d.usdt + x) / d.usdt, 2) - 1) * 100; };
+    const cexVol = ok('market') ? p.market.vol24 || 0 : 0;
+    out.dex = { ...d, price, poolUsd: 2 * d.usdt,
+      depthUp: d.usdt * (Math.sqrt(1.02) - 1), depthDown: d.usdt * (1 - Math.sqrt(0.98)),
+      impact: [500, 5000].map(usd => ({ usd, pct: buyImpact(usd) })),
+      share24: d.vol24 != null && cexVol + d.vol24 > 0 ? d.vol24 / (cexVol + d.vol24) : null };
+  }
   if (ok('market')) {
     const m = p.market;
     const up = m.tickers.reduce((a, t) => a + t.up, 0), down = m.tickers.reduce((a, t) => a + t.down, 0);

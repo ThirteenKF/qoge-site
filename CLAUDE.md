@@ -91,6 +91,10 @@ Context for picking this project up in a new chat.
   yellow #d6b42a = unlocks / warnings, green #5bd16a = good status / positive change, red = burns / risk / negative; fonts Unbounded (headings/numbers), Bai Jamjuree (text), JetBrains Mono (labels). No background image. Genesis unlocks: UNLOCKS constant in api/quai.js, copied from supply.qu.ai's JS bundle
   (GENESIS_UNLOCK_SCHEDULE; month m unlocks at block m*518400) — update it if the team changes the schedule. SOURCES in api/quai.js are plain JS, so the snapshot can be rebuilt by running them
   in a browser on each source's own origin. Card in the research hub before the QUAI report.
+  Liquidity also has an on-chain row "Quainance DEX" (source `dex` in api/quai.js): QUAI/USDT pair 0x0021f5cc…2e83
+  (token0 USDT 6 dec, token1 WQUAI) reserves via POST rpc.quai.network/cyprus1 quai_call getReserves (0x0902f1ac);
+  impact by x*y=k with 0.3% fee; all-pool TVL + swap volume from api.llama.fi (/tvl/quainance, /summary/dexs/quainance);
+  DEX share = Quainance 24h volume / (CoinGecko volume + it).
   Header link: nav item "QUAI Live" (t.navLive, .q-live) after Q&A in index.html. Layout is fluid: .wrap up to 1760px, grids auto-fit, .duo pairs panels side by side from ~1300px.
 - Deploy check: if the live site does not change ~2 min after a push, look at Vercel deployments
   (GitHub API /repos/ThirteenKF/qoge-site/deployments?environment=Production). On Nov 9 Vercel skipped one push;
