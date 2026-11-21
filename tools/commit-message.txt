@@ -1,1 +1,0 @@
-Add independent QUAI dashboard (strict black/red), explorer fallback, header and layout updates

@@ -87,8 +87,8 @@ Context for picking this project up in a new chat.
   Key addresses: burn 0x0050AF…0000, SOAP wallet 0x0053bcdc…8D06, gas burner 0x004b00d6…Db93,
   staking 0x0009ac4b…896a. Quaiscan answers Vercel with 403, so burns/wallets/network fall back to the official explorer API
   (explorer.qu.ai/api: /address/<a>/transactions?limit=100&cursor=, /address/<a>, /stats/overview).
-  Look: strict black/red (variant A from the design canvas): #050505 bg, #0d0d0d panels, #e3262b accent, grey #bdbdbd
-  second series; fonts Unbounded (headings/numbers), Bai Jamjuree (text), JetBrains Mono (labels). No background image. Genesis unlocks: UNLOCKS constant in api/quai.js, copied from supply.qu.ai's JS bundle
+  Look: strict black/red (variant A from the design canvas): #050505 bg, #0d0d0d panels, #e3262b accent, semantic accents only: blue #2e97ca = inflow (SOAP revenue, mined),
+  yellow #d6b42a = unlocks / warnings, green #5bd16a = good status / positive change, red = burns / risk / negative; fonts Unbounded (headings/numbers), Bai Jamjuree (text), JetBrains Mono (labels). No background image. Genesis unlocks: UNLOCKS constant in api/quai.js, copied from supply.qu.ai's JS bundle
   (GENESIS_UNLOCK_SCHEDULE; month m unlocks at block m*518400) — update it if the team changes the schedule. SOURCES in api/quai.js are plain JS, so the snapshot can be rebuilt by running them
   in a browser on each source's own origin. Card in the research hub before the QUAI report.
   Header link: nav item "QUAI Live" (t.navLive, .q-live) after Q&A in index.html. Layout is fluid: .wrap up to 1760px, grids auto-fit, .duo pairs panels side by side from ~1300px.
