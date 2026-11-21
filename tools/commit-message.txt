@@ -1,1 +1,1 @@
-Add QUAI Live dashboard (research/quai-live) with /api/quai
+Add QUAI Live dashboard, header link; calm research button

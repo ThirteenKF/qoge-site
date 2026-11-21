@@ -84,8 +84,10 @@ Context for picking this project up in a new chat.
   none of the team APIs allow CORS. Each source fails independently; the page then uses that section from the
   snapshot `assets/quai-dash.js` (window.QUAI_DASH, same JSON) and the status line says "Snapshot".
   Key addresses: burn 0x0050AF…0000, SOAP wallet 0x0053bcdc…8D06, gas burner 0x004b00d6…Db93,
-  staking 0x0009ac4b…896a. SOURCES in api/quai.js are plain JS, so the snapshot can be rebuilt by running them
+  staking 0x0009ac4b…896a. Genesis unlocks: UNLOCKS constant in api/quai.js, copied from supply.qu.ai's JS bundle
+  (GENESIS_UNLOCK_SCHEDULE; month m unlocks at block m*518400) — update it if the team changes the schedule. SOURCES in api/quai.js are plain JS, so the snapshot can be rebuilt by running them
   in a browser on each source's own origin. Card in the research hub before the QUAI report.
+  Header link: nav item "QUAI Live" (t.navLive, pulsing green .q-dot) after Q&A in index.html.
 - Deploy check: if the live site does not change ~2 min after a push, look at Vercel deployments
   (GitHub API /repos/ThirteenKF/qoge-site/deployments?environment=Production). On Nov 9 Vercel skipped one push;
   a new push re-triggered it. Images written by the device bridge carry a C2PA chunk (+~5.7KB) — harmless.

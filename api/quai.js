@@ -17,6 +17,16 @@ const A = {
 const SCAN = 'https://quaiscan.io/api/v2';
 const CG = 'https://api.coingecko.com/api/v3';
 
+// Genesis unlock schedule after the Singularity and Polaris forks, taken from the team's supply tracker
+// (supply.qu.ai, GENESIS_UNLOCK_SCHEDULE = post-Singularity schedule minus FOUNDER_UNLOCKS from month 22).
+// [schedule month, QUAI]; month m unlocks at block m * 518400. Sum of months 22..48 = 90.39M QUAI.
+const BLOCKS_PER_MONTH = 518400;
+const UNLOCK_DATES = { 13: '2026-03-04', 14: '2026-04-03', 15: '2026-05-03', 16: '2026-06-02', 17: '2026-07-02', 18: '2026-08-01', 19: '2026-08-31', 20: '2026-09-30' };
+const UNLOCKS = [[13,51892587],[14,13642587],[15,13141025],[16,13680731],[17,12976319],[18,13123261],[19,12596288],[20,13103525],[21,12578525],
+  [22,3735412],[23,3730412],[24,3723120],[25,3660620],[26,3677287],[27,3643954],[28,3643954],[29,3643954],[30,3643954],[31,3643954],
+  [32,3649825],[33,3613083],[34,3241870],[35,3241870],[36,3241870],[37,3241870],[38,3241870],[39,3241870],[40,2991870],[41,2991870],
+  [42,2991870],[43,2991870],[44,2991870],[45,2991870],[46,2991870],[47,2991870],[48,2991870]];
+
 const SOURCES = {
   // Price, volume, order-book depth (±2%) per exchange.
   async market(get) {
@@ -84,14 +94,18 @@ const SOURCES = {
     for (let d = new Date(Date.UTC(2025, 11, 1)); d.getTime() / 1000 < now; d = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 1)))
       months.push([d.toISOString().slice(0, 7), d.getTime() / 1000, Math.min(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 1) / 1000, now)]);
     const per = await Promise.all(months.map(([, s, e]) => get(`${base}/revenues/daily?start=${s}&end=${e}`)));
-    const [d7, d30] = await Promise.all([7, 30].map(n => get(`${base}/revenues/daily?start=${now - n * 86400}&end=${now}`)));
+    const [d7, d30, p30] = await Promise.all([
+      get(`${base}/revenues/daily?start=${now - 7 * 86400}&end=${now}`),
+      get(`${base}/revenues/daily?start=${now - 30 * 86400}&end=${now}`),
+      get(`${base}/revenues/daily?start=${now - 60 * 86400}&end=${now - 30 * 86400}`),
+    ]);
     const chains = {};
     for (const [k, v] of Object.entries(r.revenues || {})) chains[k] = { usd: v.totalRevenueUsd, blocks: v.blockCount };
     return {
       chains,
       total: Object.values(chains).reduce((a, c) => a + c.usd, 0),
       months: months.map(([ym], i) => [ym, per[i].total?.revenueUsd || 0]),
-      last7: d7.total?.revenueUsd || 0, last30: d30.total?.revenueUsd || 0,
+      last7: d7.total?.revenueUsd || 0, last30: d30.total?.revenueUsd || 0, prev30: p30.total?.revenueUsd || 0,
       last30ByChain: Object.fromEntries(Object.entries(d30.byChain || {}).map(([k, v]) => [k, v.revenueUsd])),
     };
   },
@@ -111,6 +125,7 @@ const SOURCES = {
       supply: wei(st.analytics?.quaiSupplyTotal ?? st.info?.quaiSupplyTotal),
       qi: big(st.analytics?.qiSupplyTotal) / 1000,
       soapBurned: wei(st.analytics?.soapBurnBalance),
+      head: Number(st.info?.blockNumber) || null, blockTime: Number(st.info?.avgBlockTime) || null,
       // [date, supply at day end, burned that day, mined that day, partial day?]
       days: (sp.rows || []).map(r => [r.periodStart, wei(r.quaiTotalEnd), wei(r.burnDelta), mined[r.periodStart] ?? null, !!r.partial]),
     };
@@ -232,6 +247,9 @@ function assemble(p) {
       untracedUsd: revenue - burnedUsd - leakUsd,
       last30: { revenue: p.soap.last30, burnedUsd: last30Burn },
       lastBurn: lastBurn ? { t: lastBurn[0], quai: lastBurn[1] } : null,
+      // burn days for chart markers (last ~130 days), including transfers to the gas burner
+      burnDays: [...new Set(burns.map(b => b[0]).concat(toGas.map(g => g[0])).filter(t => t > now - 130 * 86400).map(day))].sort(),
+      lastLeak: leaks.length ? Math.max(...leaks.map(l => l.last)) : null,
       recentBurns: burns.slice().sort((a, b) => b[0] - a[0]).slice(0, 8).map(([t, v, f]) => ({ t, quai: v, from: f })),
       months: mrows,
     };
@@ -248,10 +266,29 @@ function assemble(p) {
     const base = full[full.length - last.length - 1]; // the day before the window
     const change = base && last.length ? last[last.length - 1][1] - base[1] : null;
     const net = mined - burned;
+    // Unlocks: estimated date from the current head block and average block time.
+    const bt = s.blockTime || 5.2, head = s.head;
+    const at = blk => head ? Math.round(Date.now() / 1000 + (blk - head) * bt) : null;
+    // Past unlock dates: the tracker's own calendar (UNLOCK_DATES, then +30 days per month); future ones from block time.
+    const pastDate = m => UNLOCK_DATES[m] ? Date.parse(UNLOCK_DATES[m] + 'T00:00:00Z') / 1000 : Date.parse('2026-09-30T00:00:00Z') / 1000 + (m - 20) * 2592000;
+    const sched = UNLOCKS.map(([m, q]) => { const block = m * BLOCKS_PER_MONTH; return { m, block, t: head && block <= head ? pastDate(m) : at(block), quai: q }; });
+    const now = Date.now() / 1000;
+    const future = head ? sched.filter(u => u.block > head) : [];
+    const past = head ? sched.filter(u => u.block <= head) : [];
+    const in30 = past.filter(u => u.t > now - last.length * 86400).reduce((a, u) => a + u.quai, 0);
+    const next12 = future.filter(u => u.t < now + 365 * 86400).reduce((a, u) => a + u.quai, 0);
+    const other = change != null ? change - net : null;
     out.supply = {
       ...s, days: s.days,
-      d30: { days: last.length, mined, burned, net, change, other: change != null ? change - net : null,
+      d30: { days: last.length, mined, burned, net, change, other, unlocked: in30, otherRest: other != null ? other - in30 : null,
         netInflationYr: last.length ? net / last.length * 365 / s.supply : null },
+      unlocks: {
+        locked: future.reduce((a, u) => a + u.quai, 0), next: future[0] || null, last: past[past.length - 1] || null,
+        next12, next12Pct: next12 / s.supply, final: future.length ? future[future.length - 1].t : null,
+        upcoming: future, recent: past.slice(-6),
+        // supply growth over the next year if mining and burns stay at the 30-day pace
+        dilution12: last.length ? (net / last.length * 365 + next12) / s.supply : null,
+      },
     };
   }
   for (const k of ['wallets', 'network', 'hashference', 'x402']) if (ok(k)) out[k] = p[k];

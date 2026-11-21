@@ -92,6 +92,39 @@ td a{color:var(--yel)}
 .panel,.cols>*{min-width:0}
 @media (max-width:860px){.cols{grid-template-columns:1fr}}
 details.t{margin-top:8px}details.t summary{cursor:pointer;font-size:13px;color:var(--mute)}
+.events{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:22px}
+.ev{display:flex;align-items:center;gap:10px;padding:10px 14px;border:2px solid #3a3431;background:rgba(29,26,25,.92)}
+.ev svg{flex:none}.ev .l{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}.ev .v{font-size:14px;font-weight:700;margin-top:2px}
+.verd{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:12px}
+.vc{display:flex;flex-direction:column;gap:10px;padding:18px;background:var(--card);border:2px solid #3a3431;border-top-width:6px}
+.vc .st{display:flex;align-items:center;gap:8px;font-weight:900;font-size:13px;text-transform:uppercase;letter-spacing:.04em}
+.vc .n{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.vc .v{font-weight:900;font-size:34px;line-height:1;font-stretch:105%}
+.vc p{margin:0;font-size:14px;line-height:1.5;color:var(--txt2)}
+@media (max-width:960px){.verd{grid-template-columns:repeat(2,minmax(0,1fr))}.events{grid-template-columns:minmax(0,1fr)}}
+.dt{display:flex;flex-direction:column;gap:8px;padding:16px 16px 12px;background:var(--card);border:2px solid #3a3431;min-width:0}
+.dt .h{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.dt .h .l{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.dt .i{color:var(--mute);cursor:help;display:flex}
+.dt .row1{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.dt .v{font-weight:900;font-size:30px;line-height:1;font-variant-numeric:tabular-nums}
+.dt .dl{font-weight:800;font-size:15px}
+.dt .s{font-size:13px;color:var(--txt2);line-height:1.4}
+.dt .sp{margin-top:4px}.dt .sp svg{display:block;width:100%;height:52px}
+.dt .cap{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.wf{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,1fr);gap:16px;margin-top:16px}
+@media (max-width:860px){.wf{grid-template-columns:minmax(0,1fr)}}
+.wfc{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:34px}
+.wfc .col{display:flex;flex-direction:column;gap:8px}
+.wfc .plot{position:relative;height:260px;border-bottom:1px solid #4a4340}
+.wfc .bar{position:absolute;left:16%;right:16%;border-radius:4px}
+.wfc .val{position:absolute;left:0;right:0;text-align:center;font-weight:900;font-size:16px}
+.wfc .nm{font-size:12px;line-height:1.35;color:var(--txt2);text-align:center}
+.cov .big2{font-weight:900;font-size:52px;line-height:1;margin-top:8px}
+.cov .bar2{display:flex;gap:2px;height:14px;margin:14px 0}
+.cov p{margin:0 0 10px;font-size:14px;line-height:1.5;color:var(--txt2)}
+.mix{display:flex;height:36px;gap:2px;margin:8px 0 14px}
+.mix div{display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;min-width:0;overflow:hidden}
 .src{margin-top:44px;padding:18px 20px;border:2px solid #3a3431;background:rgba(20,17,16,.9);font-size:14px;line-height:1.6;color:var(--txt2)}
 .src a{color:var(--yel)}
 .src ul{margin:8px 0 0;padding-left:18px}
@@ -121,15 +154,21 @@ footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12p
     <a href="#eco" data-en="Ecosystem" data-ru="Экосистема">Ecosystem</a>
     <a href="#method" data-en="Method" data-ru="Методика">Method</a>
   </nav>
+  <h2 style="margin:26px 0 0;font-weight:900;font-stretch:110%;font-size:clamp(24px,3vw,34px);text-transform:uppercase" data-en="The main thing, last 30 days" data-ru="Главное за 30 дней">The main thing</h2>
+  <div class="events mono" id="events"></div>
+  <div class="verd" id="verdicts"></div>
 </section>
 
 <section class="s" id="pulse">
   <h2 data-en="Pulse" data-ru="Пульс">Pulse</h2>
-  <div class="tiles" id="pulseTiles"></div>
+  <div class="tiles c4" id="dynTiles"></div>
+  <div class="tiles c4" id="pulseTiles"></div>
   <div class="panel">
-    <h3 data-en="QUAI price, last 120 days" data-ru="Цена QUAI за 120 дней">QUAI price</h3>
-    <div class="sub mono" data-en="USD, daily close · CoinGecko" data-ru="USD, закрытие дня · CoinGecko">USD</div>
+    <h3 data-en="QUAI price, last 120 days, with events" data-ru="Цена QUAI за 120 дней и события">QUAI price</h3>
+    <div class="sub mono" data-en="USD, daily close · CoinGecko · burns from Quaiscan · unlocks from supply.qu.ai" data-ru="USD, закрытие дня · CoinGecko · сжигания из Quaiscan · разлоки из supply.qu.ai">USD</div>
+    <div class="legend" id="priceLegend"></div>
     <div class="chart" id="priceChart"></div>
+    <p class="note" id="priceNote"></p>
   </div>
 </section>
 
@@ -137,11 +176,26 @@ footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12p
   <h2 data-en="Supply" data-ru="Предложение">Supply</h2>
   <p class="k" data-en="New QUAI comes from mining, genesis unlocks and Qi→QUAI conversions. SOAP burns take QUAI out. The yearly rate below counts mining minus burns only, because unlocks and conversions arrive in lumps." data-ru="Новые QUAI появляются из майнинга, разлоков генезиса и конвертаций Qi→QUAI. Сжигания SOAP их убирают. Годовой темп ниже считает только майнинг минус сжигания: разлоки и конвертации приходят рывками.">New QUAI comes from mining.</p>
   <div class="tiles" id="supplyTiles"></div>
+  <div class="wf">
+    <div class="panel" style="margin-top:0">
+      <h3 data-en="Supply balance, last 30 days" data-ru="Баланс предложения за 30 дней">Supply balance</h3>
+      <div class="sub mono" data-en="million QUAI · what added QUAI and what removed it" data-ru="млн QUAI · что добавило QUAI и что убрало">million QUAI</div>
+      <div class="wfc" id="waterfall"></div>
+    </div>
+    <div class="panel cov" style="margin-top:0" id="coverage"></div>
+  </div>
   <div class="panel">
     <h3 data-en="Mined vs burned per day, last 30 days" data-ru="Намайнено и сожжено по дням, 30 дней">Mined vs burned</h3>
     <div class="sub mono" data-en="QUAI · supply.qu.ai" data-ru="QUAI · supply.qu.ai">QUAI</div>
     <div class="legend" id="supplyLegend"></div>
     <div class="chart" id="supplyChart"></div>
+  </div>
+  <div class="panel">
+    <h3 data-en="Genesis unlocks" data-ru="Разлоки генезиса">Genesis unlocks</h3>
+    <div class="sub mono" data-en="Schedule after the Singularity and Polaris forks · supply.qu.ai · dates estimated from block time" data-ru="Расписание после форков Singularity и Polaris · supply.qu.ai · даты оценены по времени блока">Schedule</div>
+    <div class="tiles c4" id="unlockTiles"></div>
+    <div class="chart" id="unlockChart"></div>
+    <details class="t"><summary data-en="Show as table" data-ru="Показать таблицей">Show as table</summary><div class="tbl" id="unlockTable"></div></details>
   </div>
 </section>
 
@@ -155,6 +209,12 @@ footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12p
     <div class="legend" id="splitLegend"></div>
   </div>
   <div class="tiles c4" id="soapTiles"></div>
+  <div class="panel">
+    <h3 data-en="Which chains feed the buyback" data-ru="Какие сети кормят выкуп">Which chains feed the buyback</h3>
+    <div class="sub" id="mixSub"></div>
+    <div id="mix"></div>
+    <div class="tbl" id="mixTable"></div>
+  </div>
   <div class="panel">
     <h3 data-en="Revenue vs burned, by month" data-ru="Выручка и сожжено по месяцам">Revenue vs burned</h3>
     <div class="sub mono" data-en="USD · current month is partial" data-ru="USD · текущий месяц неполный">USD</div>
@@ -213,11 +273,31 @@ var SECTIONS = ['market','priceChart','recon','soap','supply','wallets','network
 
 var T = {
  en:{
+evBurn:'Last burn', evBurnV:function(b,d){return date(b.t)+' · '+num(b.quai)+' QUAI · '+ago(d);},
+  evUnl:'Next unlock', evUnlV:function(u,d){return date(u.t)+' · '+num(u.quai)+' QUAI · '+inDays(d);},
+  evLeak:'Transfers out of SOAP not burned', evLeakV:function(t){return t?'none since '+date(t):'none';},
+  vBuy:'SOAP buyback', vInf:'Supply growth, 12 months', vLiq:'Liquidity', vDem:'Demand: Hashference',
+  stGood:'Working', stWarn:'Watch', stBad:'Risk', stUp:'Growing', stFlat:'Flat', stDown:'Falling',
+  vBuyP:function(r){return 'In 30 days, burns worth '+usd(r.last30.burnedUsd)+' out of '+usd(r.last30.revenue)+' revenue. All time: '+pct(r.burnShare)+'.';},
+  vInfP:function(n,u){return 'Mining minus burns gives '+pctS(n)+', genesis unlocks add '+pctS(u)+' over 12 months.';},
+  vLiqP:function(m){return 'Order books hold '+usd(m.depthUp)+' within +2%. A $5,000 buy moves the price '+pct1(m.impact[1].allEx)+'–'+pct1(m.impact[1].oneEx)+'.';},
+  vDemP:function(a,b){return Math.round(a).toLocaleString(loc())+' requests in 7 days vs '+num(b)+' the week before.';},
+  dPrice:'QUAI price', dPriceS:function(m){return '30 days · 24h '+sgn(m.ch24)+' · low $'+m.atl.toPrecision(3)+' ('+date(m.atlDate)+')';}, dPriceC:'30 days', dPriceI:'Daily close, CoinGecko',
+  dRev:'SOAP revenue, 30 d', dRevS:function(so){return 'vs previous 30 days ('+usd(so.prev30)+') · 7 days: '+usd(so.last7);}, dRevC:'by month since Dec 2025', dRevI:'Rewards from BCH, DOGE, LTC and RVN blocks, the team\'s own figure',
+  dBurn:'Burned, 30 d', dBurnS:function(r){return 'QUAI worth '+usd(r.last30.burnedUsd);}, dBurnC:'QUAI by month (current one partial)', dBurnI:'Transfers to the burn address plus QUAI sent to the gas burner',
+  dHf:'Hashference, 7 days', dHfS:function(b){return 'requests vs '+num(b)+' the week before';}, dHfC:'requests per day, 30 days', dHfI:'AI API requests paid with mining, QUAI or Qi',
+  ofRev:'of revenue',
+  wMined:'Mined', wUnl:'Genesis unlock', wConv:'Qi→QUAI & other', wBurn:'Burned by SOAP', wNet:'Net change',
+  covT:'Buyback coverage', covP:function(b,n){return 'of new supply in 30 days was burned by SOAP: '+num(b)+' of '+num(n)+' QUAI.';},
+  covN:function(need,usdNeed,now){return 'To stop supply from growing, SOAP would need to burn ~'+num(need)+' QUAI a day (≈'+usd(usdNeed)+'). Now: '+num(now)+'.';},
+  mixSub:function(a,b){return 'Share of SOAP revenue by chain: all time ('+usd(a)+') vs last 30 days ('+usd(b)+')';}, mixAll:'All time', mix30:'Last 30 days', chain:'Chain', pp:'pp', share:'Share',
+  lgPrice:'QUAI price', lgBurn:'SOAP burn', lgUnl:'Genesis unlock',
+  pNote:function(list){return list.length?'After the last unlocks the price moved: '+list.join(' · ')+'. A coincidence, not proof: the whole market moves the price too.':'';},
   live:'Live data', snap:'Snapshot', upd:'updated', partSnap:'some sections from snapshot: ',
   price:'Price', mcap:'Market cap', vol:'Volume 24h', infl:'Net inflation / yr', inflD:'mining minus SOAP burns, last 30 days',
   rev30:'SOAP revenue, 30 d', rev30D:'last 7 days: ', burnShare:'Burned, all time', burnShareD:'of SOAP revenue (burn-day prices)',
   ch24:'24h', ch7:'7d', atl:'all-time low ', ath:'ATH ',
-  circ:'Circulating supply', mined:'Mined, 30 d', burned:'Burned by SOAP, 30 d', net:'Net from mining', other:'Other changes, 30 d', otherD:'unlocks and Qi↔QUAI conversions', qi:'Qi supply',
+  circ:'Circulating supply', mined:'Mined, 30 d', burned:'Burned by SOAP, 30 d', net:'Net from mining', other:'Other changes, 30 d', otherD:'unlocks and Qi↔QUAI conversions', unl30:'Genesis unlocked, 30 d', unl30D:function(u){return u?'last unlock '+date(u.t):'';}, rest:'Qi→QUAI conversions & other, 30 d', restD:'the rest of the supply change', dil:'Supply growth, next 12 months', dilD:function(n,u){return 'if mining and burns keep the 30-day pace: mining net '+pctS(n)+' + unlocks '+pctS(u);}, locked:'Still locked', lockedD:function(p,t){return pct(p)+' of circulating supply, last unlock ~'+monthYear(t);}, nextU:'Next unlock', nextUD:function(u,s){return num(u.quai)+' QUAI · '+pct2(u.quai/s)+' of supply';}, n12:'Unlocks in 12 months', n12D:function(p){return pct2(p)+' of circulating supply';}, lastU:'Last unlock', lastUD:function(u){return num(u.quai)+' QUAI';}, uAmt:'QUAI', uBlock:'Block', uShare:'% of supply', uDate:'Date (est.)', qi:'Qi supply',
   sMined:'Mined', sBurned:'Burned',
   big:function(r){return 'SOAP has earned <b>'+usd(r.revenue)+'</b>. Burns worth <b>'+usd(r.burnedUsd)+' ('+pct(r.burnShare)+')</b> are visible on-chain, <b>'+usd(r.leakUsd)+'</b> went to other wallets, <b>'+usd(Math.max(0,r.untracedUsd))+'</b> cannot be traced.';},
   spBurn:'Burned', spLeak:'Sent to other wallets', spUntr:'Untraced (exchange costs, timing, unknown)',
@@ -245,11 +325,31 @@ var T = {
   ]
  },
  ru:{
+evBurn:'Последнее сжигание', evBurnV:function(b,d){return date(b.t)+' · '+num(b.quai)+' QUAI · '+ago(d);},
+  evUnl:'Следующий разлок', evUnlV:function(u,d){return date(u.t)+' · '+num(u.quai)+' QUAI · '+inDays(d);},
+  evLeak:'Переводы с SOAP не на сжигание', evLeakV:function(t){return t?'нет с '+date(t):'нет';},
+  vBuy:'Выкуп SOAP', vInf:'Рост предложения за год', vLiq:'Ликвидность', vDem:'Спрос: Hashference',
+  stGood:'Работает', stWarn:'Внимание', stBad:'Риск', stUp:'Растёт', stFlat:'Стоит', stDown:'Падает',
+  vBuyP:function(r){return 'За 30 дней сожжено QUAI на '+usd(r.last30.burnedUsd)+' из '+usd(r.last30.revenue)+' выручки. За всё время — '+pct(r.burnShare)+'.';},
+  vInfP:function(n,u){return 'Майнинг за вычетом сжигания даёт '+pctS(n)+', разлоки генезиса ещё '+pctS(u)+' за 12 месяцев.';},
+  vLiqP:function(m){return 'Столько стоит в стаканах в пределах +2%. Покупка на $5 000 сдвинет цену на '+pct1(m.impact[1].allEx)+'–'+pct1(m.impact[1].oneEx)+'.';},
+  vDemP:function(a,b){return Math.round(a).toLocaleString(loc())+' запросов за 7 дней против '+num(b)+' неделей раньше.';},
+  dPrice:'Цена QUAI', dPriceS:function(m){return 'за 30 дней · 24 ч '+sgn(m.ch24)+' · минимум $'+m.atl.toPrecision(3)+' ('+date(m.atlDate)+')';}, dPriceC:'30 дней', dPriceI:'Закрытие дня, CoinGecko',
+  dRev:'Выручка SOAP, 30 дн.', dRevS:function(so){return 'к прошлым 30 дням ('+usd(so.prev30)+') · за 7 дней: '+usd(so.last7);}, dRevC:'по месяцам с дек. 2025', dRevI:'Награды за блоки BCH, DOGE, LTC и RVN — цифра самой команды',
+  dBurn:'Сожжено, 30 дн.', dBurnS:function(r){return 'QUAI на '+usd(r.last30.burnedUsd);}, dBurnC:'QUAI по месяцам (текущий неполный)', dBurnI:'Переводы на адрес сжигания плюс QUAI, отправленные на сжигатель газа',
+  dHf:'Hashference, 7 дней', dHfS:function(b){return 'запросов против '+num(b)+' неделей раньше';}, dHfC:'запросы по дням, 30 дней', dHfI:'Запросы к ИИ-API с оплатой майнингом, QUAI или Qi',
+  ofRev:'от выручки',
+  wMined:'Намайнено', wUnl:'Разлок генезиса', wConv:'Qi→QUAI и прочее', wBurn:'Сожжено SOAP', wNet:'Итого',
+  covT:'Покрытие выкупом', covP:function(b,n){return 'нового предложения за 30 дней сожжено SOAP: '+num(b)+' из '+num(n)+' QUAI.';},
+  covN:function(need,usdNeed,now){return 'Чтобы предложение перестало расти, нужно сжигать ~'+num(need)+' QUAI в день (≈'+usd(usdNeed)+'). Сейчас — '+num(now)+'.';},
+  mixSub:function(a,b){return 'Доля сетей в выручке SOAP: за всё время ('+usd(a)+') и за последние 30 дней ('+usd(b)+')';}, mixAll:'За всё время', mix30:'Последние 30 дней', chain:'Сеть', pp:'п.п.', share:'Доля',
+  lgPrice:'Цена QUAI', lgBurn:'Сжигание SOAP', lgUnl:'Разлок генезиса',
+  pNote:function(list){return list.length?'После последних разлоков цена: '+list.join(' · ')+'. Совпадение, а не доказательство: на цену влияет и рынок в целом.':'';},
   live:'Живые данные', snap:'Снимок', upd:'обновлено', partSnap:'часть разделов из снимка: ',
   price:'Цена', mcap:'Капитализация', vol:'Объём за 24 ч', infl:'Чистая инфляция в год', inflD:'майнинг минус сжигания SOAP, последние 30 дней',
   rev30:'Выручка SOAP, 30 дн.', rev30D:'за 7 дней: ', burnShare:'Сожжено за всё время', burnShareD:'от выручки SOAP (по ценам дня сжигания)',
   ch24:'24 ч', ch7:'7 дн.', atl:'минимум ', ath:'максимум ',
-  circ:'Предложение в обращении', mined:'Намайнено, 30 дн.', burned:'Сожжено SOAP, 30 дн.', net:'Чистый прирост от майнинга', other:'Прочие изменения, 30 дн.', otherD:'разлоки и конвертации Qi↔QUAI', qi:'Предложение Qi',
+  circ:'Предложение в обращении', mined:'Намайнено, 30 дн.', burned:'Сожжено SOAP, 30 дн.', net:'Чистый прирост от майнинга', other:'Прочие изменения, 30 дн.', otherD:'разлоки и конвертации Qi↔QUAI', unl30:'Разлок генезиса, 30 дн.', unl30D:function(u){return u?'последний разлок '+date(u.t):'';}, rest:'Конвертации Qi→QUAI и прочее, 30 дн.', restD:'остаток изменения предложения', dil:'Рост предложения за 12 месяцев', dilD:function(n,u){return 'если майнинг и сжигания сохранят темп 30 дней: майнинг-нетто '+pctS(n)+' + разлоки '+pctS(u);}, locked:'Ещё заблокировано', lockedD:function(p,t){return pct(p)+' от предложения в обращении, последний разлок ~'+monthYear(t);}, nextU:'Следующий разлок', nextUD:function(u,s){return num(u.quai)+' QUAI · '+pct2(u.quai/s)+' предложения';}, n12:'Разлоки за 12 месяцев', n12D:function(p){return pct2(p)+' от предложения в обращении';}, lastU:'Последний разлок', lastUD:function(u){return num(u.quai)+' QUAI';}, uAmt:'QUAI', uBlock:'Блок', uShare:'% предложения', uDate:'Дата (оценка)', qi:'Предложение Qi',
   sMined:'Намайнено', sBurned:'Сожжено',
   big:function(r){return 'SOAP заработал <b>'+usd(r.revenue)+'</b>. В блокчейне видны сжигания на <b>'+usd(r.burnedUsd)+' ('+pct(r.burnShare)+')</b>, <b>'+usd(r.leakUsd)+'</b> ушло на другие кошельки, <b>'+usd(Math.max(0,r.untracedUsd))+'</b> отследить нельзя.';},
   spBurn:'Сожжено', spLeak:'Ушло на другие кошельки', spUntr:'Не отслеживается (расходы на обмен, задержки, неизвестно)',
@@ -294,8 +394,32 @@ function num(n){ if(n==null||isNaN(n)) return '—'; var a=Math.abs(n);
   if(a>=1e4) return Math.round(n/1e3)+'K';
   return Math.round(n).toLocaleString(loc()); }
 function pct(x){ return x==null?'—':Math.round(x*100)+'%'; }
+function pct2(x){ return x==null?'—':(x*100<1?(x*100).toFixed(2):(x*100).toFixed(1))+'%'; }
+function pctS(x){ return x==null?'—':(x>=0?'+':'')+(x*100).toFixed(1)+'%'; }
+function monthYear(ts){ return ts?new Date(ts*1000).toLocaleDateString(loc(),{month:'short',year:'numeric'}):'—'; }
+function sgn(p){ return p==null?'':(p>=0?'+':'−')+Math.abs(p).toFixed(1)+'%'; }
+function ago(d){ return L==='ru'?(d<=0?'сегодня':d===1?'вчера':d+' '+plural(d,'день','дня','дней')+' назад'):(d<=0?'today':d===1?'yesterday':d+' days ago'); }
+function inDays(d){ return L==='ru'?(d<=0?'сегодня':'через '+d+' '+plural(d,'день','дня','дней')):(d<=0?'today':'in '+d+' day'+(d===1?'':'s')); }
+function plural(n,a,b,c){ n=Math.abs(n)%100; var n1=n%10; if(n>10&&n<20) return c; if(n1>1&&n1<5) return b; if(n1===1) return a; return c; }
+function daysFrom(ts){ return Math.round((ts*1000-Date.now())/864e5); }
+var ICO={ok:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M7 12.5l3.2 3.2L17 9"/></svg>',
+ warn:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3L2 20h20L12 3z"/><path d="M12 10v4"/><path d="M12 17h.01"/></svg>',
+ bad:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6"/><path d="M9 9l6 6"/></svg>',
+ up:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>',
+ down:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l6 6 4-4 8 8"/><path d="M15 17h6v-6"/></svg>',
+ fire:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ea3c3f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-3 2-4 2-6 2 1 3 2 3-4z"/></svg>',
+ lock:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d6b42a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
+ check:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5bd16a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4 4L19 7"/></svg>',
+ info:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 11v6"/><path d="M12 7.5h.01"/></svg>'};
+var ST={good:['#5bd16a','ok'],warn:['#e0b22e','warn'],bad:['#ff6b6b','bad'],up:['#5bd16a','up'],flat:['#e0b22e','warn'],down:['#ff6b6b','down']};
+function sparkLine(vals,color){ var w=260,h=52,mx=Math.max.apply(null,vals),mn=Math.min.apply(null,vals),rg=(mx-mn)||1;
+  var pts=vals.map(function(v,i){return [(i*(w-6)/(vals.length-1)+3),(h-4-(v-mn)/rg*(h-10))];});
+  var l=pts[pts.length-1]; return '<svg viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none" aria-hidden="true"><polyline points="'+pts.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' ')+'" fill="none" stroke="'+color+'" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"/><circle cx="'+l[0].toFixed(1)+'" cy="'+l[1].toFixed(1)+'" r="3.5" fill="'+color+'"/></svg>'; }
+function sparkBars(vals,color,dimLast){ var w=260,h=52,n=vals.length,mx=Math.max.apply(null,vals)||1,g=n>20?2:3,bw=(w-(n-1)*g)/n;
+  return '<svg viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none" aria-hidden="true">'+vals.map(function(v,i){var bh=Math.max(2,v/mx*(h-2));return '<rect x="'+(i*(bw+g)).toFixed(1)+'" y="'+(h-bh).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+bh.toFixed(1)+'" rx="2" fill="'+color+'"'+(dimLast&&i===n-1?' opacity=".45"':'')+'/>';}).join('')+'</svg>'; }
+function dtile(l,v,dl,dc,sub,chart,cap,info){ return '<div class="dt"><div class="h"><span class="l">'+l+'</span><span class="i" data-tip="'+esc(info)+'" tabindex="0" aria-label="'+esc(info)+'">'+ICO.info+'</span></div><div class="row1"><span class="v">'+v+'</span>'+(dl?'<span class="dl" style="color:'+dc+'">'+dl+'</span>':'')+'</div><div class="s">'+sub+'</div><div class="sp">'+chart+'</div><div class="cap mono">'+cap+'</div></div>'; }
 function pct1(p){ return p==null?'—':(p<10?p.toFixed(1):Math.round(p))+'%'; }
-function chg(p){ if(p==null) return ''; var c=p>=0?'up':'dn'; return '<span class="'+c+'">'+(p>=0?'+':'')+p.toFixed(1)+'%</span>'; }
+function chg(p){ if(p==null) return ''; var c=p>=0?'up':'dn'; return '<span class="'+c+'">'+sgn(p)+'</span>'; }
 function date(ts){ var d=typeof ts==='number'?new Date(ts*1000):new Date(ts); return d.toLocaleDateString(loc(),{day:'numeric',month:'short',year:'numeric'}); }
 function ymLabel(m,full){ var d=new Date(m+'-01T00:00:00Z'); var s=d.toLocaleDateString(loc(),{month:'short',timeZone:'UTC'}).replace('.',''); return (full||m.slice(5)==='01'||m.slice(5)==='12')?s+' '+m.slice(2,4):s; }
 function dayLabel(s){ var d=new Date(s+'T00:00:00Z'); return d.toLocaleDateString(loc(),{day:'numeric',month:'short',timeZone:'UTC'}); }
@@ -321,10 +445,15 @@ function frame(host,W,H,max,fmt,pad){ host.innerHTML=''; var svg=el('svg',{viewB
     var tx=el('text',{x:pad.l-8,y:y+4,'text-anchor':'end'},svg); tx.textContent=fmt(max*i/4); }
   return svg; }
 function size(host){ var W=Math.max(300,Math.round(host.clientWidth||800)); return {W:W,H:W<560?220:260}; }
-function lineChart(host,pts,color,fmtY,fmtTip){
+function lineChart(host,pts,color,fmtY,fmtTip,evs){
   var z=size(host),W=z.W,H=z.H,pad={l:64,r:12,t:12,b:28}; var vals=pts.map(function(p){return p[1];});
   var max=niceMax(Math.max.apply(null,vals)*1.05); var svg=frame(host,W,H,max,fmtY,pad);
   var iw=W-pad.l-pad.r, ih=H-pad.t-pad.b; var X=function(i){return pad.l+iw*i/(pts.length-1);}, Y=function(v){return pad.t+ih*(1-v/max);};
+  if(evs){ var ix={}; pts.forEach(function(p,i){ix[p[0]]=i;});
+    (evs.unl||[]).forEach(function(u){ var i=ix[u.d]; if(i==null) return; var x=X(i); el('line',{x1:x,x2:x,y1:pad.t,y2:H-pad.b,stroke:'#d6b42a','stroke-width':1.5,'stroke-dasharray':'4 4'},svg);
+      var dm=el('rect',{x:x-5,y:pad.t-1,width:10,height:10,rx:2,fill:'#d6b42a',transform:'rotate(45 '+x+' '+(pad.t+4)+')'},svg); });
+    (evs.burn||[]).forEach(function(d){ var i=ix[d]; if(i==null) return; var x=X(i); el('path',{d:'M'+(x-4)+','+(H-pad.b-1)+'L'+(x+4)+','+(H-pad.b-1)+'L'+x+','+(H-pad.b-9)+'Z',fill:'#ea3c3f'},svg); });
+  }
   el('path',{d:pts.map(function(p,i){return (i?'L':'M')+X(i).toFixed(1)+','+Y(p[1]).toFixed(1);}).join(''),fill:'none',stroke:color,'stroke-width':2,'stroke-linejoin':'round'},svg);
   [0,Math.floor((pts.length-1)/2),pts.length-1].forEach(function(i){ var tx=el('text',{x:X(i),y:H-8,'text-anchor':i===0?'start':i===pts.length-1?'end':'middle'},svg); tx.textContent=dayLabel(pts[i][0]); });
   var cross=el('line',{y1:pad.t,y2:H-pad.b,stroke:'#a59e97','stroke-width':1,opacity:0},svg);
@@ -332,7 +461,8 @@ function lineChart(host,pts,color,fmtY,fmtTip){
   var hit=el('rect',{x:pad.l,y:pad.t,width:iw,height:ih,fill:'transparent'},svg);
   hit.addEventListener('mousemove',function(e){ var r=svg.getBoundingClientRect(); var x=(e.clientX-r.left)*W/r.width; var i=Math.max(0,Math.min(pts.length-1,Math.round((x-pad.l)/iw*(pts.length-1))));
     cross.setAttribute('x1',X(i)); cross.setAttribute('x2',X(i)); cross.setAttribute('opacity',1); dot.setAttribute('cx',X(i)); dot.setAttribute('cy',Y(pts[i][1])); dot.setAttribute('opacity',1);
-    showTip(e,'<b>'+dayLabel(pts[i][0])+'</b><br>'+fmtTip(pts[i][1])); });
+    var extra=''; if(evs){ if((evs.burn||[]).indexOf(pts[i][0])>=0) extra+='<br>'+sw('#ea3c3f')+t('lgBurn'); (evs.unl||[]).forEach(function(u){ if(u.d===pts[i][0]) extra+='<br>'+sw('#d6b42a')+t('lgUnl')+': '+num(u.q)+' QUAI'; }); }
+    showTip(e,'<b>'+dayLabel(pts[i][0])+'</b><br>'+fmtTip(pts[i][1])+extra); });
   hit.addEventListener('mouseleave',function(){ cross.setAttribute('opacity',0); dot.setAttribute('opacity',0); hideTip(); });
 }
 function barChart(host,labels,series,fmtY,fmtTip,labelEvery){
@@ -352,6 +482,16 @@ function barChart(host,labels,series,fmtY,fmtTip,labelEvery){
 }
 function legend(host,items){ host.innerHTML=items.map(function(it){ return '<span><i style="background:'+it[1]+'"></i>'+it[0]+'</span>'; }).join(''); }
 
+function renderWaterfall(s,m){ var d=s.d30; if(d.unlocked==null){ $('waterfall').innerHTML=''; $('coverage').innerHTML=''; return; }
+  var conv=d.otherRest, steps=[[t('wMined'),d.mined,'#2e97ca',1],[t('wUnl'),d.unlocked,'#d6b42a',1],[t('wConv'),conv,'#7a706a',1],[t('wBurn'),d.burned,'#ea3c3f',-1]];
+  var cur=0, top=0, lo=0, segs=[]; steps.forEach(function(st){ var a=cur, b=cur+st[3]*st[1]; segs.push([st[0],st[3]*st[1],Math.min(a,b),Math.max(a,b),st[2]]); cur=b; top=Math.max(top,a,b); lo=Math.min(lo,a,b); });
+  segs.push([t('wNet'),cur,Math.min(0,cur),Math.max(0,cur),'#f4f0ec']); top=top*1.12; var Hp=260, k=Hp/(top-lo);
+  $('waterfall').innerHTML=segs.map(function(sg){ var y=Hp-(sg[3]-lo)*k, hh=Math.max(2,(sg[3]-sg[2])*k);
+    return '<div class="col"><div class="plot"><div class="val" style="top:'+(y-24).toFixed(0)+'px">'+(sg[1]>=0?'+':'−')+num(Math.abs(sg[1]))+'</div><div class="bar" style="top:'+y.toFixed(0)+'px;height:'+hh.toFixed(0)+'px;background:'+sg[4]+'" data-tip="'+esc('<b>'+sg[0]+'</b><br>'+(sg[1]>=0?'+':'−')+num(Math.abs(sg[1]))+' QUAI')+'"></div></div><div class="nm">'+sg[0]+'</div></div>'; }).join('');
+  var newS=d.mined+d.unlocked+Math.max(0,conv), cov=newS?d.burned/newS:null, need=newS/d.days, now=d.burned/d.days;
+  $('coverage').innerHTML='<h3>'+t('covT')+'</h3><div class="big2">'+pct(cov)+'</div><div class="bar2"><div style="flex:'+cov.toFixed(3)+';background:#ea3c3f;border-radius:4px 0 0 4px"></div><div style="flex:'+(1-cov).toFixed(3)+';background:#4a4340;border-radius:0 4px 4px 0"></div></div><p>'+T[L].covP(d.burned,newS)+'</p><p class="note">'+T[L].covN(need,m?need*m.price:null,now)+'</p>';
+}
+
 // ---------- render ----------
 function render(){
   var m=D.market, r=D.recon, s=D.supply, so=D.soap, w=D.wallets, n=D.network, hf=D.hashference, x=D.x402;
@@ -360,30 +500,73 @@ function render(){
   $('dot').className='dot'+(LIVE?'':' snap');
   $('status').textContent=(LIVE?t('live'):t('snap'))+' · '+t('upd')+' '+when+(LIVE&&FROM_SNAP.length?' · '+t('partSnap')+FROM_SNAP.join(', '):'');
 
+  // summary: events + verdicts
+  var ev='';
+  if(r&&r.lastBurn) ev+='<div class="ev">'+ICO.fire+'<div><div class="l">'+t('evBurn')+'</div><div class="v">'+T[L].evBurnV(r.lastBurn,-daysFrom(r.lastBurn.t))+'</div></div></div>';
+  if(s&&s.unlocks&&s.unlocks.next) ev+='<div class="ev">'+ICO.lock+'<div><div class="l">'+t('evUnl')+'</div><div class="v">'+T[L].evUnlV(s.unlocks.next,daysFrom(s.unlocks.next.t))+'</div></div></div>';
+  if(r) ev+='<div class="ev">'+ICO.check+'<div><div class="l">'+t('evLeak')+'</div><div class="v">'+T[L].evLeakV(r.lastLeak)+'</div></div></div>';
+  $('events').innerHTML=ev;
+  var vd=[];
+  function vcard(k,name,val,para){ var c=ST[k]; var lab={good:'stGood',warn:'stWarn',bad:'stBad',up:'stUp',flat:'stFlat',down:'stDown'}[k];
+    return '<div class="vc" style="border-top-color:'+c[0]+'"><div class="st" style="color:'+c[0]+'">'+ICO[c[1]]+'<span>'+t(lab)+'</span></div><div class="n">'+name+'</div><div class="v">'+val+'</div><p>'+para+'</p></div>'; }
+  if(r){ var sh=r.last30.revenue?r.last30.burnedUsd/r.last30.revenue:null; vd.push(vcard(sh>=.8?'good':sh>=.5?'warn':'bad',t('vBuy'),pct(sh),T[L].vBuyP(r))); }
+  if(s&&s.unlocks&&s.unlocks.dilution12!=null){ var di=s.unlocks.dilution12, ni=s.d30.net/s.d30.days*365/s.supply; vd.push(vcard(di<.03?'good':di<.1?'warn':'bad',t('vInf'),pctS(di),T[L].vInfP(ni,s.unlocks.next12Pct))); }
+  if(m) vd.push(vcard(m.depthUp<1e4?'bad':m.depthUp<5e4?'warn':'good',t('vLiq'),usd(m.depthUp),T[L].vLiqP(m)));
+  if(hf){ var dd=hf.daily, a7=dd.slice(-7).reduce(function(x,y){return x+y[1];},0), b7=dd.slice(-14,-7).reduce(function(x,y){return x+y[1];},0), rt=b7?a7/b7:null;
+    vd.push(vcard(rt==null||rt>1.1?'up':rt>=.9?'flat':'down',t('vDem'),rt?'×'+rt.toFixed(1).replace('.',L==='ru'?',':'.'):num(a7),T[L].vDemP(a7,b7))); }
+  $('verdicts').innerHTML=vd.join('');
+
+  // dynamic tiles
+  var dt='';
+  if(m&&D.priceChart){ dt+=dtile(t('dPrice'),'$'+m.price.toPrecision(3),sgn(m.ch30),m.ch30>=0?'#5bd16a':'#ff6b6b',T[L].dPriceS(m),sparkLine(D.priceChart.slice(-30).map(function(x){return x[1];}),'#fbd530'),t('dPriceC'),t('dPriceI')); }
+  if(so){ var rc=so.prev30?so.last30/so.prev30-1:null; dt+=dtile(t('dRev'),usd(so.last30),rc==null?'':sgn(rc*100),rc>=0?'#5bd16a':'#ff6b6b',T[L].dRevS(so),sparkBars(so.months.map(function(x){return x[1];}),'#2e97ca',true),t('dRevC'),t('dRevI')); }
+  if(r&&s){ var bs=r.last30.revenue?r.last30.burnedUsd/r.last30.revenue:null; dt+=dtile(t('dBurn'),num(s.d30.burned),bs==null?'':pct(bs)+' '+t('ofRev'),bs>=.8?'#5bd16a':'#e0b22e',T[L].dBurnS(r),sparkBars(r.months.map(function(x){return x.burnQuai+x.gasQuai;}),'#ea3c3f',true),t('dBurnC'),t('dBurnI')); }
+  if(hf){ var d2=hf.daily, x7=d2.slice(-7).reduce(function(x,y){return x+y[1];},0), y7=d2.slice(-14,-7).reduce(function(x,y){return x+y[1];},0), q=y7?x7/y7:null;
+    dt+=dtile(t('dHf'),Math.round(x7).toLocaleString(loc()),q?'×'+q.toFixed(1):'',q>=1?'#5bd16a':'#ff6b6b',T[L].dHfS(y7),sparkBars(d2.map(function(x){return x[1];}),'#2e97ca',true),t('dHfC'),t('dHfI')); }
+  $('dynTiles').innerHTML=dt;
+
   // pulse
   if(m){ var h='';
-    h+=tile(t('price'),'$'+m.price.toPrecision(3),t('ch24')+' '+chg(m.ch24)+' · '+t('ch7')+' '+chg(m.ch7)+'<br>'+t('atl')+'$'+m.atl.toPrecision(3)+' ('+date(m.atlDate)+')');
     h+=tile(t('mcap'),usd(m.mcap),t('ath')+'$'+m.ath+' ('+date(m.athDate)+')');
     h+=tile(t('vol'),usd(m.vol24),'');
     if(s) h+=tile(t('infl'),(s.d30.netInflationYr>=0?'+':'')+(s.d30.netInflationYr*100).toFixed(1)+'%',t('inflD'));
-    if(so) h+=tile(t('rev30'),usd(so.last30),t('rev30D')+usd(so.last7));
     if(r) h+=tile(t('burnShare'),pct(r.burnShare),t('burnShareD'));
     $('pulseTiles').innerHTML=h; }
-  if(D.priceChart) lineChart($('priceChart'),D.priceChart,'#fbd530',function(v){return '$'+v.toFixed(3);},function(v){return '$'+v.toPrecision(3);});
+  if(D.priceChart){
+    var evs={burn:(r&&r.burnDays)||[],unl:(s&&s.unlocks&&s.unlocks.recent?s.unlocks.recent.map(function(u){return {d:new Date(u.t*1000).toISOString().slice(0,10),q:u.quai};}):[])};
+    lineChart($('priceChart'),D.priceChart,'#fbd530',function(v){return '$'+v.toFixed(3);},function(v){return '$'+v.toPrecision(3);},evs);
+    legend($('priceLegend'),[[t('lgPrice'),'#fbd530'],[t('lgBurn'),'#ea3c3f'],[t('lgUnl'),'#d6b42a']]);
+    var pc=D.priceChart, ix={}; pc.forEach(function(x,i){ix[x[0]]=i;});
+    var notes=evs.unl.filter(function(u){return ix[u.d]!=null&&ix[u.d]<pc.length-3;}).slice(-3).map(function(u){ var i=ix[u.d], j=Math.min(pc.length-1,i+7), lo=i; for(var k=i;k<=j;k++) if(pc[k][1]<pc[lo][1]) lo=k;
+      return dayLabel(u.d)+' → '+sgn((pc[lo][1]/pc[i][1]-1)*100)+' ('+(lo-i)+(L==='ru'?' дн.':' d')+')'; });
+    $('priceNote').textContent=T[L].pNote(notes);
+  }
 
   // supply
   if(s){ var d=s.d30, h2='';
     h2+=tile(t('circ'),num(s.supply)+' QUAI','');
-    h2+=tile(t('mined'),num(d.mined),'');
-    h2+=tile(t('burned'),num(d.burned),'');
-    h2+=tile(t('net'),(d.net>=0?'+':'')+num(d.net),'');
-    h2+=tile(t('other'),(d.other>=0?'+':'')+num(d.other),t('otherD'));
+    renderWaterfall(s,m);
+    if(d.unlocked==null) h2+=tile(t('other'),(d.other>=0?'+':'')+num(d.other),t('otherD'));
+    if(s.unlocks&&s.unlocks.dilution12!=null) h2+=tile(t('dil'),pctS(s.unlocks.dilution12),T[L].dilD(d.net/d.days*365/s.supply,s.unlocks.next12Pct));
     h2+=tile(t('qi'),num(s.qi)+' Qi','');
     $('supplyTiles').innerHTML=h2;
     var days=s.days.filter(function(x,i){ return !(x[4]&&i===s.days.length-1); }).slice(-30);
     legend($('supplyLegend'),[[t('sMined'),'var(--s1)'],[t('sBurned'),'var(--s2)']]);
     barChart($('supplyChart'),days.map(function(x){return dayLabel(x[0]);}),[{color:'#2e97ca',vals:days.map(function(x){return x[3]||0;})},{color:'#ea3c3f',vals:days.map(function(x){return x[2];})}],
       function(v){return num(v);},function(i){var x=days[i];return '<b>'+dayLabel(x[0])+'</b><br>'+sw('#2e97ca')+t('sMined')+': '+num(x[3])+'<br>'+sw('#ea3c3f')+t('sBurned')+': '+num(x[2]);},5); }
+
+  if(s&&s.unlocks){ var U=s.unlocks, hu='';
+    hu+=tile(t('locked'),num(U.locked)+' QUAI',T[L].lockedD(U.locked/s.supply,U.final));
+    if(U.next) hu+=tile(t('nextU'),date(U.next.t),T[L].nextUD(U.next,s.supply));
+    hu+=tile(t('n12'),num(U.next12)+' QUAI',T[L].n12D(U.next12Pct));
+    if(U.last) hu+=tile(t('lastU'),date(U.last.t),T[L].lastUD(U.last));
+    $('unlockTiles').innerHTML=hu;
+    var up=U.upcoming;
+    barChart($('unlockChart'),up.map(function(u){return monthYear(u.t);}),[{color:'#d6b42a',vals:up.map(function(u){return u.quai;})}],
+      function(v){return num(v);},function(i){var u=up[i];return '<b>'+date(u.t)+'</b><br>'+num(u.quai)+' QUAI · '+pct2(u.quai/s.supply)+'<br><span class="mono">#'+u.block.toLocaleString(loc())+'</span>';},6);
+    $('unlockTable').innerHTML='<table><thead><tr><th>'+t('uDate')+'</th><th>'+t('uBlock')+'</th><th>'+t('uAmt')+'</th><th>'+t('uShare')+'</th></tr></thead><tbody>'+
+      up.map(function(u){return '<tr><td>'+date(u.t)+'</td><td class="mono">'+u.block.toLocaleString(loc())+'</td><td>'+num(u.quai)+'</td><td>'+pct2(u.quai/s.supply)+'</td></tr>';}).join('')+'</tbody></table>';
+  }
 
   // soap
   if(r){
@@ -408,6 +591,16 @@ function render(){
     $('burnTable').innerHTML='<table><thead><tr><th>'+t('when')+'</th><th>'+t('amount')+'</th><th>'+t('from')+'</th></tr></thead><tbody>'+
       r.recentBurns.map(function(b){return '<tr><td>'+date(b.t)+'</td><td>'+num(b.quai)+'</td><td>'+(b.from===D.addresses.soap?'<a href="https://quaiscan.io/address/'+b.from+'" target="_blank" rel="noopener">'+t('soapW')+'</a>':scan(b.from))+'</td></tr>';}).join('')+'</tbody></table>';
     $('gasNote').textContent=T[L].gas(r,w);
+  }
+  if(so&&so.last30ByChain){ var CH=[['bcash','Bitcoin Cash','#2e97ca','#f4f0ec'],['dogecoin','Dogecoin','#bb8b00','#141110'],['ravencoin','Ravencoin','#a355b4','#f4f0ec'],['litecoin','Litecoin','#349d62','#f4f0ec']];
+    var ta=so.total, t30=CH.reduce(function(a,c){return a+(so.last30ByChain[c[0]]||0);},0);
+    var bar=function(get,tt){ return '<div class="mix">'+CH.map(function(c){var v=get(c)/tt;return '<div style="flex:'+v.toFixed(4)+';background:'+c[2]+';color:'+c[3]+'" data-tip="'+esc('<b>'+c[1]+'</b><br>'+usd(get(c))+' · '+pct(v))+'">'+(v>.06?pct(v):'')+'</div>';}).join('')+'</div>'; };
+    $('mixSub').textContent=T[L].mixSub(ta,t30);
+    $('mix').innerHTML='<div class="cap mono" style="font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.08em;margin-top:12px">'+t('mixAll')+'</div>'+bar(function(c){return so.chains[c[0]]?so.chains[c[0]].usd:0;},ta)+
+      '<div class="cap mono" style="font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.08em">'+t('mix30')+'</div>'+bar(function(c){return so.last30ByChain[c[0]]||0;},t30)+
+      '<div class="legend">'+CH.map(function(c){return '<span><i style="background:'+c[2]+'"></i>'+c[1]+'</span>';}).join('')+'</div>';
+    $('mixTable').innerHTML='<table><thead><tr><th>'+t('chain')+'</th><th>'+t('mixAll')+'</th><th>'+t('mix30')+'</th><th>'+t('share')+'</th></tr></thead><tbody>'+CH.map(function(c){ var a=(so.chains[c[0]]?so.chains[c[0]].usd:0), b=so.last30ByChain[c[0]]||0, dp=Math.round((b/t30-a/ta)*100);
+      return '<tr><td><i style="display:inline-block;width:12px;height:12px;border-radius:2px;background:'+c[2]+';margin-right:8px;vertical-align:-1px"></i>'+c[1]+'</td><td>'+usd(a)+'</td><td>'+usd(b)+'</td><td class="'+(dp>0?'up':dp<0?'dn':'')+'">'+(dp>0?'+':'')+dp+' '+t('pp')+'</td></tr>'; }).join('')+'</tbody></table>';
   }
 
   // market
