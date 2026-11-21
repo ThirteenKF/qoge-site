@@ -1,1 +1,1 @@
-Add QUAI Live dashboard; restyle header buttons; fluid research layouts; dark Quai background
+Add independent QUAI dashboard (strict black/red), explorer fallback, header and layout updates

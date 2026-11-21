@@ -15,6 +15,7 @@ const A = {
   staking: '0x0009ac4b8c3357b7f3e7e2baeb07736f3f51896a',  // HashferenceStaking contract
 };
 const SCAN = 'https://quaiscan.io/api/v2';
+const EXP = 'https://explorer.qu.ai/api'; // official explorer, used when Quaiscan refuses the server (HTTP 403)
 const CG = 'https://api.coingecko.com/api/v3';
 
 // Genesis unlock schedule after the Singularity and Polaris forks, taken from the team's supply tracker
@@ -71,6 +72,27 @@ const SOURCES = {
   },
   // Gas-burner wallet and staking contract balances + last activity.
   async wallets(get) {
+    try { return await walletsQuaiscan(get); } catch (e) {
+      const info = async a => (await get(`${EXP}/address/${a}?includeTransactions=false`)).info || {};
+      const [g, st] = await Promise.all([info(A.gas), info(A.staking)]);
+      return {
+        gasBurner: { balance: wei(toWeiString(g.balance_quai)), lastTx: g.last_seen ? unix(g.last_seen) : null },
+        staking: { balance: wei(toWeiString(st.balance_quai)), txs: Number(st.tx_count) || 0 },
+      };
+    }
+  },
+  // Chain-wide counters: Quaiscan, else the official explorer (no "today" count there).
+  async network(get) {
+    try {
+      const s = await get(`${SCAN}/stats`);
+      return { totalTx: Number(s.total_transactions), txToday: Number(s.transactions_today), gasToday: Number(s.gas_used_today), addresses: Number(s.total_addresses) };
+    } catch (e) {
+      const s = await get(`${EXP}/stats/overview`);
+      return { totalTx: Number(s.totalTransactions), txToday: null, gasToday: null, addresses: Number(s.totalQuaiAddresses ?? s.totalAddresses), qiAddresses: Number(s.totalQiAddresses) || null };
+    }
+  },
+};
+async function walletsQuaiscan(get) {
     const [g, gt, s, sc] = await Promise.all([
       get(`${SCAN}/addresses/${A.gas}`), get(`${SCAN}/addresses/${A.gas}/transactions`),
       get(`${SCAN}/addresses/${A.staking}`), get(`${SCAN}/addresses/${A.staking}/counters`),
@@ -79,12 +101,8 @@ const SOURCES = {
       gasBurner: { balance: wei(g.coin_balance), lastTx: gt.items?.[0] ? unix(gt.items[0].timestamp) : null },
       staking: { balance: wei(s.coin_balance), txs: Number(sc.transactions_count) || 0 },
     };
-  },
-  // Chain-wide counters from the explorer.
-  async network(get) {
-    const s = await get(`${SCAN}/stats`);
-    return { totalTx: Number(s.total_transactions), txToday: Number(s.transactions_today), gasToday: Number(s.gas_used_today), addresses: Number(s.total_addresses) };
-  },
+}
+const SOURCES2 = {
   // SOAP revenue (team's own dashboard API): totals by chain + monthly + last 7/30 days.
   async soap(get) {
     const base = 'https://soap.qu.ai/api';
@@ -147,6 +165,7 @@ const SOURCES = {
     return { payments: s.summary?.payments, services: s.summary?.services, hashference: s.summary?.hashference };
   },
 };
+Object.assign(SOURCES, SOURCES2);
 
 // ---------- helpers ----------
 function lc(s) { return (s || '').toLowerCase(); }
@@ -159,7 +178,26 @@ function wei(x) {
   const p = s.padStart(19, '0');
   return Number(p.slice(0, -18) + '.' + p.slice(-18));
 }
+// Transactions of an address in Quaiscan's shape. Falls back to the official explorer.
 async function scanAll(get, addr, maxPages) {
+  try { return await quaiscanAll(get, addr, maxPages); }
+  catch (e) { return await explorerAll(get, addr, maxPages * 2); }
+}
+async function explorerAll(get, addr, maxPages) {
+  let all = [], cursor = null;
+  for (let i = 0; i < maxPages; i++) {
+    const j = await get(`${EXP}/address/${addr}/transactions?limit=100${cursor ? '&cursor=' + encodeURIComponent(cursor) : ''}`);
+    for (const t of j.items || []) all.push({
+      timestamp: t.timestamp, status: t.status === 1 || t.status === '1' ? 'ok' : 'error',
+      value: toWeiString(t.value), from: { hash: t.from_addr }, to: { hash: t.to_addr },
+    });
+    if (!j.hasMore || !j.nextCursor) break;
+    cursor = j.nextCursor;
+  }
+  return all;
+}
+function toWeiString(v) { if (v == null) return '0'; const s = String(v); if (/^\d+$/.test(s)) return s; const n = Number(s); return isFinite(n) ? BigInt(Math.round(n)).toString() : '0'; }
+async function quaiscanAll(get, addr, maxPages) {
   let all = [], q = '';
   for (let i = 0; i < maxPages; i++) {
     const j = await get(`${SCAN}/addresses/${addr}/transactions${q}`);
