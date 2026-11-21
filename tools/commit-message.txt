@@ -1,4 +1,1 @@
-Draw tracker rocket above section marks
-
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
-Claude-Session: https://claude.ai/code/session_01K147gCJvatrcQ7zCd5Mvvq
+Add QUAI Live dashboard (research/quai-live) with /api/quai

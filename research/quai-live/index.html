@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>(function(){var p=location.pathname;if(p.slice(-1)!=="/"&&!/\.[a-z0-9]+$/i.test(p))location.replace(p+"/"+location.search+location.hash)})();</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QUAI Live · independent dashboard · QNN Research</title>
+<meta name="description" content="Independent live dashboard for Quai Network: price and liquidity, supply and inflation, a SOAP buyback audit (revenue vs. what was actually burned), Hashference and x402. Not financial advice.">
+<meta name="theme-color" content="#141110">
+<link rel="icon" href="../../assets/logo.jpg" type="image/jpeg">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="$QOGE · QNN Research">
+<meta property="og:title" content="QUAI Live · independent dashboard">
+<meta property="og:description" content="Price, supply, a SOAP buyback audit and the Quai ecosystem in one place. Every number links to its source.">
+<meta property="og:url" content="https://www.qoge.fun/research/quai-live/">
+<meta property="og:image" content="https://www.qoge.fun/research/quai/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@QOGEofficial">
+<meta name="twitter:title" content="QUAI Live · independent dashboard">
+<meta name="twitter:image" content="https://www.qoge.fun/research/quai/og.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#141110;--paper:#f4f0ec;--red:oklch(0.62 0.21 25);--yel:oklch(0.88 0.17 95);--mute:#a59e97;--line:#2a2523;--card:#1d1a19;
+  --s1:#2e97ca;--s2:#ea3c3f;--s0:#6b625d;--txt2:#cfc8c1;--grid:#2f2a28}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--paper);font-family:'Archivo',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body{background:var(--ink) url(../research-bg.webp) center top/cover fixed no-repeat}
+@media (max-width:767px){body{background-attachment:scroll;background-size:auto 100vh}}
+a{color:inherit}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
+header.q{position:sticky;top:0;z-index:20;display:flex;align-items:stretch;background:var(--paper);color:var(--ink);border-bottom:4px solid var(--ink);font-weight:900}
+header.q a{text-decoration:none}
+header.q .logo{display:flex;align-items:center;gap:10px;background:var(--red);color:var(--paper);padding:10px 18px;font-stretch:125%;font-size:20px;white-space:nowrap}
+header.q .logo img{width:32px;height:32px;border-radius:50%;border:2px solid var(--paper);object-fit:cover}
+header.q .crumb{flex:1;min-width:0;display:flex;align-items:center;gap:10px;padding:0 16px;font-size:14px;text-transform:uppercase;white-space:nowrap;overflow:hidden}
+header.q .crumb a:hover{color:var(--red)}
+header.q .crumb .sep{color:#8a827b}
+.lang{display:flex;align-items:stretch;border-left:4px solid var(--ink)}
+.lang button{font:inherit;font-weight:900;font-size:14px;border:0;background:transparent;color:var(--ink);padding:0 14px;cursor:pointer}
+.lang button[aria-pressed=true]{background:var(--ink);color:var(--yel)}
+header.q .buy{display:flex;align-items:center;background:var(--yel);color:var(--ink);padding:0 18px;border-left:4px solid var(--ink);font-size:14px;text-transform:uppercase;white-space:nowrap}
+header.q .buy:hover{background:var(--ink);color:var(--yel)}
+@media (max-width:640px){header.q .logo span.t{display:none} header.q .crumb{font-size:12px;padding:0 10px} .lang button{padding:0 10px} header.q .buy{display:none}}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+.tag{display:inline-block;background:var(--red);color:var(--paper);padding:6px 14px;font-weight:900;font-size:14px;text-transform:uppercase;transform:skewX(-8deg)}
+h1{margin:18px 0 0;font-weight:900;font-stretch:115%;font-size:clamp(36px,6vw,72px);line-height:.95;letter-spacing:-.01em;text-transform:uppercase;text-wrap:balance}
+h1 span{color:var(--yel)}
+.lead{max-width:760px;margin:18px 0 0;font-size:clamp(16px,2vw,19px);line-height:1.5;color:var(--txt2);text-wrap:pretty}
+.status{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:16px;font-size:12px;letter-spacing:.08em;color:var(--mute);text-transform:uppercase}
+.dot{width:9px;height:9px;border-radius:50%;background:#5bd16a;box-shadow:0 0 0 3px rgba(91,209,106,.2)}
+.dot.snap{background:#d6b42a;box-shadow:0 0 0 3px rgba(214,180,42,.2)}
+nav.tabs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:8px;margin-top:28px;padding:10px 0;background:linear-gradient(var(--ink) 70%,transparent)}
+nav.tabs a{font-weight:800;font-size:14px;padding:8px 14px;border:2px solid #4a4340;background:rgba(20,17,16,.9);text-decoration:none}
+nav.tabs a:hover{border-color:var(--paper)}
+section.s{margin-top:44px;scroll-margin-top:120px}
+section.s>h2{margin:0;font-weight:900;font-stretch:110%;font-size:clamp(26px,3.6vw,40px);text-transform:uppercase;line-height:1}
+section.s>p.k{margin:10px 0 0;color:var(--txt2);font-size:16px;line-height:1.5;max-width:820px}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:18px}
+.tiles.c4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:860px){.tiles,.tiles.c4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:420px){.tile .v{font-size:22px}.tile{padding:12px}}
+.tile{background:var(--card);border:2px solid #3a3431;padding:14px 16px}
+.tile .l{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.tile .v{margin-top:6px;font-weight:900;font-size:28px;font-stretch:105%;line-height:1.05;font-variant-numeric:tabular-nums}
+.tile .d{margin-top:6px;font-size:13px;color:var(--txt2);line-height:1.4}
+.up{color:#5bd16a}.dn{color:#ff6b6b}
+.panel{margin-top:16px;background:var(--card);border:2px solid #3a3431;padding:16px 16px 12px}
+.panel h3{margin:0;font-size:16px;font-weight:900;text-transform:uppercase}
+.panel .sub{margin-top:4px;font-size:13px;color:var(--mute)}
+.legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:10px;font-size:13px;color:var(--txt2)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.chart{position:relative;margin-top:8px}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart text{fill:var(--mute);font-family:'IBM Plex Mono',monospace;font-size:11px}
+.tip{position:fixed;z-index:50;pointer-events:none;background:var(--paper);color:var(--ink);padding:8px 10px;font-size:13px;line-height:1.45;box-shadow:4px 4px 0 var(--ink);opacity:0;transition:opacity .08s;max-width:260px}
+.tip b{font-weight:900}
+.tip .sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px}
+.big{margin-top:18px;padding:20px 22px;border:4px solid var(--yel);background:rgba(20,17,16,.9);font-size:clamp(18px,2.4vw,24px);line-height:1.4;font-weight:700}
+.big b{color:var(--yel)}
+.split{display:flex;height:34px;margin-top:14px;gap:2px}
+.split div{height:100%;min-width:3px}
+.split div:first-child{border-radius:4px 0 0 4px}.split div:last-child{border-radius:0 4px 4px 0}
+.tbl{overflow-x:auto;margin-top:10px}
+table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--grid);white-space:nowrap}
+th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);font-weight:700}
+th:first-child,td:first-child{text-align:left}
+td a{color:var(--yel)}
+.note{margin-top:10px;font-size:13px;color:var(--mute);line-height:1.5}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.panel,.cols>*{min-width:0}
+@media (max-width:860px){.cols{grid-template-columns:1fr}}
+details.t{margin-top:8px}details.t summary{cursor:pointer;font-size:13px;color:var(--mute)}
+.src{margin-top:44px;padding:18px 20px;border:2px solid #3a3431;background:rgba(20,17,16,.9);font-size:14px;line-height:1.6;color:var(--txt2)}
+.src a{color:var(--yel)}
+.src ul{margin:8px 0 0;padding-left:18px}
+footer.q{margin-top:64px;border-top:1px solid var(--line);padding:28px 16px 40px;font-size:11px;letter-spacing:.1em;color:#8a827b;text-transform:uppercase;line-height:1.7}
+footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+</style>
+</head>
+<body>
+<header class="q">
+  <a class="logo" href="../../"><img src="../../assets/logo.jpg" alt="$QOGE logo"><span class="t">QNN</span></a>
+  <nav class="crumb mono"><a href="../../">$QOGE</a><span class="sep">/</span><a href="../" data-en="Research" data-ru="Ресёрч">Research</a><span class="sep">/</span><span>QUAI Live</span></nav>
+  <div class="lang" role="group" aria-label="Language"><button type="button" data-l="en">EN</button><button type="button" data-l="ru">RU</button></div>
+  <a class="buy" href="../../#buy" data-en="Buy $QOGE" data-ru="Купить $QOGE">Buy $QOGE</a>
+</header>
+
+<main class="wrap">
+<section style="padding-top:40px">
+  <span class="tag" data-en="Live dashboard" data-ru="Живой дашборд">Live dashboard</span>
+  <h1><span style="color:inherit">QUAI</span> <span data-en="by the numbers" data-ru="в цифрах">by the numbers</span></h1>
+  <p class="lead" data-en="An independent view of Quai Network: price and liquidity, supply and inflation, and an audit of the SOAP buyback: how much it earned and how much was actually burned. Data from public APIs and the blockchain, refreshed hourly." data-ru="Независимый взгляд на Quai Network: цена и ликвидность, предложение и инфляция, а также проверка выкупа SOAP — сколько заработано и сколько реально сожжено. Данные из открытых API и блокчейна, обновление раз в час.">An independent view of Quai Network.</p>
+  <div class="status mono"><span class="dot" id="dot"></span><span id="status">…</span></div>
+  <nav class="tabs mono" aria-label="Sections">
+    <a href="#pulse" data-en="Pulse" data-ru="Пульс">Pulse</a>
+    <a href="#supply" data-en="Supply" data-ru="Предложение">Supply</a>
+    <a href="#soap" data-en="SOAP audit" data-ru="Проверка SOAP">SOAP audit</a>
+    <a href="#market" data-en="Liquidity" data-ru="Ликвидность">Liquidity</a>
+    <a href="#eco" data-en="Ecosystem" data-ru="Экосистема">Ecosystem</a>
+    <a href="#method" data-en="Method" data-ru="Методика">Method</a>
+  </nav>
+</section>
+
+<section class="s" id="pulse">
+  <h2 data-en="Pulse" data-ru="Пульс">Pulse</h2>
+  <div class="tiles" id="pulseTiles"></div>
+  <div class="panel">
+    <h3 data-en="QUAI price, last 120 days" data-ru="Цена QUAI за 120 дней">QUAI price</h3>
+    <div class="sub mono" data-en="USD, daily close · CoinGecko" data-ru="USD, закрытие дня · CoinGecko">USD</div>
+    <div class="chart" id="priceChart"></div>
+  </div>
+</section>
+
+<section class="s" id="supply">
+  <h2 data-en="Supply" data-ru="Предложение">Supply</h2>
+  <p class="k" data-en="New QUAI comes from mining, genesis unlocks and Qi→QUAI conversions. SOAP burns take QUAI out. The yearly rate below counts mining minus burns only, because unlocks and conversions arrive in lumps." data-ru="Новые QUAI появляются из майнинга, разлоков генезиса и конвертаций Qi→QUAI. Сжигания SOAP их убирают. Годовой темп ниже считает только майнинг минус сжигания: разлоки и конвертации приходят рывками.">New QUAI comes from mining.</p>
+  <div class="tiles" id="supplyTiles"></div>
+  <div class="panel">
+    <h3 data-en="Mined vs burned per day, last 30 days" data-ru="Намайнено и сожжено по дням, 30 дней">Mined vs burned</h3>
+    <div class="sub mono" data-en="QUAI · supply.qu.ai" data-ru="QUAI · supply.qu.ai">QUAI</div>
+    <div class="legend" id="supplyLegend"></div>
+    <div class="chart" id="supplyChart"></div>
+  </div>
+</section>
+
+<section class="s" id="soap">
+  <h2 data-en="SOAP audit" data-ru="Проверка SOAP">SOAP audit</h2>
+  <p class="k" data-en="SOAP sells coins merge-mined on BCH, LTC, DOGE and RVN, buys QUAI and burns it. Revenue is the team's own figure; burns are read from the blockchain and valued at the price on the burn day." data-ru="SOAP продаёт монеты, намайненные вместе с BCH, LTC, DOGE и RVN, покупает QUAI и сжигает его. Выручка — цифра самой команды; сжигания взяты из блокчейна и оценены по цене в день сжигания.">SOAP audit.</p>
+  <div class="big" id="soapBig"></div>
+  <div class="panel">
+    <h3 data-en="Where SOAP revenue went" data-ru="Куда ушла выручка SOAP">Where SOAP revenue went</h3>
+    <div class="split" id="soapSplit"></div>
+    <div class="legend" id="splitLegend"></div>
+  </div>
+  <div class="tiles c4" id="soapTiles"></div>
+  <div class="panel">
+    <h3 data-en="Revenue vs burned, by month" data-ru="Выручка и сожжено по месяцам">Revenue vs burned</h3>
+    <div class="sub mono" data-en="USD · current month is partial" data-ru="USD · текущий месяц неполный">USD</div>
+    <div class="legend" id="soapLegend"></div>
+    <div class="chart" id="soapChart"></div>
+    <details class="t"><summary data-en="Show as table" data-ru="Показать таблицей">Show as table</summary><div class="tbl" id="soapTable"></div></details>
+  </div>
+  <div class="cols">
+    <div class="panel">
+      <h3 data-en="Sent from the SOAP wallet, not burned" data-ru="Ушло с кошелька SOAP не на сжигание">Sent elsewhere</h3>
+      <div class="sub" data-en="Net of what the recipient burned or sent back" data-ru="За вычетом того, что получатель сам сжёг или вернул">Net</div>
+      <div class="tbl" id="leakTable"></div>
+    </div>
+    <div class="panel">
+      <h3 data-en="Latest burns" data-ru="Последние сжигания">Latest burns</h3>
+      <div class="sub mono" data-en="Burn address 0x0050AF…0000" data-ru="Адрес сжигания 0x0050AF…0000">Burn address</div>
+      <div class="tbl" id="burnTable"></div>
+    </div>
+  </div>
+  <p class="note" id="gasNote"></p>
+</section>
+
+<section class="s" id="market">
+  <h2 data-en="Liquidity" data-ru="Ликвидность">Liquidity</h2>
+  <p class="k" data-en="How much money sits in the order books within 2% of the price, and how far a market order would move it. A linear estimate from CoinGecko depth data; real books are uneven." data-ru="Сколько денег стоит в стаканах в пределах 2% от цены и насколько рыночный ордер сдвинет цену. Линейная оценка по данным глубины CoinGecko; реальные стаканы неравномерны.">Liquidity.</p>
+  <div class="tiles" id="impactTiles"></div>
+  <div class="panel"><h3 data-en="Exchanges" data-ru="Биржи">Exchanges</h3><div class="tbl" id="exTable"></div></div>
+</section>
+
+<section class="s" id="eco">
+  <h2 data-en="Ecosystem" data-ru="Экосистема">Ecosystem</h2>
+  <p class="k" data-en="Hashference is an AI API you can pay for with mining, QUAI or Qi; x402 Work lets apps pay for requests with a few seconds of computation. Both are built by the Quai team." data-ru="Hashference — ИИ-API с оплатой майнингом, QUAI или Qi; x402 Work позволяет платить за запросы несколькими секундами вычислений. Оба сделаны командой Quai.">Ecosystem.</p>
+  <div class="tiles" id="ecoTiles"></div>
+  <div class="panel">
+    <h3 data-en="Hashference requests per day" data-ru="Запросы к Hashference по дням">Hashference requests</h3>
+    <div class="sub mono" data-en="hashference.com/statistics" data-ru="hashference.com/statistics">hashference.com</div>
+    <div class="chart" id="hfChart"></div>
+  </div>
+</section>
+
+<section class="src" id="method">
+  <b data-en="Method and sources" data-ru="Методика и источники">Method and sources</b>
+  <ul id="srcList"></ul>
+</section>
+</main>
+<footer class="q mono"><div class="wrap"><span>© 2026 $QOGE · QNN Research</span><span data-en="Independent · not affiliated with the Quai team · Not financial advice" data-ru="Независимо · не связано с командой Quai · Не финансовый совет">Not financial advice</span></div></footer>
+<div class="tip" id="tip"></div>
+
+<script src="../../assets/quai-dash.js"></script>
+<script>
+(function(){
+var SNAP = window.QUAI_DASH || {};
+var D = SNAP, LIVE = false, FROM_SNAP = [];
+var L = 'en';
+var SECTIONS = ['market','priceChart','recon','soap','supply','wallets','network','hashference','x402'];
+
+var T = {
+ en:{
+  live:'Live data', snap:'Snapshot', upd:'updated', partSnap:'some sections from snapshot: ',
+  price:'Price', mcap:'Market cap', vol:'Volume 24h', infl:'Net inflation / yr', inflD:'mining minus SOAP burns, last 30 days',
+  rev30:'SOAP revenue, 30 d', rev30D:'last 7 days: ', burnShare:'Burned, all time', burnShareD:'of SOAP revenue (burn-day prices)',
+  ch24:'24h', ch7:'7d', atl:'all-time low ', ath:'ATH ',
+  circ:'Circulating supply', mined:'Mined, 30 d', burned:'Burned by SOAP, 30 d', net:'Net from mining', other:'Other changes, 30 d', otherD:'unlocks and Qi↔QUAI conversions', qi:'Qi supply',
+  sMined:'Mined', sBurned:'Burned',
+  big:function(r){return 'SOAP has earned <b>'+usd(r.revenue)+'</b>. Burns worth <b>'+usd(r.burnedUsd)+' ('+pct(r.burnShare)+')</b> are visible on-chain, <b>'+usd(r.leakUsd)+'</b> went to other wallets, <b>'+usd(Math.max(0,r.untracedUsd))+'</b> cannot be traced.';},
+  spBurn:'Burned', spLeak:'Sent to other wallets', spUntr:'Untraced (exchange costs, timing, unknown)',
+  t30:'Burned, last 30 days', t30D:function(r){return 'revenue '+usd(r.last30.revenue)+' · burned '+usd(r.last30.burnedUsd);},
+  team:'Team dashboard shows', teamD:'burned QUAI at today\'s price, so it is not comparable with revenue',
+  lastBurn:'Last burn', burnedQ:'Total burned',
+  revenue:'Revenue', burnedU:'Burned', month:'Month', burnedQuai:'Burned, QUAI', share:'Share',
+  addr:'Address', sent:'Sent, QUAI', ret:'Returned', netU:'Net, $', when:'Date', from:'From', amount:'QUAI',
+  soapW:'SOAP wallet', other2:'other wallet',
+  gas:function(r,w){return 'Not counted above as a leak: '+num(r.gasQuai)+' QUAI ('+usd(r.gasUsd)+') went from the SOAP wallet to a wallet that burns it through gas fees by calling a contract that only wastes gas'+(w&&w.gasBurner&&w.gasBurner.lastTx?' (last call '+date(w.gasBurner.lastTx)+')':'')+'. It is included in “burned”.';},
+  imp:function(u){return 'Market buy of '+usd(u);}, impD:function(a,b){return 'one exchange: ~'+pct1(a)+' · split across all: ~'+pct1(b);},
+  depth:'Depth within ±2%', depthD:function(u,d){return usd(u)+' to buy · '+usd(d)+' to sell, all exchanges';},
+  ex:'Exchange', pair:'Pair', spread:'Spread', dUp:'+2% depth', dDn:'−2% depth',
+  hfReq:'Hashference requests, 30 d', hfTok:'AI tokens processed', hfTokD:'by Hashference, last 30 days', hfDev:'active devices 7 d: ', hfFund:'Where Hashference credit comes from', hfFundD:function(f){return 'QUAI staking '+pct(f.staking)+' · QUAI/Qi deposits '+pct(f.deposits)+' · mining '+pct(f.mining);},
+  stk:'Staked in Hashference', stkD:function(p){return 'QUAI locked for AI credit ('+p+')';},
+  x402:'x402 Work payments, 30 d', x402D:function(x){return 'of them Hashference: '+x.hashference+' · services: '+x.services;},
+  txs:'Transactions today', txsD:function(n){return 'all time: '+num(n.totalTx)+' · addresses: '+num(n.addresses);},
+  req:'Requests',
+  src:[
+   'Revenue: SOAP dashboard API (soap.qu.ai) — the Quai team\'s own figures, by month.',
+   'Burns: every transfer into the burn address 0x0050AF…0000 on <a href="https://quaiscan.io/address/0x0050AF0000000000000000000000000000000000" target="_blank" rel="noopener">Quaiscan</a>, plus QUAI the SOAP wallet sent to the gas-burner wallet. Valued at the CoinGecko daily close on the burn day; buying happens a few days earlier, so this is a slightly low estimate while the price falls.',
+   '“Sent elsewhere”: transfers out of the <a href="https://quaiscan.io/address/0x0053bcdc4F5Af4B35079d4D091fCD1D86A958D06" target="_blank" rel="noopener">SOAP wallet</a> that did not go to the burn address or the gas burner, minus what the same address later burned or sent back. Who owns those wallets is unknown.',
+   'Supply, mining and daily burns: supply.qu.ai API. Price, volume and ±2% depth: CoinGecko. Hashference and x402: their public /stats APIs.',
+   'Refreshed at most once an hour through the site\'s own server function. If a source is down, that section shows the last snapshot and the status line says so.'
+  ]
+ },
+ ru:{
+  live:'Живые данные', snap:'Снимок', upd:'обновлено', partSnap:'часть разделов из снимка: ',
+  price:'Цена', mcap:'Капитализация', vol:'Объём за 24 ч', infl:'Чистая инфляция в год', inflD:'майнинг минус сжигания SOAP, последние 30 дней',
+  rev30:'Выручка SOAP, 30 дн.', rev30D:'за 7 дней: ', burnShare:'Сожжено за всё время', burnShareD:'от выручки SOAP (по ценам дня сжигания)',
+  ch24:'24 ч', ch7:'7 дн.', atl:'минимум ', ath:'максимум ',
+  circ:'Предложение в обращении', mined:'Намайнено, 30 дн.', burned:'Сожжено SOAP, 30 дн.', net:'Чистый прирост от майнинга', other:'Прочие изменения, 30 дн.', otherD:'разлоки и конвертации Qi↔QUAI', qi:'Предложение Qi',
+  sMined:'Намайнено', sBurned:'Сожжено',
+  big:function(r){return 'SOAP заработал <b>'+usd(r.revenue)+'</b>. В блокчейне видны сжигания на <b>'+usd(r.burnedUsd)+' ('+pct(r.burnShare)+')</b>, <b>'+usd(r.leakUsd)+'</b> ушло на другие кошельки, <b>'+usd(Math.max(0,r.untracedUsd))+'</b> отследить нельзя.';},
+  spBurn:'Сожжено', spLeak:'Ушло на другие кошельки', spUntr:'Не отслеживается (расходы на обмен, задержки, неизвестно)',
+  t30:'Сожжено за 30 дней', t30D:function(r){return 'выручка '+usd(r.last30.revenue)+' · сожжено '+usd(r.last30.burnedUsd);},
+  team:'Дашборд команды показывает', teamD:'сожжённые QUAI по сегодняшней цене, поэтому с выручкой это не сравнить',
+  lastBurn:'Последнее сжигание', burnedQ:'Всего сожжено',
+  revenue:'Выручка', burnedU:'Сожжено', month:'Месяц', burnedQuai:'Сожжено, QUAI', share:'Доля',
+  addr:'Адрес', sent:'Отправлено, QUAI', ret:'Вернулось', netU:'Итого, $', when:'Дата', from:'От кого', amount:'QUAI',
+  soapW:'кошелёк SOAP', other2:'другой кошелёк',
+  gas:function(r,w){return 'Не считается утечкой: '+num(r.gasQuai)+' QUAI ('+usd(r.gasUsd)+') ушли с кошелька SOAP на кошелёк, который сжигает их через комиссии — вызывает контракт, который только тратит газ'+(w&&w.gasBurner&&w.gasBurner.lastTx?' (последний вызов '+date(w.gasBurner.lastTx)+')':'')+'. Это входит в «сожжено».';},
+  imp:function(u){return 'Покупка по рынку на '+usd(u);}, impD:function(a,b){return 'на одной бирже: ~'+pct1(a)+' · на всех сразу: ~'+pct1(b);},
+  depth:'Глубина в пределах ±2%', depthD:function(u,d){return usd(u)+' на покупку · '+usd(d)+' на продажу, все биржи';},
+  ex:'Биржа', pair:'Пара', spread:'Спред', dUp:'Глубина +2%', dDn:'Глубина −2%',
+  hfReq:'Запросы к Hashference, 30 дн.', hfTok:'Обработано ИИ-токенов', hfTokD:'Hashference за 30 дней', hfDev:'активных устройств за 7 дн.: ', hfFund:'Откуда кредиты Hashference', hfFundD:function(f){return 'стейкинг QUAI '+pct(f.staking)+' · пополнения QUAI/Qi '+pct(f.deposits)+' · майнинг '+pct(f.mining);},
+  stk:'В стейкинге Hashference', stkD:function(p){return 'QUAI заблокировано ради ИИ-кредитов ('+p+')';},
+  x402:'Оплаты x402 Work, 30 дн.', x402D:function(x){return 'из них Hashference: '+x.hashference+' · сервисов: '+x.services;},
+  txs:'Транзакций сегодня', txsD:function(n){return 'всего: '+num(n.totalTx)+' · адресов: '+num(n.addresses);},
+  req:'Запросы',
+  src:[
+   'Выручка: API дашборда SOAP (soap.qu.ai) — собственные цифры команды Quai, по месяцам.',
+   'Сжигания: все переводы на адрес сжигания 0x0050AF…0000 в <a href="https://quaiscan.io/address/0x0050AF0000000000000000000000000000000000" target="_blank" rel="noopener">Quaiscan</a> плюс QUAI, отправленные кошельком SOAP на «сжигатель газа». Оценка — по закрытию дня сжигания на CoinGecko; покупка происходит на несколько дней раньше, поэтому при падающей цене оценка немного занижена.',
+   '«Ушло на другие кошельки»: переводы с <a href="https://quaiscan.io/address/0x0053bcdc4F5Af4B35079d4D091fCD1D86A958D06" target="_blank" rel="noopener">кошелька SOAP</a> не на сжигание и не на сжигатель газа, за вычетом того, что тот же адрес потом сам сжёг или вернул. Чьи это кошельки — неизвестно.',
+   'Предложение, майнинг и сжигания по дням: API supply.qu.ai. Цена, объём и глубина ±2%: CoinGecko. Hashference и x402: их открытые API /stats.',
+   'Обновление не чаще раза в час через серверную функцию сайта. Если источник недоступен, раздел показывает последний снимок, и это видно в строке статуса.'
+  ]
+ }
+};
+var t = function(k){ return T[L][k]; };
+
+// ---------- formatting ----------
+function loc(){ return L==='ru'?'ru-RU':'en-US'; }
+function usd(n){ if(n==null||isNaN(n)) return '—'; if(n===0) return '$0'; var a=Math.abs(n);
+  if(a>=1e9) return '$'+(n/1e9).toFixed(2)+(L==='ru'?' млрд':'B');
+  if(a>=1e6) return '$'+(n/1e6).toFixed(2)+(L==='ru'?' млн':'M');
+  if(a>=1e4) return '$'+Math.round(n/1e3)+(L==='ru'?'K':'K');
+  if(a>=100) return '$'+Math.round(n).toLocaleString(loc());
+  if(a>=1) return '$'+n.toFixed(2);
+  return '$'+n.toPrecision(3); }
+function num(n){ if(n==null||isNaN(n)) return '—'; var a=Math.abs(n);
+  if(a>=1e9) return (n/1e9).toFixed(2)+(L==='ru'?' млрд':'B');
+  if(a>=1e6) return (n/1e6).toFixed(1)+(L==='ru'?' млн':'M');
+  if(a>=1e4) return Math.round(n/1e3)+'K';
+  return Math.round(n).toLocaleString(loc()); }
+function pct(x){ return x==null?'—':Math.round(x*100)+'%'; }
+function pct1(p){ return p==null?'—':(p<10?p.toFixed(1):Math.round(p))+'%'; }
+function chg(p){ if(p==null) return ''; var c=p>=0?'up':'dn'; return '<span class="'+c+'">'+(p>=0?'+':'')+p.toFixed(1)+'%</span>'; }
+function date(ts){ var d=typeof ts==='number'?new Date(ts*1000):new Date(ts); return d.toLocaleDateString(loc(),{day:'numeric',month:'short',year:'numeric'}); }
+function ymLabel(m,full){ var d=new Date(m+'-01T00:00:00Z'); var s=d.toLocaleDateString(loc(),{month:'short',timeZone:'UTC'}).replace('.',''); return (full||m.slice(5)==='01'||m.slice(5)==='12')?s+' '+m.slice(2,4):s; }
+function dayLabel(s){ var d=new Date(s+'T00:00:00Z'); return d.toLocaleDateString(loc(),{day:'numeric',month:'short',timeZone:'UTC'}); }
+function short(a){ return a.slice(0,8)+'…'+a.slice(-4); }
+function scan(a){ return '<a href="https://quaiscan.io/address/'+a+'" target="_blank" rel="noopener" class="mono">'+short(a)+'</a>'; }
+function tile(l,v,d){ return '<div class="tile"><div class="l">'+l+'</div><div class="v">'+v+'</div>'+(d?'<div class="d">'+d+'</div>':'')+'</div>'; }
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+
+// ---------- tooltip ----------
+var tip=$('tip');
+function showTip(e,html){ tip.innerHTML=html; tip.style.opacity=1; var x=e.clientX+14, y=e.clientY+14; var w=tip.offsetWidth, h=tip.offsetHeight;
+  if(x+w>innerWidth-8) x=e.clientX-w-14; if(y+h>innerHeight-8) y=e.clientY-h-14; tip.style.left=x+'px'; tip.style.top=y+'px'; }
+function hideTip(){ tip.style.opacity=0; }
+function sw(c){ return '<span class="sw" style="background:'+c+'"></span>'; }
+
+// ---------- charts (hand-drawn SVG) ----------
+function niceMax(v){ if(v<=0) return 1; var p=Math.pow(10,Math.floor(Math.log10(v))), m=v/p; return (m<=1?1:m<=2?2:m<=2.5?2.5:m<=5?5:10)*p; }
+var NS='http://www.w3.org/2000/svg';
+function el(tag,attrs,parent){ var e=document.createElementNS(NS,tag); for(var k in attrs) e.setAttribute(k,attrs[k]); if(parent) parent.appendChild(e); return e; }
+function frame(host,W,H,max,fmt,pad){ host.innerHTML=''; var svg=el('svg',{viewBox:'0 0 '+W+' '+H,role:'img'}); host.appendChild(svg);
+  for(var i=0;i<=4;i++){ var y=pad.t+(H-pad.t-pad.b)*(1-i/4); el('line',{x1:pad.l,x2:W-pad.r,y1:y,y2:y,stroke:'#2f2a28','stroke-width':1},svg);
+    var tx=el('text',{x:pad.l-8,y:y+4,'text-anchor':'end'},svg); tx.textContent=fmt(max*i/4); }
+  return svg; }
+function size(host){ var W=Math.max(300,Math.round(host.clientWidth||800)); return {W:W,H:W<560?220:260}; }
+function lineChart(host,pts,color,fmtY,fmtTip){
+  var z=size(host),W=z.W,H=z.H,pad={l:64,r:12,t:12,b:28}; var vals=pts.map(function(p){return p[1];});
+  var max=niceMax(Math.max.apply(null,vals)*1.05); var svg=frame(host,W,H,max,fmtY,pad);
+  var iw=W-pad.l-pad.r, ih=H-pad.t-pad.b; var X=function(i){return pad.l+iw*i/(pts.length-1);}, Y=function(v){return pad.t+ih*(1-v/max);};
+  el('path',{d:pts.map(function(p,i){return (i?'L':'M')+X(i).toFixed(1)+','+Y(p[1]).toFixed(1);}).join(''),fill:'none',stroke:color,'stroke-width':2,'stroke-linejoin':'round'},svg);
+  [0,Math.floor((pts.length-1)/2),pts.length-1].forEach(function(i){ var tx=el('text',{x:X(i),y:H-8,'text-anchor':i===0?'start':i===pts.length-1?'end':'middle'},svg); tx.textContent=dayLabel(pts[i][0]); });
+  var cross=el('line',{y1:pad.t,y2:H-pad.b,stroke:'#a59e97','stroke-width':1,opacity:0},svg);
+  var dot=el('circle',{r:5,fill:color,stroke:'#1d1a19','stroke-width':2,opacity:0},svg);
+  var hit=el('rect',{x:pad.l,y:pad.t,width:iw,height:ih,fill:'transparent'},svg);
+  hit.addEventListener('mousemove',function(e){ var r=svg.getBoundingClientRect(); var x=(e.clientX-r.left)*W/r.width; var i=Math.max(0,Math.min(pts.length-1,Math.round((x-pad.l)/iw*(pts.length-1))));
+    cross.setAttribute('x1',X(i)); cross.setAttribute('x2',X(i)); cross.setAttribute('opacity',1); dot.setAttribute('cx',X(i)); dot.setAttribute('cy',Y(pts[i][1])); dot.setAttribute('opacity',1);
+    showTip(e,'<b>'+dayLabel(pts[i][0])+'</b><br>'+fmtTip(pts[i][1])); });
+  hit.addEventListener('mouseleave',function(){ cross.setAttribute('opacity',0); dot.setAttribute('opacity',0); hideTip(); });
+}
+function barChart(host,labels,series,fmtY,fmtTip,labelEvery){
+  var z=size(host),W=z.W,H=z.H,pad={l:64,r:12,t:12,b:28};
+  if(W<560) labelEvery=Math.max(labelEvery,Math.ceil(labels.length/4)); var max=0; series.forEach(function(s){ s.vals.forEach(function(v){ if(v>max) max=v; }); });
+  max=niceMax(max*1.05); var svg=frame(host,W,H,max,fmtY,pad); var iw=W-pad.l-pad.r, ih=H-pad.t-pad.b;
+  var n=labels.length, slot=iw/n, gap=2, bw=Math.max(2,(slot*0.72-gap*(series.length-1))/series.length);
+  labels.forEach(function(lb,i){
+    var x0=pad.l+slot*i+(slot-(bw*series.length+gap*(series.length-1)))/2;
+    series.forEach(function(s,j){ var v=s.vals[i]||0, h=ih*v/max, x=x0+j*(bw+gap), y=pad.t+ih-h;
+      if(h>0){ var r=Math.min(4,bw/2,h); el('path',{d:'M'+x+','+(pad.t+ih)+'V'+(y+r)+'Q'+x+','+y+' '+(x+r)+','+y+'H'+(x+bw-r)+'Q'+(x+bw)+','+y+' '+(x+bw)+','+(y+r)+'V'+(pad.t+ih)+'Z',fill:s.color},svg); } });
+    if(i%labelEvery===0||i===n-1&&labelEvery===1){ var tx=el('text',{x:pad.l+slot*i+slot/2,y:H-8,'text-anchor':'middle'},svg); tx.textContent=lb; }
+    var hit=el('rect',{x:pad.l+slot*i,y:pad.t,width:slot,height:ih,fill:'transparent'},svg);
+    hit.addEventListener('mousemove',function(e){ hit.setAttribute('fill','rgba(244,240,236,.05)'); showTip(e,fmtTip(i)); });
+    hit.addEventListener('mouseleave',function(){ hit.setAttribute('fill','transparent'); hideTip(); });
+  });
+}
+function legend(host,items){ host.innerHTML=items.map(function(it){ return '<span><i style="background:'+it[1]+'"></i>'+it[0]+'</span>'; }).join(''); }
+
+// ---------- render ----------
+function render(){
+  var m=D.market, r=D.recon, s=D.supply, so=D.soap, w=D.wallets, n=D.network, hf=D.hashference, x=D.x402;
+  // status
+  var when=D.updatedAt?new Date(D.updatedAt).toLocaleString(loc(),{dateStyle:'medium',timeStyle:'short'}):'—';
+  $('dot').className='dot'+(LIVE?'':' snap');
+  $('status').textContent=(LIVE?t('live'):t('snap'))+' · '+t('upd')+' '+when+(LIVE&&FROM_SNAP.length?' · '+t('partSnap')+FROM_SNAP.join(', '):'');
+
+  // pulse
+  if(m){ var h='';
+    h+=tile(t('price'),'$'+m.price.toPrecision(3),t('ch24')+' '+chg(m.ch24)+' · '+t('ch7')+' '+chg(m.ch7)+'<br>'+t('atl')+'$'+m.atl.toPrecision(3)+' ('+date(m.atlDate)+')');
+    h+=tile(t('mcap'),usd(m.mcap),t('ath')+'$'+m.ath+' ('+date(m.athDate)+')');
+    h+=tile(t('vol'),usd(m.vol24),'');
+    if(s) h+=tile(t('infl'),(s.d30.netInflationYr>=0?'+':'')+(s.d30.netInflationYr*100).toFixed(1)+'%',t('inflD'));
+    if(so) h+=tile(t('rev30'),usd(so.last30),t('rev30D')+usd(so.last7));
+    if(r) h+=tile(t('burnShare'),pct(r.burnShare),t('burnShareD'));
+    $('pulseTiles').innerHTML=h; }
+  if(D.priceChart) lineChart($('priceChart'),D.priceChart,'#fbd530',function(v){return '$'+v.toFixed(3);},function(v){return '$'+v.toPrecision(3);});
+
+  // supply
+  if(s){ var d=s.d30, h2='';
+    h2+=tile(t('circ'),num(s.supply)+' QUAI','');
+    h2+=tile(t('mined'),num(d.mined),'');
+    h2+=tile(t('burned'),num(d.burned),'');
+    h2+=tile(t('net'),(d.net>=0?'+':'')+num(d.net),'');
+    h2+=tile(t('other'),(d.other>=0?'+':'')+num(d.other),t('otherD'));
+    h2+=tile(t('qi'),num(s.qi)+' Qi','');
+    $('supplyTiles').innerHTML=h2;
+    var days=s.days.filter(function(x,i){ return !(x[4]&&i===s.days.length-1); }).slice(-30);
+    legend($('supplyLegend'),[[t('sMined'),'var(--s1)'],[t('sBurned'),'var(--s2)']]);
+    barChart($('supplyChart'),days.map(function(x){return dayLabel(x[0]);}),[{color:'#2e97ca',vals:days.map(function(x){return x[3]||0;})},{color:'#ea3c3f',vals:days.map(function(x){return x[2];})}],
+      function(v){return num(v);},function(i){var x=days[i];return '<b>'+dayLabel(x[0])+'</b><br>'+sw('#2e97ca')+t('sMined')+': '+num(x[3])+'<br>'+sw('#ea3c3f')+t('sBurned')+': '+num(x[2]);},5); }
+
+  // soap
+  if(r){
+    $('soapBig').innerHTML=T[L].big(r);
+    var tot=r.revenue, parts=[[r.burnedUsd,'#ea3c3f',t('spBurn')],[r.leakUsd,'#2e97ca',t('spLeak')],[Math.max(0,r.untracedUsd),'#6b625d',t('spUntr')]];
+    $('soapSplit').innerHTML=parts.map(function(p){ return '<div style="flex:'+(p[0]/tot)+';background:'+p[1]+'" data-tip="'+esc('<b>'+p[2]+'</b><br>'+usd(p[0])+' · '+pct(p[0]/tot))+'"></div>'; }).join('');
+    legend($('splitLegend'),parts.map(function(p){ return [p[2]+' — '+usd(p[0])+' ('+pct(p[0]/tot)+')',p[1]]; }));
+    var h3='';
+    h3+=tile(t('t30'),pct(r.last30.revenue?r.last30.burnedUsd/r.last30.revenue:null),T[L].t30D(r));
+    h3+=tile(t('burnedQ'),num(r.burnedQuai)+' QUAI','');
+    if(r.lastBurn) h3+=tile(t('lastBurn'),date(r.lastBurn.t),num(r.lastBurn.quai)+' QUAI');
+    if(r.burnedAtTodayUsd) h3+=tile(t('team'),usd(r.burnedAtTodayUsd),t('teamD'));
+    $('soapTiles').innerHTML=h3;
+    var ms=r.months;
+    legend($('soapLegend'),[[t('revenue'),'var(--s1)'],[t('burnedU'),'var(--s2)']]);
+    barChart($('soapChart'),ms.map(function(x){return ymLabel(x.m);}),[{color:'#2e97ca',vals:ms.map(function(x){return x.revenue;})},{color:'#ea3c3f',vals:ms.map(function(x){return x.burnUsd+x.gasUsd;})}],
+      function(v){return usd(v);},function(i){var x=ms[i], b=x.burnUsd+x.gasUsd;return '<b>'+ymLabel(x.m,1)+'</b><br>'+sw('#2e97ca')+t('revenue')+': '+usd(x.revenue)+'<br>'+sw('#ea3c3f')+t('burnedU')+': '+usd(b)+' ('+pct(x.revenue?b/x.revenue:null)+')<br>'+num(x.burnQuai+x.gasQuai)+' QUAI';},1);
+    $('soapTable').innerHTML='<table><thead><tr><th>'+t('month')+'</th><th>'+t('revenue')+'</th><th>'+t('burnedQuai')+'</th><th>'+t('burnedU')+'</th><th>'+t('share')+'</th></tr></thead><tbody>'+
+      ms.map(function(x){var b=x.burnUsd+x.gasUsd;return '<tr><td>'+ymLabel(x.m,1)+'</td><td>'+usd(x.revenue)+'</td><td>'+num(x.burnQuai+x.gasQuai)+'</td><td>'+usd(b)+'</td><td>'+pct(x.revenue?b/x.revenue:null)+'</td></tr>';}).join('')+'</tbody></table>';
+    $('leakTable').innerHTML='<table><thead><tr><th>'+t('addr')+'</th><th>'+t('when')+'</th><th>'+t('sent')+'</th><th>'+t('netU')+'</th></tr></thead><tbody>'+
+      r.leaks.map(function(l){return '<tr><td>'+scan(l.to)+'</td><td>'+date(l.first)+'</td><td>'+num(l.quai)+(l.returned>=1000?' <span class="note">(−'+num(l.returned)+')</span>':'')+'</td><td>'+usd(l.netUsd)+'</td></tr>';}).join('')+'</tbody></table>';
+    $('burnTable').innerHTML='<table><thead><tr><th>'+t('when')+'</th><th>'+t('amount')+'</th><th>'+t('from')+'</th></tr></thead><tbody>'+
+      r.recentBurns.map(function(b){return '<tr><td>'+date(b.t)+'</td><td>'+num(b.quai)+'</td><td>'+(b.from===D.addresses.soap?'<a href="https://quaiscan.io/address/'+b.from+'" target="_blank" rel="noopener">'+t('soapW')+'</a>':scan(b.from))+'</td></tr>';}).join('')+'</tbody></table>';
+    $('gasNote').textContent=T[L].gas(r,w);
+  }
+
+  // market
+  if(m){ var h4='';
+    m.impact.forEach(function(it){ h4+=tile(T[L].imp(it.usd),'~'+pct1(it.oneEx),T[L].impD(it.oneEx,it.allEx)); });
+    h4+=tile(t('depth'),usd(m.depthUp),T[L].depthD(m.depthUp,m.depthDown));
+    $('impactTiles').innerHTML=h4;
+    $('exTable').innerHTML='<table><thead><tr><th>'+t('ex')+'</th><th>'+t('pair')+'</th><th>'+t('vol')+'</th><th>'+t('spread')+'</th><th>'+t('dUp')+'</th><th>'+t('dDn')+'</th></tr></thead><tbody>'+
+      m.tickers.slice().sort(function(a,b){return b.vol-a.vol;}).map(function(k){return '<tr><td>'+esc(k.ex)+'</td><td class="mono">'+esc(k.pair)+'</td><td>'+usd(k.vol)+'</td><td>'+(k.spread!=null?k.spread.toFixed(2)+'%':'—')+'</td><td>'+usd(k.up)+'</td><td>'+usd(k.down)+'</td></tr>';}).join('')+'</tbody></table>'; }
+
+  // ecosystem
+  var h5='';
+  if(hf){ h5+=tile(t('hfReq'),num(hf.daily.reduce(function(a,d){return a+d[1];},0)),t('hfDev')+hf.devices7d);
+    h5+=tile(t('hfTok'),num(hf.tokens),t('hfTokD'));
+    h5+=tile(t('hfFund'),pct(hf.funding.staking),T[L].hfFundD(hf.funding)); }
+  if(w) h5+=tile(t('stk'),num(w.staking.balance)+' QUAI',T[L].stkD(hf&&hf.stakingPlans?hf.stakingPlans.map(function(p){return num(p[0])+' → $'+p[1]+(L==='ru'?'/мес':'/mo');}).join(', '):''));
+  if(x) h5+=tile(t('x402'),num(x.payments),T[L].x402D(x));
+  if(n) h5+=tile(t('txs'),num(n.txToday),T[L].txsD(n));
+  $('ecoTiles').innerHTML=h5;
+  if(hf) barChart($('hfChart'),hf.daily.map(function(d){return dayLabel(d[0]);}),[{color:'#2e97ca',vals:hf.daily.map(function(d){return d[1];})}],
+    function(v){return num(v);},function(i){return '<b>'+dayLabel(hf.daily[i][0])+'</b><br>'+t('req')+': '+num(hf.daily[i][1]);},5);
+
+  $('srcList').innerHTML=T[L].src.map(function(s){return '<li>'+s+'</li>';}).join('');
+}
+
+// split-bar tooltips
+document.addEventListener('mousemove',function(e){ var d=e.target.closest&&e.target.closest('[data-tip]'); if(d) showTip(e,d.getAttribute('data-tip')); else if(e.target.closest&&!e.target.closest('svg')) hideTip(); });
+
+// ---------- language (shared with the rest of the site) ----------
+function getLang(){ var p=new URLSearchParams(location.search).get('lang'); if(p==='ru'||p==='en') return p;
+  var s=null; try{s=localStorage.getItem('qoge-lang')}catch(e){} if(s) return s==='ru'?'ru':'en';
+  return (navigator.language||'en').slice(0,2)==='ru'?'ru':'en'; }
+function setLang(l,save){ L=l; if(save){try{localStorage.setItem('qoge-lang',l)}catch(e){}}
+  document.documentElement.lang=l;
+  document.querySelectorAll('.lang button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.l===l)});
+  document.querySelectorAll('[data-en]').forEach(function(e){e.innerHTML=e.getAttribute('data-'+l)});
+  document.title=l==='ru'?'QUAI в цифрах · независимый дашборд · QNN Ресёрч':'QUAI Live · independent dashboard · QNN Research';
+  render(); }
+document.querySelectorAll('.lang button').forEach(function(b){b.onclick=function(){setLang(b.dataset.l,true)}});
+var redraw; addEventListener('resize',function(){ clearTimeout(redraw); redraw=setTimeout(render,150); });
+
+setLang(getLang(),false);
+
+// ---------- live data: the site's own function (Vercel). github.io / file:// keep the snapshot ----------
+if(location.protocol!=='file:' && !/github\.io$/.test(location.hostname)){
+  fetch('/api/quai').then(function(r){ return r.ok?r.json():null; }).then(function(j){
+    if(!j||j.error) return;
+    var merged={}; for(var k in j) merged[k]=j[k];
+    SECTIONS.forEach(function(k){ if(merged[k]==null&&SNAP[k]!=null){ merged[k]=SNAP[k]; FROM_SNAP.push(k); } });
+    D=merged; LIVE=true; render();
+  }).catch(function(){});
+}
+})();
+</script>
+</body>
+</html>

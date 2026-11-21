@@ -75,6 +75,17 @@ Context for picking this project up in a new chat.
 - INJ report v2 "The Leaky Bucket / Дырявое ведро" (research/inj/, Nov 9, 2026): 30 slides EN+RU, both PDFs.
   Key facts: on-chain supply 122.9M INJ (not 100M), issuance ~5.4M/yr vs ~0.35M burned, INJC ETF live since Nov 5.
   Slides were rendered by a script in Claude's workspace (not in the repo); edit = re-render all 60 webp + PDFs.
+- QUAI Live dashboard (`research/quai-live/index.html`, Nov 21, 2026): independent live page — pulse (price, mcap,
+  net inflation), supply (mined vs SOAP burned, 30 d), SOAP audit (team revenue vs on-chain burns valued at the
+  burn-day price, transfers from the SOAP wallet that were not burned, gas-burner wallet), liquidity (±2% depth,
+  price impact of $500/$5000), ecosystem (Hashference, x402, HashferenceStaking). EN/RU via 'qoge-lang'.
+  Data: `api/quai.js` (Vercel function, GET /api/quai, edge-cached 1 h, maxDuration 60 in vercel.json) pulls
+  CoinGecko, Quaiscan API, soap.qu.ai/api, supply.qu.ai/api, hashference.com/v1/stats, x402.qu.ai/v1/stats —
+  none of the team APIs allow CORS. Each source fails independently; the page then uses that section from the
+  snapshot `assets/quai-dash.js` (window.QUAI_DASH, same JSON) and the status line says "Snapshot".
+  Key addresses: burn 0x0050AF…0000, SOAP wallet 0x0053bcdc…8D06, gas burner 0x004b00d6…Db93,
+  staking 0x0009ac4b…896a. SOURCES in api/quai.js are plain JS, so the snapshot can be rebuilt by running them
+  in a browser on each source's own origin. Card in the research hub before the QUAI report.
 - Deploy check: if the live site does not change ~2 min after a push, look at Vercel deployments
   (GitHub API /repos/ThirteenKF/qoge-site/deployments?environment=Production). On Nov 9 Vercel skipped one push;
   a new push re-triggered it. Images written by the device bridge carry a C2PA chunk (+~5.7KB) — harmless.

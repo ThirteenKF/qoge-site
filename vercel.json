@@ -1,7 +1,21 @@
 {
   "rewrites": [
-    { "source": "/m", "destination": "/api/share" },
-    { "source": "/weekly", "destination": "/api/weekly" },
-    { "source": "/weekly/:n", "destination": "/api/weekly?n=:n" }
-  ]
+    {
+      "source": "/m",
+      "destination": "/api/share"
+    },
+    {
+      "source": "/weekly",
+      "destination": "/api/weekly"
+    },
+    {
+      "source": "/weekly/:n",
+      "destination": "/api/weekly?n=:n"
+    }
+  ],
+  "functions": {
+    "api/quai.js": {
+      "maxDuration": 60
+    }
+  }
 }
