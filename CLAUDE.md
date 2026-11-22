@@ -120,7 +120,7 @@ Owner speaks Russian (sometimes types Russian on an English layout); answer in R
   bs, hf, x4, tx), written by api/quai.js on every run (same KV_REST_API_* env as the bots) and returned as data.history.
   Daily Vercel cron in vercel.json hits /api/quai?save=1 at 23:50 UTC so every day gets a record. Depth and pool charts
   show a "recording since" note until 3 days exist.
-  Header link: nav item "QUAI Live" (t.navLive, .q-live) after Q&A in index.html. Layout is fluid: .wrap up to 1760px, grids auto-fit, .duo pairs panels side by side from ~1300px.
+  Header link: nav item "QUAI Dashboard" / "Дашборд QUAI" (t.navLive, .q-live: chart icon + red LIVE tag, tag hidden under 1280px) after Q&A in index.html; below 980px the nav is hidden, so a copy `.q-dash-m` sits next to the research pill (second header row on phones); "Buy $QOGE" header button is green #5bd16a. Layout is fluid: .wrap up to 1760px, grids auto-fit, .duo pairs panels side by side from ~1300px.
 - Deploy check: if the live site does not change ~2 min after a push, look at Vercel deployments
   (GitHub API /repos/ThirteenKF/qoge-site/deployments?environment=Production). On Nov 9 Vercel skipped one push;
   a new push re-triggered it. Images written by the device bridge carry a C2PA chunk (+~5.7KB) — harmless.

@@ -51,8 +51,11 @@ a:hover{color:oklch(0.72 0.17 40)}
   .q-head > a:first-child{order:1}
   .q-head > .q-lang{order:2;margin-left:auto}
   .q-head > a:last-child{order:3;margin-left:0!important}
-  .q-head > .q-res{order:4;flex:1 1 100%;justify-content:center;padding:8px 12px!important;border-left:0!important;border-top:4px solid #141110}
-  .q-res .q-pill{width:100%;justify-content:center}
+  .q-head > .q-res{order:4;flex:1 1 50%;justify-content:center;padding:8px 5px 8px 12px!important;border-left:0!important;border-top:4px solid #141110}
+  .q-res .q-pill{width:100%;justify-content:center;font-size:13px;padding:0 10px;gap:8px}
+  .q-res .q-pill .arr{display:none}
+  .q-head > .q-dash-m{display:flex;order:5;flex:1 1 50%;padding:8px 12px 8px 5px;border-top:4px solid #141110}
+  .q-dash-m > span{width:100%;justify-content:center}
   h1{font-size:clamp(30px,9vw,44px)!important}
   h2{font-size:clamp(28px,8vw,40px)!important}
   .q-ctas > *{flex:1 1 100%;justify-content:center;text-align:center}
@@ -63,7 +66,13 @@ a:hover{color:oklch(0.72 0.17 40)}
 }
 .q-live{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px 0 12px;border:2px solid #141110;color:#141110!important;font-weight:900;transition:background .15s,color .15s}
 .q-live:hover{background:#141110;color:#f4f0ec!important}
-.q-dot{width:8px;height:8px;border-radius:50%;background:oklch(0.62 0.21 25);flex:none}
+.q-live:hover .q-tag{background:#5bd16a;color:#0b0b0b}
+.q-ic{flex:none}
+.q-dash-m{display:none;align-items:center}
+.q-dash-m > span{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 14px;border:2px solid #141110;color:#141110;background:#f4f0ec;font-weight:900;font-size:13px;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.q-dash-m:hover > span{background:#141110;color:#f4f0ec}
+@media (max-width:1280px){.q-tag{display:none}}
+.q-tag{flex:none;font:700 10px/1 'IBM Plex Mono',monospace;letter-spacing:.04em;background:#e3262b;color:#fff;padding:3px 5px;margin-left:2px}
 .q-res{display:flex;align-items:center;padding:0 16px;white-space:nowrap}
 .q-pill{position:relative;display:inline-flex;align-items:center;gap:10px;height:42px;padding:0 18px 0 14px;font-weight:900;font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:#f4f0ec;background:#141110;transition:transform .15s,box-shadow .15s}
 .q-pill::after{content:none}
@@ -85,6 +94,7 @@ a:hover{color:oklch(0.72 0.17 40)}
 @media (min-width:768px) and (max-width:979px){
   .q-nav{display:none!important}
   .q-res{margin-left:auto}
+  .q-head > .q-dash-m{display:flex;padding:0 10px 0 0}
 }
 /* readability: no tiny text, buttons use site font */
 button{font-family:inherit}
@@ -147,11 +157,12 @@ button{font-family:inherit}
     <a href="#mission" style="color:#141110" style-hover="color:oklch(0.62 0.21 25)">{{ t.nav2 }}</a>
     <a href="#tokenomics" style="color:#141110" style-hover="color:oklch(0.62 0.21 25)">{{ t.nav3 }}</a>
     <a href="#faq" style="color:#141110" style-hover="color:oklch(0.62 0.21 25)">{{ t.nav4 }}</a>
-    <a href="research/quai-live/" class="q-live"><span class="q-dot" aria-hidden="true"></span>{{ t.navLive }}</a>
+    <a href="research/quai-live/" class="q-live"><svg class="q-ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20h18"/><path d="M5 16l4-5 4 3 6-8"/></svg>{{ t.navLive }}<span class="q-tag">LIVE</span></a>
   </nav>
   <a class="q-res" href="research/"><span class="q-pill"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l6 6"/></svg><span>{{ t.resBtn }}</span><span class="arr">→</span></span></a>
+  <a class="q-dash-m" href="research/quai-live/"><span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20h18"/><path d="M5 16l4-5 4 3 6-8"/></svg>{{ t.navLive }}</span></a>
   <div class="q-lang" style="display:flex;align-items:center;padding:0 12px;border-left:4px solid #141110;position:relative">{{ langPicker }}</div>
-  <a href="#buy" style="display:flex;align-items:center;background:oklch(0.88 0.17 95);color:#141110;padding:0 22px;border-left:4px solid #141110;font-size:15px;text-transform:uppercase;white-space:nowrap" style-hover="background:#141110;color:oklch(0.88 0.17 95)">{{ t.buyCta }}</a>
+  <a href="#buy" style="display:flex;align-items:center;background:#5bd16a;color:#0b0b0b;padding:0 22px;border-left:4px solid #141110;font-size:15px;text-transform:uppercase;white-space:nowrap" style-hover="background:#141110;color:#5bd16a">{{ t.buyCta }}</a>
 </header>
 <section id="top" data-screen-label="Hero News" style="background:linear-gradient(90deg,rgba(14,8,8,.85) 0%,rgba(14,8,8,.4) 55%,rgba(14,8,8,0) 100%),url(assets/mars-bg.webp) 88% bottom/cover no-repeat;color:#f4f0ec;border-bottom:4px solid #141110">
   <div class="q-pr q-hero" style="padding:clamp(24px,4vw,48px) clamp(16px,4vw,56px) 0;padding-right:clamp(112px,8vw,140px);display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(24px,3vw,40px);align-items:center">
@@ -451,7 +462,7 @@ class Component extends DCLogic {
   setLang(l) { try { localStorage.setItem('qoge-lang', l); } catch (e) {} document.documentElement.lang = l; this.setState({ lang: l }); }
   dict(chain) {
     const en = {
-      loc: 'en-GB', c4tag: 'Exclusive · Family', c4live: '● LIVE', c4stamp: 'T−?? · EARTH · PACKING', c4ch: 'Big brother suits up: “I’m going to get him”', c4b: 'Big brother Doge took a three-day astronaut course (reward: one sausage), squeezed into a spacesuit two sizes too big and is recruiting a rescue crew. Requirement #1: don’t eat the onboard bacon.', c4q: '“He was always curious. I told him not to sniff rockets.” — big brother, 4 y/o, Earth', c4note: 'PARODY. NOT AFFILIATED WITH DOGECOIN, NASA OR ANY REAL PERSON.', live: '● LIVE FROM MARS', nav1: 'The scandal', nav2: 'Rocket', nav3: 'Numbers', nav4: 'Q&A', navLive: 'QUAI Live', nav5: 'Research', nav6: 'Game', resLatest: '#05 · Injective: orderbook, burns and demand', resList: '#05 Injective: orderbook, burns and demand  ◆  #04 Noah’s Ark: a bunker for institutions  ◆  #03 Big Brother’s Shadow (NEAR)  ◆  #02 A Foundation on Bones (Starknet)  ◆  #01 QUAI tokenomics  ◆ ', resGo: 'Read', resBtn: 'Crypto Research', buyCta: 'Buy $QOGE',
+      loc: 'en-GB', c4tag: 'Exclusive · Family', c4live: '● LIVE', c4stamp: 'T−?? · EARTH · PACKING', c4ch: 'Big brother suits up: “I’m going to get him”', c4b: 'Big brother Doge took a three-day astronaut course (reward: one sausage), squeezed into a spacesuit two sizes too big and is recruiting a rescue crew. Requirement #1: don’t eat the onboard bacon.', c4q: '“He was always curious. I told him not to sniff rockets.” — big brother, 4 y/o, Earth', c4note: 'PARODY. NOT AFFILIATED WITH DOGECOIN, NASA OR ANY REAL PERSON.', live: '● LIVE FROM MARS', nav1: 'The scandal', nav2: 'Rocket', nav3: 'Numbers', nav4: 'Q&A', navLive: 'QUAI Dashboard', nav5: 'Research', nav6: 'Game', resLatest: '#05 · Injective: orderbook, burns and demand', resList: '#05 Injective: orderbook, burns and demand  ◆  #04 Noah’s Ark: a bunker for institutions  ◆  #03 Big Brother’s Shadow (NEAR)  ◆  #02 A Foundation on Bones (Starknet)  ◆  #01 QUAI tokenomics  ◆ ', resGo: 'Read', resBtn: 'Crypto Research', buyCta: 'Buy $QOGE',
       ngTag: 'Mint live · NFT', ngTitle: 'QOGE Mars Gum', ngText: 'Our first NFT collection: 100 sealed packs, 100 cards with real Mars rovers. 10 Legendary cards are still classified.', ngSoon: 'Holder mint is live on BAZARR Launch · 99 QUAI · 1 per wallet', ngMint: 'Mint on launchpad', ngTrade: 'Trade on BAZARR', ngHowH: 'How to mint (holders only)', ngS1: 'Buy $QOGE — step-by-step guide above.', ngS2: 'Join our Discord and connect your wallet in #connect-wallet to get the QOGE Holder role.', ngS3: 'Send your Quai wallet address with the /whitelist command in Discord.', ngS4: 'Once your address is on the list, open the launchpad, connect the same wallet and mint for 99 QUAI.', ngX: 'See the post on X', ngDiscord: 'Details in Discord',
       s2go: 'Where to buy QUAI', s4go: 'Join Discord', byWhyH: 'What holders get:', byWhy: 'the QOGE Holder role in Discord, all crew channels, and Mars Gum NFT news first.', ngHold: 'Become a holder',
       breaking: 'Breaking', h1a: 'Local puppy accidentally colonizes', h1b: 'Mars',
@@ -488,7 +499,7 @@ class Component extends DCLogic {
       lvHold: '{n} holders now in ground control', lvSteady: 'Fuel price steady, dog keeps building', lvUp: 'Fuel price up {n}% in 24h', lvDown: 'Fuel {n}% cheaper in 24h, building continues', lvVol: '{n} QUAI of fuel moved in 24h', lvBudget: 'Mission budget: ${n}'
     };
     const ru = {
-      loc: 'ru-RU', c4tag: 'Эксклюзив · Семья', c4live: '● ПРЯМОЙ ЭФИР', c4stamp: 'T−?? · ЗЕМЛЯ · СБОРЫ', c4ch: 'Старший брат надел скафандр: «Я лечу за ним»', c4b: 'Старший брат Доге прошёл трёхдневные курсы астронавтов (награда — одна сосиска), влез в скафандр на два размера больше и набирает спасательный экипаж. Требование №1: не есть бортовой бекон.', c4q: '«Он всегда был любопытным. Я говорил ему не нюхать ракеты» — старший брат, 4 года, Земля', c4note: 'ПАРОДИЯ. НЕ СВЯЗАНО С DOGECOIN, NASA ИЛИ РЕАЛЬНЫМИ ЛЮДЬМИ.', live: '● ПРЯМОЙ ЭФИР С МАРСА', nav1: 'Скандал', nav2: 'Ракета', nav3: 'Цифры', nav4: 'Вопросы', navLive: 'QUAI Live', nav5: 'Ресёрч', nav6: 'Игра', resLatest: '#05 · Injective: ордербук, сжигания и спрос', resList: '#05 Injective: ордербук, сжигания и спрос  ◆  #04 Ноев ковчег: бункер для институционалов  ◆  #03 Тень большого брата (NEAR)  ◆  #02 Фундамент на костях (Starknet)  ◆  #01 Токеномика QUAI  ◆ ', resGo: 'Читать', resBtn: 'Крипторесёрч', buyCta: 'Купить $QOGE',
+      loc: 'ru-RU', c4tag: 'Эксклюзив · Семья', c4live: '● ПРЯМОЙ ЭФИР', c4stamp: 'T−?? · ЗЕМЛЯ · СБОРЫ', c4ch: 'Старший брат надел скафандр: «Я лечу за ним»', c4b: 'Старший брат Доге прошёл трёхдневные курсы астронавтов (награда — одна сосиска), влез в скафандр на два размера больше и набирает спасательный экипаж. Требование №1: не есть бортовой бекон.', c4q: '«Он всегда был любопытным. Я говорил ему не нюхать ракеты» — старший брат, 4 года, Земля', c4note: 'ПАРОДИЯ. НЕ СВЯЗАНО С DOGECOIN, NASA ИЛИ РЕАЛЬНЫМИ ЛЮДЬМИ.', live: '● ПРЯМОЙ ЭФИР С МАРСА', nav1: 'Скандал', nav2: 'Ракета', nav3: 'Цифры', nav4: 'Вопросы', navLive: 'Дашборд QUAI', nav5: 'Ресёрч', nav6: 'Игра', resLatest: '#05 · Injective: ордербук, сжигания и спрос', resList: '#05 Injective: ордербук, сжигания и спрос  ◆  #04 Ноев ковчег: бункер для институционалов  ◆  #03 Тень большого брата (NEAR)  ◆  #02 Фундамент на костях (Starknet)  ◆  #01 Токеномика QUAI  ◆ ', resGo: 'Читать', resBtn: 'Крипторесёрч', buyCta: 'Купить $QOGE',
       ngTag: 'Минт идёт · NFT', ngTitle: 'QOGE Mars Gum', ngText: 'Наша первая NFT-коллекция: 100 запечатанных пачек, 100 вкладышей с настоящими марсоходами. 10 легендарных пока засекречены.', ngSoon: 'Минт для холдеров открыт на BAZARR Launch · 99 QUAI · 1 на кошелёк', ngMint: 'Минт на лаунчпаде', ngTrade: 'Торговать на BAZARR', ngHowH: 'Как заминтить (только для холдеров)', ngS1: 'Купи $QOGE — пошаговая инструкция выше.', ngS2: 'Зайди в наш Discord и подключи кошелёк в #connect-wallet — получишь роль QOGE Holder.', ngS3: 'Отправь адрес своего кошелька Quai командой /whitelist в Discord.', ngS4: 'Когда адрес попадёт в список, открой лаунчпад, подключи тот же кошелёк и минти за 99 QUAI.', ngX: 'Пост в X', ngDiscord: 'Подробности в Discord',
       s2go: 'Где купить QUAI', s4go: 'Войти в Discord', byWhyH: 'Что получает холдер:', byWhy: 'роль QOGE Holder в Discord, доступ ко всем каналам экипажа и первые новости о NFT Mars Gum.', ngHold: 'Стать холдером',
       breaking: 'Срочно', h1a: 'Обычный щенок случайно колонизировал', h1b: 'Марс',

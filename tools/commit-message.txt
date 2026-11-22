@@ -1,1 +1,1 @@
-Animated Quai background on all research reports, remove dashboard card from the hub
+Main header: green Buy, clearer QUAI Dashboard button with LIVE tag, dashboard button on mobile and tablet
