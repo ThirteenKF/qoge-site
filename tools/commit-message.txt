@@ -1,1 +1,1 @@
-Main header: green Buy, clearer QUAI Dashboard button with LIVE tag, dashboard button on mobile and tablet
+QNN Weekly: add QUAI dashboard numbers, run Mondays 7:30

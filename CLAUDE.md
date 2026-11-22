@@ -144,10 +144,11 @@ Owner speaks Russian (sometimes types Russian on an English layout); answer in R
 ## Weekly digest (QNN Weekly, Telegram)
 - FULL INSTRUCTIONS: `tools/qnn-weekly.md` (single source of truth; public raw URL
   https://raw.githubusercontent.com/ThirteenKF/qoge-site/main/tools/qnn-weekly.md — any Claude account can follow it).
-- Every Monday ~9:40 Europe/Samara a scheduled Claude task prepares the RU digest + EN X thread and sends them
+- Every Monday 7:30 Europe/Samara a scheduled Claude task prepares the RU digest + EN X thread and sends them
   to the owner; the owner pastes the text to the bot -> draft with "Опубликовать" -> channel.
 - Structure: Главное (3, up to 5) + $QOGE line -> Цифра недели -> Мир -> Watchlist -> Слух недели (verdict +
   last week's rumor) -> Ещё за неделю -> $QOGE/Quai -> Календарь -> one CTA (rotation). <= 3900 chars.
+- The $QOGE/Quai block also carries 1–2 numbers from the QUAI dashboard (GET /api/quai: SOAP revenue, coverage, next unlock, depth) + link.
 - Watchlist: QUAI, INJ, STRK, NEAR, QRL/QTC, AVAX, ICP, ALGO, ZEC, LINK, DASH, ATOM, KSM, DOT, LTC.
 - Memory: every published digest is archived by api/telegram.mjs (Redis tg:issues, numbered from the
   "QNN Weekly #N" first line). Public: GET /api/telegram?action=issues&limit=N (JSON) and /weekly, /weekly/N
