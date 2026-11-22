@@ -93,6 +93,20 @@ Claude edits files in the owner's folder (`C:\Users\0x13kf\Desktop\qoge-site-mai
 writes `tools/commit-message.txt`, the owner runs `tools/publish.bat` → GitHub → Vercel deploys in ~1–2 min.
 Do not touch the main page or other research pages unless asked; the owner usually wants work limited to the dashboard.
 
+## Audit notes (Nov 22, 2026 — checked against the team's own dashboards)
+- Matches soap.qu.ai exactly: total revenue $7,074,007.84, 30-day revenue, 254,599,025 QUAI burned (team shows it at today's price).
+- Matches supply.qu.ai: circulating 1.163B, locked genesis 90.4M, genesis unlocked in 30 d 12.6M, mined in 30 d ≈29.1–29.4M (window differs).
+- Team's "SOAP offset · 30d" = burned / mined only (~85%); ours "coverage" also counts unlocks and Qi→QUAI (~50%). The card shows both.
+- Gas burner (17M QUAI, $191K): counted as burned on the ASSUMPTION that Quai destroys the base fee (headers carry baseFeePerGas).
+  Not confirmed; the team does not count it. The page says so and gives the share without it (81%).
+- "Sent elsewhere" destinations (explorer labels): 0x00091d… and 0x004dae… are Gate deposit addresses, 0x001771… → Kraken,
+  0x007718… (4M, the largest) spread to ~26 addresses, a few still hold the coins. The team says SOAP purchases are burned OR
+  routed to rewards for locked QUAI, so part of it may be that. `enrich()` in api/quai.js fills `leak.next` and burn `label`.
+- 0x007e2f…8987 is Gate's hot wallet: its burns are SOAP purchases withdrawn from Gate straight to the burn address.
+- Price note after unlocks = fixed 7-day change (an earlier version picked the lowest point in 7 days — biased, removed).
+- CoinGecko sometimes answers Vercel with HTTP 429: getJson retries twice; set `COINGECKO_API_KEY` (free Demo key) in Vercel to avoid it.
+  DEX share is not computed without CoinGecko volume. Unlock dates use the average block time of complete days (`blockTime30`).
+
 ## Facts established so far (Nov 21, 2026)
 - SOAP all-time revenue ≈ $7.07M; burned ≈ $5.93M (84%); leaks ≈ $357K (mostly Jan–Feb 2026, the largest 4M QUAI to `0x007718…9baf`); untraced ≈ $787K. Last 30 days: ~99% of revenue burned.
 - Revenue is falling: last 30 days ≈ $169K vs $396K the 30 days before; peak ≈ $1.48M/30 d in Feb 2026.

@@ -246,7 +246,7 @@ footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12p
   <div class="cols">
     <div class="panel">
       <h3 data-en="Sent from the SOAP wallet, not burned" data-ru="Ушло с кошелька SOAP не на сжигание">Sent elsewhere</h3>
-      <div class="sub" data-en="Net of what the recipient burned or sent back" data-ru="За вычетом того, что получатель сам сжёг или вернул">Net</div>
+      <div class="sub" data-en="Net of what the recipient burned or sent back. The team describes SOAP purchases as burned or routed to rewards for locked QUAI, so some of these may be that." data-ru="За вычетом того, что получатель сам сжёг или вернул. По описанию команды, купленные QUAI либо сжигаются, либо идут в награды за блокировку QUAI — часть переводов может быть этим.">Net</div>
       <div class="tbl" id="leakTable"></div>
     </div>
     <div class="panel">
@@ -336,28 +336,30 @@ evBurn:'Last burn', evBurnV:function(b,d){return date(b.t)+' · '+num(b.quai)+' 
   ofRev:'of revenue',
   wMined:'Mined', wUnl:'Genesis unlock', wConv:'Qi→QUAI & other (residual)', wBurn:'Burned by SOAP', wNet:'Net change',
   covT:'Buyback coverage', covP:function(b,n){return 'In 30 days '+num(n)+' new QUAI appeared; SOAP burned '+num(b)+' of them.';},
-  covNow:'Burned per day', covNeed:'Needed for zero growth', covRev:'SOAP revenue per day', covTyp:'Month without a big unlock',
+  covNow:'Burned per day', covNeed:'Needed for zero growth', covRev:'SOAP revenue per day', covTyp:'Month without a big unlock', covTeam:'Team\'s “SOAP offset” (burned / mined only)',
   covTypV:function(c){return '~'+pct(c)+' coverage';},
   covQ:function(q,u){return num(q)+' QUAI'+(u!=null?' ≈ '+usd(u):'');},
   covNote:function(u,n){return 'The 30-day window includes the '+date(u.t)+' unlock of '+num(u.quai)+' QUAI. Next unlocks are ~'+num(n.quai)+' a month, so coverage will rise by itself even if burns stay the same.';},
   mixSub:function(a,b){return 'Share of SOAP revenue by chain: all time ('+usd(a)+') vs last 30 days ('+usd(b)+')';}, mixAll:'All time', mix30:'Last 30 days', chain:'Chain', pp:'pp', share:'Share',
   lgPrice:'QUAI price', lgBurn:'SOAP burn', lgUnl:'Genesis unlock',
-  pNote:function(list){return list.length?'After the last unlocks the price moved: '+list.join(' · ')+'. A coincidence, not proof: the whole market moves the price too.':'';},
+  pNote:function(list){return list.length?'Price 7 days after the last unlocks: '+list.join(' · ')+'. A coincidence, not proof: the whole market moves the price too.':'';},
   live:'Live data', snap:'Snapshot', upd:'updated', partSnap:'some sections from snapshot: ',
   price:'Price', mcap:'Market cap', vol:'Volume 24h', infl:'Net inflation / yr', inflD:'mining minus SOAP burns, last 30 days',
   rev30:'SOAP revenue, 30 d', rev30D:'last 7 days: ', burnShare:'Burned, all time', burnShareD:'of SOAP revenue (burn-day prices)',
   ch24:'24h', ch7:'7d', atl:'all-time low ', ath:'ATH ',
   circ:'Circulating supply', mined:'Mined, 30 d', burned:'Burned by SOAP, 30 d', net:'Net from mining', other:'Other changes, 30 d', otherD:'unlocks and Qi↔QUAI conversions', unl30:'Genesis unlocked, 30 d', unl30D:function(u){return u?'last unlock '+date(u.t):'';}, rest:'Qi→QUAI conversions & other, 30 d', restD:'the rest of the supply change', dil:'Supply growth, next 12 months', dilD:function(n,u){return 'if mining and burns keep the 30-day pace: mining net '+pctS(n)+' + unlocks '+pctS(u);}, locked:'Still locked', lockedD:function(p,t){return pct(p)+' of circulating supply, last unlock ~'+monthYear(t);}, nextU:'Next unlock', nextUD:function(u,s){return num(u.quai)+' QUAI · '+pct2(u.quai/s)+' of supply';}, n12:'Unlocks in 12 months', n12D:function(p){return pct2(p)+' of circulating supply';}, lastU:'Last unlock', lastUD:function(u){return num(u.quai)+' QUAI';}, uAmt:'QUAI', uBlock:'Block', uShare:'% of supply', uDate:'Date (est.)', qi:'Qi supply',
   sMined:'Mined', sBurned:'Burned',
-  big:function(r){return 'SOAP has earned <b>'+usd(r.revenue)+'</b>. Burns worth <b>'+usd(r.burnedUsd)+' ('+pct(r.burnShare)+')</b> are visible on-chain, <b>'+usd(r.leakUsd)+'</b> went to other wallets, <b>'+usd(Math.max(0,r.untracedUsd))+'</b> cannot be traced.';},
-  spBurn:'Burned', spLeak:'Sent to other wallets', spUntr:'Untraced (exchange costs, timing, unknown)',
+  big:function(r){return 'SOAP has earned <b>'+usd(r.revenue)+'</b>. Burns worth <b>'+usd(r.burnedUsd)+'</b> ('+pct(r.burnShare)+', of them '+usd(r.gasUsd)+' via gas, see the note below) are visible on-chain, <b>'+usd(r.leakUsd)+'</b> went to other wallets, <b>'+usd(Math.max(0,r.untracedUsd))+'</b> cannot be traced.';},
+  spBurn:'Burned (sent to the burn address)', spGas:'Burned via gas (see note below)', spLeak:'Sent to other wallets', spUntr:'Untraced (exchange costs, timing, unknown)',
   t30:'Burned, last 30 days', t30D:function(r){return 'revenue '+usd(r.last30.revenue)+' · burned '+usd(r.last30.burnedUsd);},
   team:'Team dashboard shows', teamD:'burned QUAI at today\'s price, so it is not comparable with revenue',
   lastBurn:'Last burn', burnedQ:'Total burned',
   revenue:'Revenue', burnedU:'Burned', month:'Month', burnedQuai:'Burned, QUAI', share:'Share',
   addr:'Address', sent:'Sent, QUAI', ret:'Returned', netU:'Net, $', when:'Date', from:'From', amount:'QUAI',
-  soapW:'SOAP wallet', other2:'other wallet',
-  gas:function(r,w){return 'Not counted above as a leak: '+num(r.gasQuai)+' QUAI ('+usd(r.gasUsd)+') went from the SOAP wallet to a wallet that burns it through gas fees by calling a contract that only wastes gas'+(w&&w.gasBurner&&w.gasBurner.lastTx?' (last call '+date(w.gasBurner.lastTx)+')':'')+'. It is included in “burned”.';},
+  soapW:'SOAP wallet', other2:'other wallet', nextH:'Then',
+  nx:function(n){ if(!n) return '—'; return n.kind==='exchange'?'→ '+esc(n.label)+' exchange':n.kind==='spread'?'sent on to '+n.n+' addresses':n.kind==='kept'?'still on the address':'→ '+short(n.to); },
+  exB:function(l){return '('+esc(l)+' exchange: withdrawn straight to the burn address)';},
+  gas:function(r,w){return num(r.gasQuai)+' QUAI ('+usd(r.gasUsd)+') went from the SOAP wallet to a wallet that spends them on gas, calling a contract that only burns gas'+(w&&w.gasBurner&&w.gasBurner.lastTx?' (last call '+date(w.gasBurner.lastTx)+')':'')+'. We count them as burned, assuming Quai destroys the base fee as Ethereum does. The team dashboard does not count them (it shows '+num(r.directBurnQuai)+' QUAI burned); without them the burned share is '+pct((r.burnedUsd-r.gasUsd)/r.revenue)+', not '+pct(r.burnShare)+'.';},
   imp:function(u){return 'Market buy of '+usd(u);}, impD:function(a,b){return 'one exchange: ~'+pct1(a)+' · split across all: ~'+pct1(b);},
   hWait:function(d){return 'Recording since '+d+' — the chart appears after a few days of data.';}, hCov:'Coverage', hRev:'SOAP revenue, 30 d', hDepth:'Depth +2%', hPool:'Pool',
   dxPool:'QUAI/USDT pool, Quainance', dxPoolD:function(d){return num(d.usdt)+' USDT + '+num(d.quai)+' QUAI · ±2%: '+usd(d.depthUp)+' / '+usd(d.depthDown);},
@@ -397,28 +399,30 @@ evBurn:'Последнее сжигание', evBurnV:function(b,d){return date(
   ofRev:'от выручки',
   wMined:'Намайнено', wUnl:'Разлок генезиса', wConv:'Qi→QUAI и прочее (остаток)', wBurn:'Сожжено SOAP', wNet:'Итого',
   covT:'Покрытие выкупом', covP:function(b,n){return 'За 30 дней появилось '+num(n)+' новых QUAI, SOAP сжёг из них '+num(b)+'.';},
-  covNow:'Сжигается в день', covNeed:'Нужно для нулевого роста', covRev:'Выручка SOAP в день', covTyp:'В месяц без крупного разлока',
+  covNow:'Сжигается в день', covNeed:'Нужно для нулевого роста', covRev:'Выручка SOAP в день', covTyp:'В месяц без крупного разлока', covTeam:'«SOAP offset» у команды (сожжено / только намайнено)',
   covTypV:function(c){return 'покрытие ~'+pct(c);},
   covQ:function(q,u){return num(q)+' QUAI'+(u!=null?' ≈ '+usd(u):'');},
   covNote:function(u,n){return 'В эти 30 дней попал разлок '+date(u.t)+' на '+num(u.quai)+' QUAI. Дальше разлоки около '+num(n.quai)+' в месяц, поэтому покрытие вырастет само, даже если сжигать столько же.';},
   mixSub:function(a,b){return 'Доля сетей в выручке SOAP: за всё время ('+usd(a)+') и за последние 30 дней ('+usd(b)+')';}, mixAll:'За всё время', mix30:'Последние 30 дней', chain:'Сеть', pp:'п.п.', share:'Доля',
   lgPrice:'Цена QUAI', lgBurn:'Сжигание SOAP', lgUnl:'Разлок генезиса',
-  pNote:function(list){return list.length?'После последних разлоков цена: '+list.join(' · ')+'. Совпадение, а не доказательство: на цену влияет и рынок в целом.':'';},
+  pNote:function(list){return list.length?'Цена через 7 дней после последних разлоков: '+list.join(' · ')+'. Совпадение, а не доказательство: на цену влияет и рынок в целом.':'';},
   live:'Живые данные', snap:'Снимок', upd:'обновлено', partSnap:'часть разделов из снимка: ',
   price:'Цена', mcap:'Капитализация', vol:'Объём за 24 ч', infl:'Чистая инфляция в год', inflD:'майнинг минус сжигания SOAP, последние 30 дней',
   rev30:'Выручка SOAP, 30 дн.', rev30D:'за 7 дней: ', burnShare:'Сожжено за всё время', burnShareD:'от выручки SOAP (по ценам дня сжигания)',
   ch24:'24 ч', ch7:'7 дн.', atl:'минимум ', ath:'максимум ',
   circ:'Предложение в обращении', mined:'Намайнено, 30 дн.', burned:'Сожжено SOAP, 30 дн.', net:'Чистый прирост от майнинга', other:'Прочие изменения, 30 дн.', otherD:'разлоки и конвертации Qi↔QUAI', unl30:'Разлок генезиса, 30 дн.', unl30D:function(u){return u?'последний разлок '+date(u.t):'';}, rest:'Конвертации Qi→QUAI и прочее, 30 дн.', restD:'остаток изменения предложения', dil:'Рост предложения за 12 месяцев', dilD:function(n,u){return 'если майнинг и сжигания сохранят темп 30 дней: майнинг-нетто '+pctS(n)+' + разлоки '+pctS(u);}, locked:'Ещё заблокировано', lockedD:function(p,t){return pct(p)+' от предложения в обращении, последний разлок ~'+monthYear(t);}, nextU:'Следующий разлок', nextUD:function(u,s){return num(u.quai)+' QUAI · '+pct2(u.quai/s)+' предложения';}, n12:'Разлоки за 12 месяцев', n12D:function(p){return pct2(p)+' от предложения в обращении';}, lastU:'Последний разлок', lastUD:function(u){return num(u.quai)+' QUAI';}, uAmt:'QUAI', uBlock:'Блок', uShare:'% предложения', uDate:'Дата (оценка)', qi:'Предложение Qi',
   sMined:'Намайнено', sBurned:'Сожжено',
-  big:function(r){return 'SOAP заработал <b>'+usd(r.revenue)+'</b>. В блокчейне видны сжигания на <b>'+usd(r.burnedUsd)+' ('+pct(r.burnShare)+')</b>, <b>'+usd(r.leakUsd)+'</b> ушло на другие кошельки, <b>'+usd(Math.max(0,r.untracedUsd))+'</b> отследить нельзя.';},
-  spBurn:'Сожжено', spLeak:'Ушло на другие кошельки', spUntr:'Не отслеживается (расходы на обмен, задержки, неизвестно)',
+  big:function(r){return 'SOAP заработал <b>'+usd(r.revenue)+'</b>. В блокчейне видны сжигания на <b>'+usd(r.burnedUsd)+'</b> ('+pct(r.burnShare)+', из них '+usd(r.gasUsd)+' — через газ, см. пояснение ниже), <b>'+usd(r.leakUsd)+'</b> ушло на другие кошельки, <b>'+usd(Math.max(0,r.untracedUsd))+'</b> отследить нельзя.';},
+  spBurn:'Сожжено (на адрес сжигания)', spGas:'Сожжено через газ (см. пояснение ниже)', spLeak:'Ушло на другие кошельки', spUntr:'Не отслеживается (расходы на обмен, задержки, неизвестно)',
   t30:'Сожжено за 30 дней', t30D:function(r){return 'выручка '+usd(r.last30.revenue)+' · сожжено '+usd(r.last30.burnedUsd);},
   team:'Дашборд команды показывает', teamD:'сожжённые QUAI по сегодняшней цене, поэтому с выручкой это не сравнить',
   lastBurn:'Последнее сжигание', burnedQ:'Всего сожжено',
   revenue:'Выручка', burnedU:'Сожжено', month:'Месяц', burnedQuai:'Сожжено, QUAI', share:'Доля',
   addr:'Адрес', sent:'Отправлено, QUAI', ret:'Вернулось', netU:'Итого, $', when:'Дата', from:'От кого', amount:'QUAI',
-  soapW:'кошелёк SOAP', other2:'другой кошелёк',
-  gas:function(r,w){return 'Не считается утечкой: '+num(r.gasQuai)+' QUAI ('+usd(r.gasUsd)+') ушли с кошелька SOAP на кошелёк, который сжигает их через комиссии — вызывает контракт, который только тратит газ'+(w&&w.gasBurner&&w.gasBurner.lastTx?' (последний вызов '+date(w.gasBurner.lastTx)+')':'')+'. Это входит в «сожжено».';},
+  soapW:'кошелёк SOAP', other2:'другой кошелёк', nextH:'Куда дальше',
+  nx:function(n){ if(!n) return '—'; return n.kind==='exchange'?'→ биржа '+esc(n.label):n.kind==='spread'?'разослано на '+n.n+' '+plural(n.n,'адрес','адреса','адресов'):n.kind==='kept'?'лежит на адресе':'→ '+short(n.to); },
+  exB:function(l){return '(биржа '+esc(l)+': вывод сразу на адрес сжигания)';},
+  gas:function(r,w){return num(r.gasQuai)+' QUAI ('+usd(r.gasUsd)+') ушли с кошелька SOAP на кошелёк, который тратит их на газ, вызывая контракт, который только сжигает газ'+(w&&w.gasBurner&&w.gasBurner.lastTx?' (последний вызов '+date(w.gasBurner.lastTx)+')':'')+'. Мы считаем их сожжёнными, исходя из того, что базовая комиссия в Quai уничтожается, как в Ethereum. Дашборд команды их не учитывает (у него сожжено '+num(r.directBurnQuai)+' QUAI); без них доля сожжённого — '+pct((r.burnedUsd-r.gasUsd)/r.revenue)+', а не '+pct(r.burnShare)+'.';},
   imp:function(u){return 'Покупка по рынку на '+usd(u);}, impD:function(a,b){return 'на одной бирже: ~'+pct1(a)+' · на всех сразу: ~'+pct1(b);},
   hWait:function(d){return 'Запись идёт с '+d+' — график появится, когда накопится несколько дней.';}, hCov:'Покрытие', hRev:'Выручка SOAP, 30 дн.', hDepth:'Глубина +2%', hPool:'Пул',
   dxPool:'Пул QUAI/USDT, Quainance', dxPoolD:function(d){return num(d.usdt)+' USDT + '+num(d.quai)+' QUAI · ±2%: '+usd(d.depthUp)+' / '+usd(d.depthDown);},
@@ -562,6 +566,7 @@ function renderWaterfall(s,m){ var d=s.d30; if(d.unlocked==null){ $('waterfall')
   var rows=row(t('covNow'),T[L].covQ(now,pr?now*pr:null),'#e3262b')+row(t('covNeed'),T[L].covQ(need,pr?need*pr:null));
   if(D.soap&&D.soap.last30!=null) rows+=row(t('covRev'),usd(D.soap.last30/30),'#2e97ca');
   if(big) rows+=row(t('covTyp'),T[L].covTypV(now/typNeed),'#5bd16a');
+  if(d.mined) rows+=row(t('covTeam'),pct(d.burned/d.mined));
   $('coverage').innerHTML='<h3>'+t('covT')+'</h3><div class="big2">'+pct(cov)+'</div><div class="bar2"><div style="flex:'+cov.toFixed(3)+';background:#e3262b"></div><div style="flex:'+(1-cov).toFixed(3)+';background:#333333"></div></div><p>'+T[L].covP(d.burned,newS)+'</p><div class="kvs">'+rows+'</div>'+(big?'<p class="note">'+T[L].covNote(u.last,u.next)+'</p>':'');
 }
 
@@ -623,8 +628,8 @@ function render(){
     lineChart($('priceChart'),D.priceChart,'#f2f2f2',function(v){return dc('$'+v.toFixed(3));},function(v){return px(v);},evs);
     legend($('priceLegend'),[[t('lgPrice'),'#f2f2f2'],[t('lgBurn'),'#e3262b'],[t('lgUnl'),'#d6b42a']]);
     var pc=D.priceChart, ix={}; pc.forEach(function(x,i){ix[x[0]]=i;});
-    var notes=evs.unl.filter(function(u){return ix[u.d]!=null&&ix[u.d]<pc.length-3;}).slice(-3).map(function(u){ var i=ix[u.d], j=Math.min(pc.length-1,i+7), lo=i; for(var k=i;k<=j;k++) if(pc[k][1]<pc[lo][1]) lo=k;
-      return dayLabel(u.d)+' → '+sgn((pc[lo][1]/pc[i][1]-1)*100)+' ('+(lo-i)+(L==='ru'?' дн.':' d')+')'; });
+    var notes=evs.unl.filter(function(u){return ix[u.d]!=null&&ix[u.d]+7<pc.length;}).slice(-3).map(function(u){ var i=ix[u.d];
+      return dayLabel(u.d)+' → '+sgn((pc[i+7][1]/pc[i][1]-1)*100); });
     $('priceNote').textContent=T[L].pNote(notes);
   }
 
@@ -657,7 +662,7 @@ function render(){
   // soap
   if(r){
     $('soapBig').innerHTML=T[L].big(r);
-    var tot=r.revenue, parts=[[r.burnedUsd,'#e3262b',t('spBurn')],[r.leakUsd,'#d6b42a',t('spLeak')],[Math.max(0,r.untracedUsd),'#4a4a4a',t('spUntr')]];
+    var tot=r.revenue, parts=[[r.burnedUsd-(r.gasUsd||0),'#e3262b',t('spBurn')],[r.gasUsd||0,'#8f1d20',t('spGas')],[r.leakUsd,'#d6b42a',t('spLeak')],[Math.max(0,r.untracedUsd),'#4a4a4a',t('spUntr')]];
     $('soapSplit').innerHTML=parts.map(function(p){ return '<div style="flex:'+(p[0]/tot)+';background:'+p[1]+'" data-tip="'+esc('<b>'+p[2]+'</b><br>'+usd(p[0])+' · '+pct(p[0]/tot))+'"></div>'; }).join('');
     legend($('splitLegend'),parts.map(function(p){ return [p[2]+' — '+usd(p[0])+' ('+pct(p[0]/tot)+')',p[1]]; }));
     var h3='';
@@ -672,10 +677,10 @@ function render(){
       function(v){return usd(v);},function(i){var x=ms[i], b=x.burnUsd+x.gasUsd;return '<b>'+ymLabel(x.m,1)+'</b><br>'+sw('#2e97ca')+t('revenue')+': '+usd(x.revenue)+'<br>'+sw('#e3262b')+t('burnedU')+': '+usd(b)+' ('+pct(x.revenue?b/x.revenue:null)+')<br>'+num(x.burnQuai+x.gasQuai)+' QUAI';},1);
     $('soapTable').innerHTML='<table><thead><tr><th>'+t('month')+'</th><th>'+t('revenue')+'</th><th>'+t('burnedQuai')+'</th><th>'+t('burnedU')+'</th><th>'+t('share')+'</th></tr></thead><tbody>'+
       ms.map(function(x){var b=x.burnUsd+x.gasUsd;return '<tr><td>'+ymLabel(x.m,1)+'</td><td>'+usd(x.revenue)+'</td><td>'+num(x.burnQuai+x.gasQuai)+'</td><td>'+usd(b)+'</td><td>'+pct(x.revenue?b/x.revenue:null)+'</td></tr>';}).join('')+'</tbody></table>';
-    $('leakTable').innerHTML='<table><thead><tr><th>'+t('addr')+'</th><th>'+t('when')+'</th><th>'+t('sent')+'</th><th>'+t('netU')+'</th></tr></thead><tbody>'+
-      r.leaks.map(function(l){return '<tr><td>'+scan(l.to)+'</td><td>'+date(l.first)+'</td><td>'+num(l.quai)+(l.returned>=1000?' <span class="note">(−'+num(l.returned)+')</span>':'')+'</td><td>'+usd(l.netUsd)+'</td></tr>';}).join('')+'</tbody></table>';
+    $('leakTable').innerHTML='<table><thead><tr><th>'+t('addr')+'</th><th>'+t('when')+'</th><th>'+t('sent')+'</th><th>'+t('netU')+'</th><th>'+t('nextH')+'</th></tr></thead><tbody>'+
+      r.leaks.map(function(l){return '<tr><td>'+scan(l.to)+'</td><td>'+date(l.first)+'</td><td>'+num(l.quai)+(l.returned>=1000?' <span class="note">(−'+num(l.returned)+')</span>':'')+'</td><td>'+usd(l.netUsd)+'</td><td>'+T[L].nx(l.next)+'</td></tr>';}).join('')+'</tbody></table>';
     $('burnTable').innerHTML='<table><thead><tr><th>'+t('when')+'</th><th>'+t('amount')+'</th><th>'+t('from')+'</th></tr></thead><tbody>'+
-      r.recentBurns.map(function(b){return '<tr><td>'+date(b.t)+'</td><td>'+num(b.quai)+'</td><td>'+(b.from===D.addresses.soap?'<a href="https://quaiscan.io/address/'+b.from+'" target="_blank" rel="noopener">'+t('soapW')+'</a>':scan(b.from))+'</td></tr>';}).join('')+'</tbody></table>';
+      r.recentBurns.map(function(b){return '<tr><td>'+date(b.t)+'</td><td>'+num(b.quai)+'</td><td>'+(b.from===D.addresses.soap?'<a href="https://quaiscan.io/address/'+b.from+'" target="_blank" rel="noopener">'+t('soapW')+'</a>':scan(b.from)+(b.label?' <span class="note">'+T[L].exB(b.label)+'</span>':''))+'</td></tr>';}).join('')+'</tbody></table>';
     $('gasNote').textContent=T[L].gas(r,w);
   }
   if(so&&so.last30ByChain){ var CH=[['bcash','Bitcoin Cash','#bdbdbd','#050505'],['dogecoin','Dogecoin','#e3262b','#f2f2f2'],['ravencoin','Ravencoin','#7a1418','#f2f2f2'],['litecoin','Litecoin','#4a4a4a','#f2f2f2']];

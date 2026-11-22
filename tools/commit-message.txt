@@ -1,1 +1,1 @@
-Add daily Telegram alert when QUAI dashboard sources fail or go stale
+Audit QUAI dashboard numbers: fair price note, leak destinations, gas caveat, team offset, CoinGecko retry

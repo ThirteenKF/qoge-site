@@ -149,6 +149,8 @@ const SOURCES2 = {
       qi: big(st.analytics?.qiSupplyTotal) / 1000,
       soapBurned: wei(st.analytics?.soapBurnBalance),
       head: Number(st.info?.blockNumber) || null, blockTime: Number(st.info?.avgBlockTime) || null,
+      // average block time over complete days (steadier than the live figure, used to date future unlocks)
+      blockTime30: (() => { const r = (sp.rows || []).filter(x => !x.partial && x.blockCount > 0); return r.length ? 86400 * r.length / r.reduce((a, x) => a + x.blockCount, 0) : null; })(),
       // [date, supply at day end, burned that day, mined that day, partial day?]
       days: (sp.rows || []).map(r => [r.periodStart, wei(r.quaiTotalEnd), wei(r.burnDelta), mined[r.periodStart] ?? null, !!r.partial]),
     };
@@ -242,11 +244,11 @@ function assemble(p) {
     const d = p.dex, price = d.usdt / d.quai;
     // Constant-product pool: buying with X USDT (after the 0.3% fee) moves the price by ((R+X)/R)^2 - 1.
     const buyImpact = usd => { const x = usd * (1 - DEX_FEE); return (Math.pow((d.usdt + x) / d.usdt, 2) - 1) * 100; };
-    const cexVol = ok('market') ? p.market.vol24 || 0 : 0;
+    const cexVol = ok('market') ? p.market.vol24 || 0 : null;
     out.dex = { ...d, price, poolUsd: 2 * d.usdt,
       depthUp: d.usdt * (Math.sqrt(1.02) - 1), depthDown: d.usdt * (1 - Math.sqrt(0.98)),
       impact: [500, 5000].map(usd => ({ usd, pct: buyImpact(usd) })),
-      share24: d.vol24 != null && cexVol + d.vol24 > 0 ? d.vol24 / (cexVol + d.vol24) : null };
+      share24: d.vol24 != null && cexVol != null && cexVol + d.vol24 > 0 ? d.vol24 / (cexVol + d.vol24) : null };
   }
   if (ok('market')) {
     const m = p.market;
@@ -339,7 +341,7 @@ function assemble(p) {
     const change = base && last.length ? last[last.length - 1][1] - base[1] : null;
     const net = mined - burned;
     // Unlocks: estimated date from the current head block and average block time.
-    const bt = s.blockTime || 5.2, head = s.head;
+    const bt = s.blockTime30 || s.blockTime || 5.2, head = s.head;
     const at = blk => head ? Math.round(Date.now() / 1000 + (blk - head) * bt) : null;
     // Past unlock dates: the tracker's own calendar (UNLOCK_DATES, then +30 days per month); future ones from block time.
     const pastDate = m => UNLOCK_DATES[m] ? Date.parse(UNLOCK_DATES[m] + 'T00:00:00Z') / 1000 : Date.parse('2026-09-30T00:00:00Z') / 1000 + (m - 20) * 2592000;
@@ -377,9 +379,15 @@ async function collect(get) {
 }
 
 async function getJson(url) {
-  const res = await fetch(url, { headers: { 'user-agent': 'qoge-site-quai-dashboard/1.0 (+https://www.qoge.fun/research/quai-live/)', accept: 'application/json' } });
-  if (!res.ok) throw new Error(`${url.replace(/\?.*/, '')} -> HTTP ${res.status}`);
-  return res.json();
+  const headers = { 'user-agent': 'qoge-site-quai-dashboard/1.0 (+https://www.qoge.fun/research/quai-live/)', accept: 'application/json' };
+  // Optional free CoinGecko Demo key (Vercel env COINGECKO_API_KEY): shared Vercel IPs often hit the public rate limit (HTTP 429).
+  if (url.startsWith(CG) && process.env.COINGECKO_API_KEY) headers['x-cg-demo-api-key'] = process.env.COINGECKO_API_KEY;
+  for (let attempt = 0; ; attempt++) {
+    const res = await fetch(url, { headers });
+    if (res.status === 429 && attempt < 2) { await new Promise(r => setTimeout(r, 2500 * (attempt + 1))); continue; }
+    if (!res.ok) throw new Error(`${url.replace(/\?.*/, '')} -> HTTP ${res.status}`);
+    return res.json();
+  }
 }
 
 // ---------- history (Upstash Redis, same database as the Discord/Telegram bots) ----------
@@ -438,9 +446,34 @@ async function notifyOwner(text) {
   return r.ok ? 'sent' : 'telegram HTTP ' + r.status;
 }
 
+// ---------- where "sent elsewhere" QUAI went next, and who the non-SOAP burners are ----------
+// Uses the official explorer's address labels (e.g. "Gate", "Kraken" for exchange wallets).
+async function enrich(d) {
+  if (!d.recon) return;
+  const labels = {}, label = async a => {
+    if (!(a in labels)) { try { const i = await getJson(`${EXP}/address/${a}?includeTransactions=false`); labels[a] = i.info?.label || null; } catch (e) { labels[a] = null; } }
+    return labels[a];
+  };
+  await Promise.all((d.recon.leaks || []).map(async l => {
+    try {
+      const j = await getJson(`${EXP}/address/${l.to}/transactions?limit=100`);
+      const outs = {};
+      for (const t of j.items || []) if (lc(t.from_addr) === lc(l.to) && t.to_addr) outs[lc(t.to_addr)] = (outs[lc(t.to_addr)] || 0) + wei(toWeiString(t.value));
+      const list = Object.entries(outs).sort((a, b) => b[1] - a[1]), sent = list.reduce((a, x) => a + x[1], 0);
+      if (!list.length || sent < l.quai * 0.05) { l.next = { kind: 'kept' }; return; }
+      const [top, q] = list[0], lab = await label(top);
+      if (lab && q >= sent * 0.5) l.next = { kind: 'exchange', label: lab, quai: q };
+      else if (list.length >= 5) l.next = { kind: 'spread', n: list.length, quai: sent };
+      else l.next = { kind: 'wallet', to: top, quai: q };
+    } catch (e) {}
+  }));
+  for (const b of d.recon.recentBurns || []) if (lc(b.from) !== A.soap) b.label = await label(lc(b.from));
+}
+
 module.exports = async (req, res) => {
   try {
     const data = assemble(await collect(getJson));
+    try { await enrich(data); } catch (e) {}
     try { data.history = await history(data); } catch (e) { data.historyError = String(e.message || e).slice(0, 200); }
     const url = req.url || '', cron = /[?&]save=1/.test(url);
     data.health = health(data);
