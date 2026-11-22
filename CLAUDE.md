@@ -2,6 +2,19 @@
 
 Context for picking this project up in a new chat.
 
+## Starting from another Claude account
+Everything needed lives in this repo; nothing depends on a particular Claude account or chat.
+1. Give Claude the project: in the Claude desktop app add the folder `C:\Users\0x13kf\Desktop\qoge-site-main`
+   (or let it read the public repo https://github.com/ThirteenKF/qoge-site).
+2. Claude reads this file first, then the guide for the task:
+   - QUAI Live dashboard → `tools/quai-dashboard.md` (sources, formulas, Redis history, design and EN/RU rules, backlog);
+   - QNN Weekly digest → `tools/qnn-weekly.md`.
+3. Secrets (Vercel env: Discord/Telegram tokens, Upstash Redis, DIGEST_SECRET) are only in Vercel, never in the repo;
+   the new account does not need them to edit the site.
+4. Not transferable: chats and artifacts of the old account (e.g. the dashboard design canvas). The chosen design is
+   written down in `tools/quai-dashboard.md`, so nothing is lost.
+Owner speaks Russian (sometimes types Russian on an English layout); answer in Russian.
+
 ## Project
 - Landing page for the $QOGE memecoin (doge that colonized Mars).
 - Repo: https://github.com/ThirteenKF/qoge-site (public, branch `main`)
@@ -76,7 +89,8 @@ Context for picking this project up in a new chat.
 - INJ report v2 "The Leaky Bucket / Дырявое ведро" (research/inj/, Nov 9, 2026): 30 slides EN+RU, both PDFs.
   Key facts: on-chain supply 122.9M INJ (not 100M), issuance ~5.4M/yr vs ~0.35M burned, INJC ETF live since Nov 5.
   Slides were rendered by a script in Claude's workspace (not in the repo); edit = re-render all 60 webp + PDFs.
-- QUAI Live dashboard (`research/quai-live/index.html`, Nov 21, 2026): independent live page — pulse (price, mcap,
+- QUAI Live dashboard — FULL GUIDE: `tools/quai-dashboard.md`. Summary:
+  QUAI Live dashboard (`research/quai-live/index.html`, Nov 21, 2026): independent live page — pulse (price, mcap,
   net inflation), supply (mined vs SOAP burned, 30 d), SOAP audit (team revenue vs on-chain burns valued at the
   burn-day price, transfers from the SOAP wallet that were not burned, gas-burner wallet), liquidity (±2% depth,
   price impact of $500/$5000), ecosystem (Hashference, x402, HashferenceStaking). EN/RU via 'qoge-lang'.

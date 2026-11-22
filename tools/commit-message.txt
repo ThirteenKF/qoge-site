@@ -1,1 +1,1 @@
-Add history to the QUAI dashboard: backfilled coverage and SOAP revenue, daily Redis records
+Add daily Telegram alert when QUAI dashboard sources fail or go stale

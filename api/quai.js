@@ -412,11 +412,49 @@ async function history(data) {
   return out.sort((a, b) => (a[0] < b[0] ? -1 : 1));
 }
 
+// ---------- failure alerts (Telegram, same bot as QNN Weekly) ----------
+// On the daily cron run the server checks every source and sends the owner ONE private message
+// if something is broken or stale. Silent when everything works.
+// Test by hand: /api/quai?save=1&test=1&key=<DIGEST_SECRET>  (always sends, even when all is fine).
+const SECTION_RU = { market: 'Цена и биржи (CoinGecko)', prices: 'Цены по дням (CoinGecko)', burns: 'Сжигания (обозреватель блоков)',
+  soapWallet: 'Кошелёк SOAP (обозреватель блоков)', wallets: 'Кошельки (обозреватель блоков)', network: 'Сеть (обозреватель блоков)',
+  soap: 'Выручка SOAP (soap.qu.ai)', supply: 'Предложение (supply.qu.ai)', hashference: 'Hashference', x402: 'x402', dex: 'DEX Quainance' };
+function health(d) {
+  const p = [];
+  for (const k of Object.keys(SOURCES)) if (d[k + 'Error']) p.push(`❌ ${SECTION_RU[k] || k}: ${String(d[k + 'Error']).slice(0, 140)}`);
+  const days = d.supply?.days; const lastDay = days?.length ? days[days.length - 1][0] : null;
+  if (lastDay && Date.now() - Date.parse(lastDay + 'T00:00:00Z') > 2 * 864e5) p.push(`⚠️ supply.qu.ai: последний день в данных ${lastDay} — источник не обновляется`);
+  if (d.soap && !d.soapError && !(d.soap.last7 > 0)) p.push('⚠️ SOAP: выручка за 7 дней = 0 — либо выкуп остановлен, либо сломался API');
+  if (d.market && !d.marketError && !(d.market.price > 0)) p.push('⚠️ CoinGecko: нет цены QUAI');
+  if (d.dex && !d.dexError && !(d.dex.poolUsd > 1000)) p.push(`⚠️ Пул QUAI/USDT на Quainance почти пуст: ${Math.round(d.dex.poolUsd || 0)} $`);
+  if (d.historyError) p.push('❌ История (Redis): ' + d.historyError.slice(0, 140));
+  return p;
+}
+async function notifyOwner(text) {
+  const token = process.env.TELEGRAM_BOT_TOKEN, owner = process.env.TELEGRAM_OWNER_ID;
+  if (!token || !owner) return 'TELEGRAM_BOT_TOKEN / TELEGRAM_OWNER_ID not set';
+  const r = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, { method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ chat_id: owner, text, link_preview_options: { is_disabled: true } }) });
+  return r.ok ? 'sent' : 'telegram HTTP ' + r.status;
+}
+
 module.exports = async (req, res) => {
   try {
     const data = assemble(await collect(getJson));
     try { data.history = await history(data); } catch (e) { data.historyError = String(e.message || e).slice(0, 200); }
-    const cron = /[?&]save=1/.test(req.url || '');
+    const url = req.url || '', cron = /[?&]save=1/.test(url);
+    data.health = health(data);
+    if (cron) {
+      const key = (url.match(/[?&]key=([^&]+)/) || [])[1];
+      const byCron = /vercel-cron/i.test(req.headers?.['user-agent'] || '');
+      const byOwner = !!process.env.DIGEST_SECRET && key === process.env.DIGEST_SECRET;
+      const test = byOwner && /[?&]test=1/.test(url);
+      if ((byCron || byOwner) && (data.health.length || test)) {
+        const body = data.health.length ? data.health.join('\n') : '✅ Все источники работают.';
+        try { data.notified = await notifyOwner('Дашборд QUAI — проверка источников\n\n' + body + '\n\nhttps://www.qoge.fun/research/quai-live/'); }
+        catch (e) { data.notified = String(e.message || e); }
+      }
+    }
     res.setHeader('Cache-Control', cron ? 'no-store' : 'public, s-maxage=3600, stale-while-revalidate=86400');
     res.status(200).json(data);
   } catch (err) {
