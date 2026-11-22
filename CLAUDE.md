@@ -83,7 +83,9 @@ Owner speaks Russian (sometimes types Russian on an English layout); answer in R
   react only).
 - Research hub look (Nov 22, 2026): same as the QUAI dashboard — #050505 background with the animated Quai mesh (`assets/quai-bg.js`),
   dark header (#0d0d0d, red logo/buy button, mono crumb, red underline on the active language), cards #0d0d0d with 1px #232323 borders
-  (red on hover), green Telegram button (#5bd16a). Yellow stays for brand accents (title, Read buttons, "New" label). research-bg.webp is no longer used.
+  (red on hover), green Telegram button (#5bd16a). Yellow stays for brand accents (title, Read buttons, "New" label).
+  Every report page (research/<project>/) also uses the animated mesh instead of the Mars photo (html #050505, canvas #qbg z-index -1);
+  research-bg.webp is no longer used. The dashboard has no card in the hub (it has the "QUAI Live" button in the main site header).
 - Research section (`research/`): static pages, no runtime. `research/index.html` = hub (cards, one per
   report); `research/quai/index.html` = QUAI tokenomics report: slides as webp images (`en/NN.webp`,
   `ru/NN.webp`, 1600x900) + speaker notes, EN/RU toggle (shares localStorage 'qoge-lang', `?lang=ru` works),
