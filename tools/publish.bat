@@ -31,7 +31,7 @@ if exist tools\commit-message.txt (
 :push
 echo.
 echo --- syncing with GitHub ---
-git pull --rebase origin main
+git pull --rebase --autostash origin main
 git push origin main
 set RESULT=%errorlevel%
 echo.
