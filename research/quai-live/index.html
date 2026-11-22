@@ -21,6 +21,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Bai+Jamjuree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+#qbg{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+main,footer{position:relative;z-index:1}
 :root{--ink:#050505;--paper:#f2f2f2;--red:#e3262b;--yel:#e3262b;--mute:#8f8f8f;--line:#1c1c1c;--card:#0d0d0d;
   --s1:#2e97ca;--s2:#e3262b;--s0:#4a4a4a;--txt2:#c9c9c9;--grid:#1c1c1c}
 *{box-sizing:border-box}
@@ -756,5 +758,7 @@ if(location.protocol!=='file:' && !/github\.io$/.test(location.hostname)){
 }
 })();
 </script>
+<canvas id="qbg" aria-hidden="true"></canvas>
+<script src="../../assets/quai-bg.js" defer></script>
 </body>
 </html>

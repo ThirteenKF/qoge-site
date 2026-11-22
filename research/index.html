@@ -23,22 +23,23 @@
 <meta name="twitter:description" content="Plain-language breakdowns of crypto projects from the $QOGE community: tokenomics, numbers, risks and scenarios. EN + RU. Not financial advice.">
 <meta name="twitter:image" content="https://www.qoge.fun/research/og.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{--ink:#141110;--paper:#f4f0ec;--red:oklch(0.62 0.21 25);--yel:oklch(0.88 0.17 95);--mute:#a59e97;--line:#2a2523}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--ink);color:var(--paper);font-family:'Archivo',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
 .mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
-header.q{position:sticky;top:0;z-index:20;display:flex;align-items:stretch;background:var(--paper);color:var(--ink);border-bottom:4px solid var(--ink);font-weight:900}
-header.q .logo{display:flex;align-items:center;gap:10px;background:var(--red);color:var(--paper);padding:10px 18px;font-stretch:125%;font-size:20px;white-space:nowrap}
+header.q{position:sticky;top:0;z-index:20;display:flex;align-items:stretch;background:#0d0d0d;color:var(--paper);border-bottom:1px solid #232323;font-weight:700}
+header.q .logo{display:flex;align-items:center;gap:10px;background:#e3262b;color:var(--paper);padding:10px 18px;font-stretch:125%;font-size:20px;white-space:nowrap}
 header.q .logo img{width:32px;height:32px;border-radius:50%;border:2px solid var(--paper);object-fit:cover}
-header.q .crumb{flex:1;min-width:0;display:flex;align-items:center;gap:10px;padding:0 16px;font-size:14px;text-transform:uppercase;white-space:nowrap;overflow:hidden}
-header.q .crumb a:hover{color:var(--red)}
-header.q .crumb .sep{color:#8a827b}
-.lang{display:flex;align-items:stretch;border-left:4px solid var(--ink)}
-.lang button{font:inherit;font-weight:900;font-size:14px;border:0;background:transparent;color:var(--ink);padding:0 14px;cursor:pointer}
-.lang button[aria-pressed=true]{background:var(--ink);color:var(--yel)}
+header.q .crumb{flex:1;min-width:0;display:flex;align-items:center;gap:10px;padding:0 16px;font-size:13px;text-transform:uppercase;white-space:nowrap;overflow:hidden;color:#8f8f8f;font-family:'JetBrains Mono','IBM Plex Mono',ui-monospace,monospace}
+header.q .crumb span[data-en]{color:var(--paper)}
+header.q .crumb a:hover{color:#e3262b}
+header.q .crumb .sep{color:#6f6f6f}
+.lang{display:flex;align-items:stretch;border-left:1px solid #232323}
+.lang button{font:inherit;font-weight:700;font-size:13px;border:0;background:transparent;color:#8f8f8f;padding:0 14px;cursor:pointer;font-family:'JetBrains Mono','IBM Plex Mono',ui-monospace,monospace}
+.lang button[aria-pressed=true]{background:transparent;color:var(--paper);box-shadow:inset 0 -2px 0 #e3262b}
 .wrap{max-width:1760px;margin:0 auto;padding:0 clamp(16px,3vw,48px)}
 .tag{display:inline-block;background:var(--red);color:var(--paper);padding:6px 14px;font-weight:900;font-size:14px;text-transform:uppercase;transform:skewX(-8deg)}
 h1{margin:18px 0 0;font-weight:900;font-stretch:115%;font-size:clamp(36px,6vw,76px);line-height:.95;letter-spacing:-.01em;text-transform:uppercase;text-wrap:balance}
@@ -52,17 +53,18 @@ h1 span{color:var(--yel)}
 .btn.ghost:hover{background:var(--paper);color:var(--ink)}
 .btn.red{background:var(--red);border-color:var(--red);color:var(--paper)}
 .btn.red:hover{background:transparent;color:var(--red)}
-footer.q{margin-top:64px;border-top:1px solid var(--line);padding:28px 16px 40px;font-size:11px;letter-spacing:.1em;color:#8a827b;text-transform:uppercase;line-height:1.7}
+footer.q{margin-top:64px;border-top:1px solid #232323;padding:28px 16px 40px;font-size:11px;letter-spacing:.1em;color:#8a827b;text-transform:uppercase;line-height:1.7}
 footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
 @media (max-width:640px){header.q .logo span.t{display:none} header.q .crumb{font-size:12px;padding:0 10px} .lang button{padding:0 10px}}
 
-body{background:var(--ink) url(research-bg.webp) center top/cover fixed no-repeat}
-@media (max-width:767px){body{background-attachment:scroll;background-size:auto 100vh}}
+body{background:#050505}
+#qbg{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+main,footer{position:relative;z-index:1}
 .hero{padding:44px 0 8px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:28px;margin-top:36px}
-.card{display:flex;flex-direction:column;background:#1d1a19;border:4px solid var(--paper);transition:transform .15s,border-color .15s}
-.card:hover{transform:translate(-3px,-3px);border-color:var(--yel)}
-.card img{display:block;width:100%;height:auto;aspect-ratio:16/9;border-bottom:4px solid var(--paper)}
+.card{display:flex;flex-direction:column;background:#0d0d0d;border:1px solid #232323;transition:transform .15s,border-color .15s}
+.card:hover{transform:translate(-3px,-3px);border-color:#e3262b}
+.card img{display:block;width:100%;height:auto;aspect-ratio:16/9;border-bottom:1px solid #232323}
 .card .b{padding:18px 18px 22px;display:flex;flex-direction:column;gap:10px}
 .card h2{margin:0;font-weight:900;font-stretch:110%;font-size:26px;line-height:1.05;text-transform:uppercase}
 .card p{margin:0;color:#cfc8c1;font-size:15px;line-height:1.5}
@@ -73,23 +75,23 @@ body{background:var(--ink) url(research-bg.webp) center top/cover fixed no-repea
 .soon:hover{transform:none}
 .soon h2{color:#8a827b}
 
-header.q .buy{display:flex;align-items:center;background:var(--yel);color:var(--ink);padding:0 18px;border-left:4px solid var(--ink);font-size:14px;text-transform:uppercase;white-space:nowrap}
-header.q .buy:hover{background:var(--ink);color:var(--yel)}
-.feat{display:grid;grid-template-columns:1.25fr 1fr;margin-top:36px;background:#1d1a19;border:4px solid var(--yel);transition:transform .15s}
-.feat:hover{transform:translate(-3px,-3px)}
-.feat img{display:block;width:100%;height:100%;object-fit:cover;aspect-ratio:16/9;border-right:4px solid var(--yel)}
+header.q .buy{display:flex;align-items:center;background:#e3262b;color:#fff;padding:0 18px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+header.q .buy:hover{background:var(--paper);color:var(--ink)}
+.feat{display:grid;grid-template-columns:1.25fr 1fr;margin-top:36px;background:#0d0d0d;border:1px solid #232323;transition:transform .15s,border-color .15s}
+.feat:hover{transform:translate(-3px,-3px);border-color:#e3262b}
+.feat img{display:block;width:100%;height:100%;object-fit:cover;aspect-ratio:16/9;border-right:1px solid #232323}
 .feat .b{padding:24px 26px;display:flex;flex-direction:column;gap:12px;justify-content:center}
 .feat .new{align-self:flex-start;background:var(--yel);color:var(--ink);font-weight:900;font-size:13px;text-transform:uppercase;padding:5px 10px}
 .feat h2{margin:0;font-weight:900;font-stretch:115%;font-size:clamp(28px,3vw,40px);line-height:1;text-transform:uppercase}
 .feat .k{margin:0;font-size:19px;line-height:1.4;font-weight:700;color:var(--paper)}
 .feat .d{margin:0;font-size:15px;line-height:1.5;color:#cfc8c1}
 .feat .go.btn{margin-left:auto;padding:10px 16px;font-size:14px}
-.sub{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;margin-top:28px;padding:18px 22px;border:2px solid #3a3431;background:rgba(20,17,16,.85)}
+.sub{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;margin-top:28px;padding:18px 22px;border:1px solid #232323;background:#0d0d0d}
 .sub b{display:block;font-size:18px;text-transform:uppercase;font-weight:900}
 .sub > div > span{display:block;margin-top:4px;font-size:15px;color:#cfc8c1}
 .filters{display:flex;flex-wrap:wrap;gap:8px;margin-top:36px}
-.filters button{font:inherit;font-weight:800;font-size:14px;padding:8px 14px;border:2px solid #4a4340;background:rgba(20,17,16,.85);color:var(--paper);cursor:pointer}
-.filters button:hover{border-color:var(--paper)}
+.filters button{font:inherit;font-weight:800;font-size:14px;padding:8px 14px;border:1px solid #232323;background:#0d0d0d;color:var(--paper);cursor:pointer}
+.filters button:hover{border-color:#8f8f8f}
 .filters button[aria-pressed=true]{background:var(--paper);color:var(--ink);border-color:var(--paper)}
 .grid{margin-top:20px!important}
 .card .b{flex:1}
@@ -100,11 +102,9 @@ header.q .buy:hover{background:var(--ink);color:var(--yel)}
 .card p{font-size:16px;color:#e6e0da}
 .card.hide,.feat.hide{display:none}
 .tick{display:none}
-.sub .btn{background:var(--yel);color:var(--ink);border-color:var(--yel)}
-.sub .btn:hover{background:transparent;color:var(--yel)}
-@keyframes subFlow{to{background-position:300% 0}}
-@media (prefers-reduced-motion:reduce){.sub .btn{animation:none}}
-@media (max-width:860px){.feat{grid-template-columns:1fr}.feat img{border-right:0;border-bottom:4px solid var(--yel);height:auto}}
+.sub .btn{background:#5bd16a;color:#0b0b0b;border-color:#5bd16a}
+.sub .btn:hover{background:transparent;color:#5bd16a}
+@media (max-width:860px){.feat{grid-template-columns:1fr}.feat img{border-right:0;border-bottom:1px solid #232323;height:auto}}
 @media (max-width:640px){
  header.q .buy{padding:0 10px;font-size:12px}
  header.q .crumb{visibility:hidden}
@@ -242,7 +242,7 @@ header.q .buy:hover{background:var(--ink);color:var(--yel)}
   </div>
 </div>
 </main>
-<footer class="q mono"><div class="wrap"><span>© 2026 $QOGE · QNN Research</span><span  data-en="Not financial advice · DYOR" data-ru="Не финансовый совет · DYOR">Not financial advice · DYOR</span><span data-en="Background photo: NASA/JPL-Caltech/MSSS" data-ru="Фото фона: NASA/JPL-Caltech/MSSS">Background photo: NASA/JPL-Caltech/MSSS</span></div></footer>
+<footer class="q mono"><div class="wrap"><span>© 2026 $QOGE · QNN Research</span><span  data-en="Not financial advice · DYOR" data-ru="Не финансовый совет · DYOR">Not financial advice · DYOR</span></div></footer>
 <script>
 window.render=function(l){document.querySelectorAll('[data-img]').forEach(function(i){i.src=i.dataset.img.replace('LANG',l)});
 document.title=(l==='ru'?'QNN Ресёрч · разборы криптопроектов от $QOGE':'QNN Research · crypto project breakdowns by $QOGE');};
@@ -269,5 +269,7 @@ document.querySelectorAll('.filters button').forEach(function(bt){bt.onclick=fun
 
 setLang(getLang(),false);
 </script>
+<canvas id="qbg" aria-hidden="true"></canvas>
+<script src="../assets/quai-bg.js" defer></script>
 </body>
 </html>

@@ -88,6 +88,8 @@ Open https://www.qoge.fun/api/quai (or `fetch('/api/quai')` in a browser on qoge
 - Strict black/red ("variant A"): bg `#050505`, panels `#0d0d0d`, borders `#232323`, accent red `#e3262b`.
   Semantic colors only where they mean something: blue `#2e97ca` = inflow (SOAP revenue, mined), yellow `#d6b42a` = unlocks/warnings,
   green `#5bd16a` = good status / positive change, red = burns / risk / negative. No background image, no animated/flowing buttons.
+  Background: `assets/quai-bg.js` — a very dim animated canvas (grey node mesh, red hubs, small red "blocks" running along links), shared
+  with the research hub; it pauses in hidden tabs and stays still with prefers-reduced-motion. Panels stay opaque (#0d0d0d) so charts read cleanly.
 - Fonts: Unbounded (headings, numbers), Bai Jamjuree (text), JetBrains Mono (labels, table numbers).
 - Fluid layout: `.wrap` up to 1760 px, grids auto-fit, `.duo` = two panels side by side from ~1300 px; must not overflow at 390 px.
 - Charts are hand-drawn SVG (`lineChart`, `barChart`, sparklines) with hover tooltips; one axis per chart.

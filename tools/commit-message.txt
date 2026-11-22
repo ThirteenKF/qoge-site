@@ -1,1 +1,1 @@
-QUAI dashboard: free backup APIs (CoinPaprika, Gate candles, exchange books) and Redis cache for every source
+Research hub in the QUAI dashboard style, animated Quai background on hub and dashboard, green Telegram button
