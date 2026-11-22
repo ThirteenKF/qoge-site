@@ -1,1 +1,1 @@
-Audit QUAI dashboard numbers: fair price note, leak destinations, gas caveat, team offset, CoinGecko retry
+QUAI dashboard: free backup APIs (CoinPaprika, Gate candles, exchange books) and Redis cache for every source

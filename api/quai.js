@@ -35,9 +35,9 @@ const UNLOCKS = [[13,51892587],[14,13642587],[15,13141025],[16,13680731],[17,129
 
 const SOURCES = {
   // Price, volume, order-book depth (±2%) per exchange.
-  async market(get) {
+  async marketCoinGecko(get) {
     const c = await get(`${CG}/coins/quai-network?localization=false&tickers=false&community_data=false&developer_data=false`);
-    const t = await get(`${CG}/coins/quai-network/tickers?depth=true`);
+    let t = {}; try { t = await get(`${CG}/coins/quai-network/tickers?depth=true`); } catch (e) { t = {}; }
     const m = c.market_data;
     return {
       price: m.current_price.usd, mcap: m.market_cap.usd, vol24: m.total_volume.usd,
@@ -49,12 +49,29 @@ const SOURCES = {
       })),
     };
   },
+  // Price and market data: CoinGecko, backup CoinPaprika (free, no key; its market cap is 0, so mcap is recomputed from supply).
+  async market(get) {
+    try { return await SOURCES.marketCoinGecko(get); }
+    catch (e) {
+      const t = await get('https://api.coinpaprika.com/v1/tickers/quai-quai-network'), q = t.quotes?.USD;
+      if (!q?.price) throw e;
+      return { price: q.price, mcap: null, vol24: q.volume_24h, ch24: q.percent_change_24h, ch7: q.percent_change_7d, ch30: q.percent_change_30d,
+        ath: q.ath_price, athDate: q.ath_date, atl: null, atlDate: null, tickers: [], backup: 'CoinPaprika' };
+    }
+  },
   // Daily USD price for the last year: [['YYYY-MM-DD', price], ...].
+  // Daily closes for a year: CoinGecko, backup Gate daily candles ([t, quote vol, close, high, low, open, base vol, closed]).
   async prices(get) {
-    const j = await get(`${CG}/coins/quai-network/market_chart?vs_currency=usd&days=365&interval=daily`);
-    const byDay = {};
-    for (const [ts, p] of j.prices) byDay[new Date(ts).toISOString().slice(0, 10)] = p;
-    return Object.entries(byDay);
+    try {
+      const j = await get(`${CG}/coins/quai-network/market_chart?vs_currency=usd&days=365&interval=daily`);
+      const byDay = {};
+      for (const [ts, p] of j.prices) byDay[new Date(ts).toISOString().slice(0, 10)] = p;
+      return Object.entries(byDay);
+    } catch (e) {
+      const c = await get('https://api.gateio.ws/api/v4/spot/candlesticks?currency_pair=QUAI_USDT&interval=1d&limit=400');
+      if (!Array.isArray(c) || !c.length) throw e;
+      return c.map(k => [new Date(Number(k[0]) * 1000).toISOString().slice(0, 10), Number(k[2])]).sort((a, b) => (a[0] < b[0] ? -1 : 1));
+    }
   },
   // Every transfer into the SOAP burn address: [unix, QUAI, from].
   async burns(get) {
@@ -174,6 +191,40 @@ const SOURCES2 = {
 };
 Object.assign(SOURCES, SOURCES2);
 
+// Order books straight from the exchanges: free, no API key. Depth = USD resting within ±2% of the mid price.
+SOURCES.books = async function books(get) {
+  const N = x => Number(x);
+  const depth = (bids, asks) => {
+    const b = bids.map(([p, q]) => [N(p), N(q)]).sort((x, y) => y[0] - x[0]), a = asks.map(([p, q]) => [N(p), N(q)]).sort((x, y) => x[0] - y[0]);
+    if (!b.length || !a.length) return null;
+    const mid = (b[0][0] + a[0][0]) / 2;
+    return { bid: b[0][0], ask: a[0][0], mid, spread: (a[0][0] - b[0][0]) / mid * 100,
+      up: a.filter(x => x[0] <= mid * 1.02).reduce((s, x) => s + x[0] * x[1], 0),
+      down: b.filter(x => x[0] >= mid * 0.98).reduce((s, x) => s + x[0] * x[1], 0) };
+  };
+  const one = async (ex, pair, fn) => { try { const r = await fn(); return r ? { ex, pair, ...r } : null; } catch (e) { return null; } };
+  const list = (await Promise.all([
+    one('MEXC', 'QUAI/USDT', async () => {
+      const [d, t] = await Promise.all([get('https://api.mexc.com/api/v3/depth?symbol=QUAIUSDT&limit=1000'), get('https://api.mexc.com/api/v3/ticker/24hr?symbol=QUAIUSDT')]);
+      const r = depth(d.bids || [], d.asks || []); return r && { ...r, vol: N(t.quoteVolume) || 0 };
+    }),
+    one('Gate', 'QUAI/USDT', async () => {
+      const [d, t] = await Promise.all([get('https://api.gateio.ws/api/v4/spot/order_book?currency_pair=QUAI_USDT&limit=1000'), get('https://api.gateio.ws/api/v4/spot/tickers?currency_pair=QUAI_USDT')]);
+      const r = depth(d.bids || [], d.asks || []); return r && { ...r, vol: N((t[0] || {}).quote_volume) || 0 };
+    }),
+    one('Kraken', 'QUAI/USD', async () => {
+      const [d, t] = await Promise.all([get('https://api.kraken.com/0/public/Depth?pair=QUAIUSD&count=500'), get('https://api.kraken.com/0/public/Ticker?pair=QUAIUSD')]);
+      const b = Object.values(d.result || {})[0], k = Object.values(t.result || {})[0];
+      const r = b && depth(b.bids.map(x => x.slice(0, 2)), b.asks.map(x => x.slice(0, 2)));
+      return r && k && { ...r, vol: N(k.v[1]) * N(k.p[1]) };
+    }),
+  ])).filter(Boolean);
+  if (!list.length) throw new Error('no exchange answered');
+  // Drop a book whose price is far from the others (stale or broken market).
+  const mids = list.map(x => x.mid).sort((a, b) => a - b), med = mids[Math.floor(mids.length / 2)];
+  return list.filter(x => Math.abs(x.mid / med - 1) < 0.15);
+};
+
 // Quainance (DEX on Quai): QUAI/USDT pool reserves read from the chain (getReserves),
 // all-protocol TVL and swap volume from DefiLlama.
 SOURCES.dex = async function dex(get) {
@@ -238,7 +289,7 @@ async function quaiscanAll(get, addr, maxPages) {
 function assemble(p) {
   const ok = k => p[k] && !p[k].error;
   const out = { updatedAt: new Date().toISOString(), addresses: A };
-  for (const k of Object.keys(SOURCES)) if (!ok(k)) out[k + 'Error'] = p[k]?.error || 'missing';
+  for (const k of Object.keys(SOURCES)) if (k !== 'marketCoinGecko' && !ok(k)) out[k + 'Error'] = p[k]?.error || 'missing';
 
   if (ok('dex')) {
     const d = p.dex, price = d.usdt / d.quai;
@@ -250,8 +301,22 @@ function assemble(p) {
       impact: [500, 5000].map(usd => ({ usd, pct: buyImpact(usd) })),
       share24: d.vol24 != null && cexVol != null && cexVol + d.vol24 > 0 ? d.vol24 / (cexVol + d.vol24) : null };
   }
+  if (ok('books') && !ok('market')) {
+    // CoinGecko down and nothing cached: price from the books, market cap = price x circulating supply.
+    const mids = p.books.map(x => x.mid).sort((a, b) => a - b), price = mids[Math.floor(mids.length / 2)];
+    p.market = { price, mcap: ok('supply') ? price * p.supply.supply : null, vol24: p.books.reduce((a, x) => a + x.vol, 0),
+      ch24: null, ch7: null, ch30: null, ath: null, athDate: null, atl: null, atlDate: null, tickers: [], fromBooks: true };
+    delete out.marketError;
+  }
   if (ok('market')) {
     const m = p.market;
+    if (m.mcap == null && ok('supply')) m.mcap = m.price * p.supply.supply;
+    if (ok('books')) {
+      // Live books replace CoinGecko's copy for the same exchanges; CoinGecko keeps the rest (e.g. BitKan).
+      const live = new Set(p.books.map(x => x.ex.toLowerCase()));
+      m.tickers = p.books.map(x => ({ ex: x.ex, pair: x.pair, vol: x.vol, spread: x.spread, up: x.up, down: x.down, live: true }))
+        .concat((m.tickers || []).filter(t => !live.has(String(t.ex).split(' ')[0].toLowerCase())));
+    }
     const up = m.tickers.reduce((a, t) => a + t.up, 0), down = m.tickers.reduce((a, t) => a + t.down, 0);
     const best = m.tickers.slice().sort((a, b) => b.vol - a.vol)[0];
     // Linear estimate: cost_to_move_up_usd buys a 2% move.
@@ -372,7 +437,7 @@ function assemble(p) {
 
 async function collect(get) {
   const parts = {};
-  await Promise.all(Object.entries(SOURCES).map(async ([k, f]) => {
+  await Promise.all(Object.entries(SOURCES).filter(([k]) => k !== 'marketCoinGecko').map(async ([k, f]) => {
     try { parts[k] = await f(get); } catch (e) { parts[k] = { error: String(e.message || e).slice(0, 200) }; }
   }));
   return parts;
@@ -411,6 +476,17 @@ function dayRecord(d) {
     hf: n(d.hashference?.requests), x4: n(d.x402?.payments), tx: n(d.network?.txToday),
   });
 }
+// Last good answer of every source, kept up to 3 days: if a source and its backup both fail, the page shows these numbers.
+async function cacheParts(parts) {
+  if (!R_URL || !R_TOKEN) return {};
+  const used = {};
+  await Promise.all(Object.keys(parts).map(async k => {
+    if (parts[k] && !parts[k].error) { await redis('SET', 'quai:cache:' + k, JSON.stringify({ t: Date.now(), v: parts[k] })); return; }
+    const raw = await redis('GET', 'quai:cache:' + k), c = raw && JSON.parse(raw);
+    if (c && Date.now() - c.t < 3 * 864e5) { parts[k] = c.v; used[k] = { at: new Date(c.t).toISOString(), error: String(parts[k]?.error || '') }; }
+  }));
+  return used;
+}
 async function history(data) {
   if (!R_URL || !R_TOKEN) return null;
   await redis('HSET', 'quai:hist', new Date().toISOString().slice(0, 10), dayRecord(data));
@@ -424,7 +500,7 @@ async function history(data) {
 // On the daily cron run the server checks every source and sends the owner ONE private message
 // if something is broken or stale. Silent when everything works.
 // Test by hand: /api/quai?save=1&test=1&key=<DIGEST_SECRET>  (always sends, even when all is fine).
-const SECTION_RU = { market: 'Цена и биржи (CoinGecko)', prices: 'Цены по дням (CoinGecko)', burns: 'Сжигания (обозреватель блоков)',
+const SECTION_RU = { books: 'Стаканы бирж (MEXC, Gate, Kraken)', market: 'Цена и биржи (CoinGecko)', prices: 'Цены по дням (CoinGecko)', burns: 'Сжигания (обозреватель блоков)',
   soapWallet: 'Кошелёк SOAP (обозреватель блоков)', wallets: 'Кошельки (обозреватель блоков)', network: 'Сеть (обозреватель блоков)',
   soap: 'Выручка SOAP (soap.qu.ai)', supply: 'Предложение (supply.qu.ai)', hashference: 'Hashference', x402: 'x402', dex: 'DEX Quainance' };
 function health(d) {
@@ -435,6 +511,8 @@ function health(d) {
   if (d.soap && !d.soapError && !(d.soap.last7 > 0)) p.push('⚠️ SOAP: выручка за 7 дней = 0 — либо выкуп остановлен, либо сломался API');
   if (d.market && !d.marketError && !(d.market.price > 0)) p.push('⚠️ CoinGecko: нет цены QUAI');
   if (d.dex && !d.dexError && !(d.dex.poolUsd > 1000)) p.push(`⚠️ Пул QUAI/USDT на Quainance почти пуст: ${Math.round(d.dex.poolUsd || 0)} $`);
+  if (d.market?.backup) p.push(`⚠️ CoinGecko не отвечает — цена из резервного источника (${d.market.backup})`);
+  for (const [k, c] of Object.entries(d.cached || {})) p.push(`⚠️ ${SECTION_RU[k] || k}: источник не отвечает, показаны данные из кэша от ${c.at.slice(0, 16).replace('T', ' ')} UTC`);
   if (d.historyError) p.push('❌ История (Redis): ' + d.historyError.slice(0, 140));
   return p;
 }
@@ -472,7 +550,11 @@ async function enrich(d) {
 
 module.exports = async (req, res) => {
   try {
-    const data = assemble(await collect(getJson));
+    const parts = await collect(getJson);
+    let cached = {};
+    try { cached = await cacheParts(parts); } catch (e) {}
+    const data = assemble(parts);
+    if (Object.keys(cached).length) data.cached = cached;
     try { await enrich(data); } catch (e) {}
     try { data.history = await history(data); } catch (e) { data.historyError = String(e.message || e).slice(0, 200); }
     const url = req.url || '', cron = /[?&]save=1/.test(url);

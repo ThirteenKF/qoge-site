@@ -260,7 +260,7 @@ footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12p
 
 <section class="s" id="market">
   <h2 data-en="Liquidity" data-ru="Ликвидность">Liquidity</h2>
-  <p class="k" data-en="How much money sits in the order books within 2% of the price, and how far a market order would move it. A linear estimate from CoinGecko depth data; real books are uneven. Below: the on-chain pool on Quainance, where the math is exact." data-ru="Сколько денег стоит в стаканах в пределах 2% от цены и насколько рыночный ордер сдвинет цену. Линейная оценка по данным глубины CoinGecko; реальные стаканы неравномерны. Ниже — пул в блокчейне на Quainance, где расчёт точный.">Liquidity.</p>
+  <p class="k" data-en="How much money sits in the order books within 2% of the price, and how far a market order would move it. Read live from the exchanges' own order books (MEXC, Gate, Kraken) plus CoinGecko for the rest; the price impact is a linear estimate, real books are uneven. Below: the on-chain pool on Quainance, where the math is exact." data-ru="Сколько денег стоит в стаканах в пределах 2% от цены и насколько рыночный ордер сдвинет цену. Стаканы берутся напрямую с бирж (MEXC, Gate, Kraken), остальные — из CoinGecko; сдвиг цены — линейная оценка, реальные стаканы неравномерны. Ниже — пул в блокчейне на Quainance, где расчёт точный.">Liquidity.</p>
   <div class="tiles" id="impactTiles"></div>
   <h3 class="dexh" data-en="On-chain: Quainance DEX" data-ru="В блокчейне: DEX Quainance">On-chain: Quainance DEX</h3>
   <div class="tiles" id="dexTiles"></div>
@@ -282,7 +282,7 @@ footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12p
   </div>
   <div class="duo">
     <div class="panel"><h3 data-en="Order-book depth, +2%" data-ru="Глубина стаканов, +2%">Depth</h3>
-      <div class="sub mono" data-en="USD, all exchanges · CoinGecko · daily" data-ru="USD, все биржи · CoinGecko · раз в день">USD</div>
+      <div class="sub mono" data-en="USD, all exchanges · exchange order books · daily" data-ru="USD, все биржи · стаканы бирж · раз в день">USD</div>
       <div class="chart" id="hDepth"></div></div>
     <div class="panel"><h3 data-en="QUAI/USDT pool on Quainance" data-ru="Пул QUAI/USDT на Quainance">Pool</h3>
       <div class="sub mono" data-en="USD · on-chain reserves · daily" data-ru="USD · резервы в блокчейне · раз в день">USD</div>
@@ -329,7 +329,7 @@ evBurn:'Last burn', evBurnV:function(b,d){return date(b.t)+' · '+num(b.quai)+' 
   vInfP:function(n,u){return 'Mining minus burns gives '+pctS(n)+', genesis unlocks add '+pctS(u)+' over 12 months.';},
   vLiqP:function(m){return 'Order books hold '+usd(m.depthUp)+' within +2%. A $5,000 buy moves the price '+pct1(m.impact[1].allEx)+'–'+pct1(m.impact[1].oneEx)+'.';},
   vDemP:function(a,b){return Math.round(a).toLocaleString(loc())+' requests in 7 days vs '+num(b)+' the week before.';},
-  dPrice:'QUAI price', dPriceS:function(m){return '30 days · 24h '+sgn(m.ch24)+' · low '+px(m.atl)+' ('+date(m.atlDate)+')';}, dPriceC:'30 days', dPriceI:'Daily close, CoinGecko',
+  dPrice:'QUAI price', dPriceS:function(m){return '30 days'+(m.ch24!=null?' · 24h '+sgn(m.ch24):'')+(m.atl?' · low '+px(m.atl)+' ('+date(m.atlDate)+')':'');}, dPriceC:'30 days', dPriceI:'Daily close, CoinGecko',
   dRev:'SOAP revenue, 30 d', dRevS:function(so){return 'vs previous 30 days ('+usd(so.prev30)+') · 7 days: '+usd(so.last7);}, dRevC:'by month since Dec 2025', dRevI:'Rewards from BCH, DOGE, LTC and RVN blocks, the team\'s own figure',
   dBurn:'Burned, 30 d', dBurnS:function(r){return 'QUAI worth '+usd(r.last30.burnedUsd);}, dBurnC:'QUAI by month (current month partial)', dBurnI:'Transfers to the burn address plus QUAI sent to the gas burner',
   dHf:'Hashference, 7 days', dHfS:function(b){return 'requests vs '+num(b)+' the week before';}, dHfC:'requests per day, 30 days', dHfI:'AI API requests paid with mining, QUAI or Qi',
@@ -343,7 +343,7 @@ evBurn:'Last burn', evBurnV:function(b,d){return date(b.t)+' · '+num(b.quai)+' 
   mixSub:function(a,b){return 'Share of SOAP revenue by chain: all time ('+usd(a)+') vs last 30 days ('+usd(b)+')';}, mixAll:'All time', mix30:'Last 30 days', chain:'Chain', pp:'pp', share:'Share',
   lgPrice:'QUAI price', lgBurn:'SOAP burn', lgUnl:'Genesis unlock',
   pNote:function(list){return list.length?'Price 7 days after the last unlocks: '+list.join(' · ')+'. A coincidence, not proof: the whole market moves the price too.':'';},
-  live:'Live data', snap:'Snapshot', upd:'updated', partSnap:'some sections from snapshot: ',
+  live:'Live data', snap:'Snapshot', upd:'updated', partSnap:'some sections from snapshot: ', partCache:'from backup copies: ', bk:'price from ',
   price:'Price', mcap:'Market cap', vol:'Volume 24h', infl:'Net inflation / yr', inflD:'mining minus SOAP burns, last 30 days',
   rev30:'SOAP revenue, 30 d', rev30D:'last 7 days: ', burnShare:'Burned, all time', burnShareD:'of SOAP revenue (burn-day prices)',
   ch24:'24h', ch7:'7d', atl:'all-time low ', ath:'ATH ',
@@ -377,7 +377,7 @@ evBurn:'Last burn', evBurnV:function(b,d){return date(b.t)+' · '+num(b.quai)+' 
    'Revenue: SOAP dashboard API (soap.qu.ai) — the Quai team\'s own figures, by month.',
    'Burns: every transfer into the burn address 0x0050AF…0000 from the block explorer (<a href="https://quaiscan.io/address/0x0050AF0000000000000000000000000000000000" target="_blank" rel="noopener">Quaiscan</a> or explorer.qu.ai), plus QUAI the SOAP wallet sent to the gas-burner wallet. Valued at the CoinGecko daily close on the burn day; buying happens a few days earlier, so this is a slightly low estimate while the price falls.',
    '“Sent elsewhere”: transfers out of the <a href="https://quaiscan.io/address/0x0053bcdc4F5Af4B35079d4D091fCD1D86A958D06" target="_blank" rel="noopener">SOAP wallet</a> that did not go to the burn address or the gas burner, minus what the same address later burned or sent back. Who owns those wallets is unknown.',
-   'Supply, mining and daily burns: supply.qu.ai API. Price, volume and ±2% depth: CoinGecko. Hashference and x402: their public /stats APIs.',
+   'Supply, mining and daily burns: supply.qu.ai API. Order books, ±2% depth and volume: the exchanges\' free public APIs (MEXC, Gate, Kraken; a book far from the others\' price is skipped). Market cap, price history and other exchanges: CoinGecko, kept in a cache so a CoinGecko outage shows the last known numbers. Hashference and x402: their public /stats APIs.',
    'Quainance DEX: QUAI/USDT pool reserves read straight from the chain (getReserves on the pair contract via rpc.quai.network); price impact by the constant-product formula with the 0.3% fee. All-pool TVL and swap volume: DefiLlama.',
    'Refreshed at most once an hour through the site\'s own server function. If a source is down, that section shows the last snapshot and the status line says so.'
   ]
@@ -392,7 +392,7 @@ evBurn:'Последнее сжигание', evBurnV:function(b,d){return date(
   vInfP:function(n,u){return 'Майнинг за вычетом сжигания даёт '+pctS(n)+', разлоки генезиса ещё '+pctS(u)+' за 12 месяцев.';},
   vLiqP:function(m){return 'Столько денег стоит в стаканах бирж в пределах +2% от цены. Покупка на $5 000 сдвинет цену на '+pct1(m.impact[1].allEx)+'–'+pct1(m.impact[1].oneEx)+'.';},
   vDemP:function(a,b){return Math.round(a).toLocaleString(loc())+' запросов за 7 дней против '+num(b)+' неделей раньше.';},
-  dPrice:'Цена QUAI', dPriceS:function(m){return 'за 30 дней · 24 ч '+sgn(m.ch24)+' · минимум '+px(m.atl)+' ('+date(m.atlDate)+')';}, dPriceC:'30 дней', dPriceI:'Закрытие дня, CoinGecko',
+  dPrice:'Цена QUAI', dPriceS:function(m){return 'за 30 дней'+(m.ch24!=null?' · 24 ч '+sgn(m.ch24):'')+(m.atl?' · минимум '+px(m.atl)+' ('+date(m.atlDate)+')':'');}, dPriceC:'30 дней', dPriceI:'Закрытие дня, CoinGecko',
   dRev:'Выручка SOAP, 30 дн.', dRevS:function(so){return 'к прошлым 30 дням ('+usd(so.prev30)+') · за 7 дней: '+usd(so.last7);}, dRevC:'по месяцам с дек. 2025', dRevI:'Награды за блоки BCH, DOGE, LTC и RVN — цифра самой команды',
   dBurn:'Сожжено, 30 дн.', dBurnS:function(r){return 'QUAI на '+usd(r.last30.burnedUsd);}, dBurnC:'QUAI по месяцам (текущий неполный)', dBurnI:'Переводы на адрес сжигания плюс QUAI, отправленные на сжигатель газа',
   dHf:'Hashference, 7 дней', dHfS:function(b){return 'запросов против '+num(b)+' неделей раньше';}, dHfC:'запросы по дням, 30 дней', dHfI:'Запросы к ИИ-API с оплатой майнингом, QUAI или Qi',
@@ -406,7 +406,7 @@ evBurn:'Последнее сжигание', evBurnV:function(b,d){return date(
   mixSub:function(a,b){return 'Доля сетей в выручке SOAP: за всё время ('+usd(a)+') и за последние 30 дней ('+usd(b)+')';}, mixAll:'За всё время', mix30:'Последние 30 дней', chain:'Сеть', pp:'п.п.', share:'Доля',
   lgPrice:'Цена QUAI', lgBurn:'Сжигание SOAP', lgUnl:'Разлок генезиса',
   pNote:function(list){return list.length?'Цена через 7 дней после последних разлоков: '+list.join(' · ')+'. Совпадение, а не доказательство: на цену влияет и рынок в целом.':'';},
-  live:'Живые данные', snap:'Снимок', upd:'обновлено', partSnap:'часть разделов из снимка: ',
+  live:'Живые данные', snap:'Снимок', upd:'обновлено', partSnap:'часть разделов из снимка: ', partCache:'из резервных копий: ', bk:'цена из ',
   price:'Цена', mcap:'Капитализация', vol:'Объём за 24 ч', infl:'Чистая инфляция в год', inflD:'майнинг минус сжигания SOAP, последние 30 дней',
   rev30:'Выручка SOAP, 30 дн.', rev30D:'за 7 дней: ', burnShare:'Сожжено за всё время', burnShareD:'от выручки SOAP (по ценам дня сжигания)',
   ch24:'24 ч', ch7:'7 дн.', atl:'минимум ', ath:'максимум ',
@@ -440,7 +440,7 @@ evBurn:'Последнее сжигание', evBurnV:function(b,d){return date(
    'Выручка: API дашборда SOAP (soap.qu.ai) — собственные цифры команды Quai, по месяцам.',
    'Сжигания: все переводы на адрес сжигания 0x0050AF…0000 по обозревателю блоков (<a href="https://quaiscan.io/address/0x0050AF0000000000000000000000000000000000" target="_blank" rel="noopener">Quaiscan</a> или explorer.qu.ai) плюс QUAI, отправленные кошельком SOAP на «сжигатель газа». Оценка — по закрытию дня сжигания на CoinGecko; покупка происходит на несколько дней раньше, поэтому при падающей цене оценка немного занижена.',
    '«Ушло на другие кошельки»: переводы с <a href="https://quaiscan.io/address/0x0053bcdc4F5Af4B35079d4D091fCD1D86A958D06" target="_blank" rel="noopener">кошелька SOAP</a> не на сжигание и не на сжигатель газа, за вычетом того, что тот же адрес потом сам сжёг или вернул. Чьи это кошельки — неизвестно.',
-   'Предложение, майнинг и сжигания по дням: API supply.qu.ai. Цена, объём и глубина ±2%: CoinGecko. Hashference и x402: их открытые API /stats.',
+   'Предложение, майнинг и сжигания по дням: API supply.qu.ai. Стаканы, глубина ±2% и объём: открытые бесплатные API бирж (MEXC, Gate, Kraken; стакан с ценой, далёкой от остальных, пропускается). Капитализация, история цены и прочие биржи: CoinGecko, с кэшем — если CoinGecko не отвечает, показываются последние известные цифры. Hashference и x402: их открытые API /stats.',
    'DEX Quainance: резервы пула QUAI/USDT читаются прямо из блокчейна (getReserves контракта пары через rpc.quai.network); сдвиг цены — по формуле x·y=k с комиссией 0,3%. TVL всех пулов и объём обменов: DefiLlama.',
    'Обновление не чаще раза в час через серверную функцию сайта. Если источник недоступен, раздел показывает последний снимок, и это видно в строке статуса.'
   ]
@@ -589,7 +589,8 @@ function render(){
   // status
   var when=D.updatedAt?new Date(D.updatedAt).toLocaleString(loc(),{dateStyle:'medium',timeStyle:'short'}):'—';
   $('dot').className='dot'+(LIVE?'':' snap');
-  $('status').textContent=(LIVE?t('live'):t('snap'))+' · '+t('upd')+' '+when+(LIVE&&FROM_SNAP.length?' · '+t('partSnap')+FROM_SNAP.join(', '):'');
+  var cached=LIVE&&D.cached?Object.keys(D.cached):[];
+  $('status').textContent=(LIVE?t('live'):t('snap'))+' · '+t('upd')+' '+when+(LIVE&&FROM_SNAP.length?' · '+t('partSnap')+FROM_SNAP.join(', '):'')+(cached.length?' · '+t('partCache')+cached.join(', '):'')+(LIVE&&D.market&&D.market.backup?' · '+t('bk')+D.market.backup:'');
 
   // summary: events + verdicts
   var ev='';
@@ -618,7 +619,7 @@ function render(){
 
   // pulse
   if(m){ var h='';
-    h+=tile(t('mcap'),usd(m.mcap),t('ath')+dc('$'+m.ath)+' ('+date(m.athDate)+')');
+    h+=tile(t('mcap'),usd(m.mcap),m.ath?t('ath')+dc('$'+m.ath)+' ('+date(m.athDate)+')':'');
     h+=tile(t('vol'),usd(m.vol24),'');
     if(s) h+=tile(t('infl'),pctS(s.d30.netInflationYr),t('inflD'));
     if(r) h+=tile(t('burnShare'),pct(r.burnShare),t('burnShareD'));

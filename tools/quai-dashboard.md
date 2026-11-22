@@ -28,13 +28,27 @@ daily) → Ecosystem (Hashference, x402, staking, network) → Method and source
 | `research/index.html` | Hub card for the dashboard. `index.html` header has the "QUAI Live" nav item (`t.navLive`, `.q-live`). |
 
 ## Data sources (all fetched server-side: none of the team APIs allow CORS)
-- **CoinGecko**: `/coins/quai-network` (price, mcap, volume, ATH/ATL), `/tickers?depth=true` (per-exchange ±2% depth, spread), `market_chart` (daily closes).
+- **Exchange order books (free, no key)** — source `books`: MEXC `api.mexc.com/api/v3/depth?symbol=QUAIUSDT` + `/ticker/24hr`,
+  Gate `api.gateio.ws/api/v4/spot/order_book?currency_pair=QUAI_USDT` + `/spot/tickers`, Kraken `api.kraken.com/0/public/Depth?pair=QUAIUSD` + `/Ticker`.
+  ±2% depth = USD resting within 2% of the mid. A book whose mid is >15% from the median is dropped (Kraken showed $0.0091 vs $0.0068 on Nov 22).
+  Live books replace CoinGecko's copy for the same exchange; CoinGecko keeps the others (BitKan).
+- **CoinGecko** (no key, public rate limit): `/coins/quai-network` (price, mcap, volume, ATH/ATL), `/tickers?depth=true` (optional), `market_chart` (daily closes).
+  Last good `market` and `prices` are cached in Redis (`quai:cache:market`, `quai:cache:prices`, used up to 3 days). If CoinGecko and the cache are
+  both missing, price = median of the books and mcap = price × circulating supply (`market.fromBooks`). Optional `COINGECKO_API_KEY` (free Demo key) still works.
 - **SOAP dashboard** `https://soap.qu.ai/api`: `/revenues` (all-time by chain), `/revenues/daily?start=&end=` (unix seconds; returns totals for the range, not per day).
 - **Supply tracker** `https://supply.qu.ai/api`: `/stats`, `/supply?period=day&from=&to=&include=burn` (quaiTotalEnd, burnDelta), `/rollups?period=day&from=&to=` (coinbaseQuaiMiningRewardSum = mined; also workshares per algorithm, difficulties, Qi conversion flow — unused yet). Big numbers come as `{__big:"…wei"}`.
 - **Block explorers**: Quaiscan Blockscout `/api/v2` answers Vercel with HTTP 403, so burns/wallets/network fall back to the official explorer `https://explorer.qu.ai/api` (`/address/<a>/transactions?limit=100&cursor=`, `/address/<a>?includeTransactions=false`, `/stats/overview`). Explorer `value` can be scientific notation ("4e+24") → `toWeiString()`.
 - **Hashference** `https://hashference.com/v1/stats?days=30`, `/v1/staking`, `/v1/x402`; **x402** `https://x402.qu.ai/v1/stats?days=30`.
 - **Quainance DEX**: QUAI/USDT pair `0x0021f5cc862ebb0252ba209266f2fabbc7592e83` (token0 USDT 6 decimals, token1 WQUAI 18). Reserves via `POST https://rpc.quai.network/cyprus1` method `quai_call`, data `0x0902f1ac` (getReserves). TVL and swap volume of all Quainance pools from DefiLlama `https://api.llama.fi/tvl/quainance` and `/summary/dexs/quainance`.
 - Genesis unlock schedule: constant `UNLOCKS` in `api/quai.js`, copied from supply.qu.ai's JS bundle (GENESIS_UNLOCK_SCHEDULE after Singularity/Polaris; month m unlocks at block m×518400). Past dates: `UNLOCK_DATES`. Update by hand if the team changes the schedule.
+
+## Backups when a source breaks
+1. Own backups: CoinGecko market → CoinPaprika (`market.backup`), CoinGecko daily prices → Gate daily candles, Quaiscan → explorer.qu.ai,
+   CoinGecko tickers ↔ exchange books (MEXC/Gate/Kraken), DefiLlama is optional inside `dex`.
+2. Then the last good answer of every source from Redis (`quai:cache:<source>`, up to 3 days) — listed in `data.cached`
+   and in the page status line ("из резервных копий: …").
+3. Then the static snapshot `assets/quai-dash.js` in the browser.
+The daily Telegram check reports every source running on a backup or cache.
 
 ## Key addresses
 - Burn address `0x0050AF0000000000000000000000000000000000`
@@ -104,7 +118,7 @@ Do not touch the main page or other research pages unless asked; the owner usual
   routed to rewards for locked QUAI, so part of it may be that. `enrich()` in api/quai.js fills `leak.next` and burn `label`.
 - 0x007e2f…8987 is Gate's hot wallet: its burns are SOAP purchases withdrawn from Gate straight to the burn address.
 - Price note after unlocks = fixed 7-day change (an earlier version picked the lowest point in 7 days — biased, removed).
-- CoinGecko sometimes answers Vercel with HTTP 429: getJson retries twice; set `COINGECKO_API_KEY` (free Demo key) in Vercel to avoid it.
+- CoinGecko sometimes answers Vercel with HTTP 429: getJson retries twice, books come straight from the exchanges, CoinGecko data is cached in Redis; the alert warns if the cache is older than a day.
   DEX share is not computed without CoinGecko volume. Unlock dates use the average block time of complete days (`blockTime30`).
 
 ## Facts established so far (Nov 21, 2026)
