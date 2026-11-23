@@ -96,6 +96,9 @@ a:hover{color:oklch(0.72 0.17 40)}
   .q-res{margin-left:auto}
   .q-head > .q-dash-m{display:flex;padding:0 10px 0 0}
 }
+/* section links live on the Mars-Earth rail now; kept in the DOM (hidden) as the rail's label source */
+.q-nav a[href^="#"]{display:none!important}
+.q-nav .q-live{margin-left:auto}
 /* readability: no tiny text, buttons use site font */
 button{font-family:inherit}
 :not(.q-tracker *)[style*="font-size: 10px"],:not(.q-tracker *)[style*="font-size: 11px"]{font-size:12px!important}
@@ -1123,7 +1126,7 @@ class Component extends DCLogic {
     '#qmarks a:hover i,#qmarks a.on i{background:'+OR+';border-color:'+OR+';transform:scale(1.25)}'+
     '#qmarks a:hover b,#qmarks a.on b{opacity:1;transform:none}'+
     '#qmarks a.on b{color:#fff;border-color:'+OR+'}'+
-    '#qmarks.peek b{opacity:.9;transform:none}'+
+    '#qmarks.peek b,#qmarks.hint b{opacity:.9;transform:none}'+
     '@media (max-width:767px){#qmarks{display:none!important}}';
   document.head.appendChild(css);
   var box=document.createElement('div'); box.id='qmarks';
@@ -1131,7 +1134,7 @@ class Component extends DCLogic {
   function maxS(){ var el=document.scrollingElement||document.documentElement; return Math.max(1, el.scrollHeight-window.innerHeight); }
   function headH(){ var h=document.querySelector('.q-head'); return h? h.offsetHeight : 0; }
   function secs(){ return [].slice.call(document.querySelectorAll('.q-nav a[href^="#"]')).map(function(a){ return {id:a.getAttribute('href').slice(1), t:(a.textContent||'').trim()}; }).filter(function(s){ return document.getElementById(s.id); }); }
-  var sig='';
+  var sig='', hinted=false;
   function layout(){
     var r=rail(), t=document.querySelector('.q-tracker');
     if(!r || !t || getComputedStyle(t).display==='none'){ box.style.display='none'; return; }
@@ -1150,6 +1153,8 @@ class Component extends DCLogic {
         a.addEventListener('click',function(e){ e.preventDefault(); var el=document.getElementById(s.id); window.scrollTo({top:window.scrollY+el.getBoundingClientRect().top-H, behavior:'smooth'}); });
         box.appendChild(a);
       });
+      /* first visit of the page: show all labels for a moment, so the rail reads as navigation */
+      if(!hinted && box.children.length){ hinted=true; box.classList.add('hint'); setTimeout(function(){ box.classList.remove('hint'); },3000); }
     }
     active();
   }

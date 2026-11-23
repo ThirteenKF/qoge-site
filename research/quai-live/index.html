@@ -116,6 +116,9 @@ details.t{margin-top:8px}details.t summary{cursor:pointer;font-size:13px;color:v
 .dt .s{font-size:13px;color:var(--txt2);line-height:1.4}
 .dt .sp{margin-top:4px}.dt .sp svg{display:block;width:100%;height:52px}
 .dt .cap{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.dt .row1>*{min-width:0;max-width:100%}
+/* phones: 2 tiles per row are ~150px wide, big numbers must shrink to fit */
+@media (max-width:520px){.dt{padding:12px 12px 10px}.dt .v{font-size:clamp(17px,5.6vw,26px)}.dt .dl{font-size:13px}.tile{padding:12px}.tile .v{font-size:clamp(17px,5.6vw,26px)}}
 .wf{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin-top:16px}
 .wf>.panel:first-child{grid-column:span 2}
 @media (max-width:700px){.wf>.panel:first-child{grid-column:auto}}
