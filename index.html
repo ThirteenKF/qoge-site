@@ -99,6 +99,51 @@ a:hover{color:oklch(0.72 0.17 40)}
 /* section links live on the Mars-Earth rail now; kept in the DOM (hidden) as the rail's label source */
 .q-nav a[href^="#"]{display:none!important}
 .q-nav .q-live{margin-left:auto}
+/* ---- header: dark floating glass bar + live stats (#qstat, built by script) ---- */
+.q-head{margin:10px 12px 0!important;top:10px!important;border-radius:14px!important;border:1px solid #2a2523!important;background:rgba(13,11,10,.78)!important;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);color:#f4f0ec!important;box-shadow:0 10px 30px rgba(0,0,0,.45)}
+.q-head > a:first-child{background:transparent!important;padding:8px 18px!important}
+.q-head > a:first-child img{border-color:#e3262b!important}
+.q-nav{padding:0 10px!important;overflow:hidden!important}
+.q-nav .q-live{flex:none;border:0!important;background:none!important;color:#cfc8c1!important;padding:0 10px!important;font-size:13px}
+.q-nav .q-live .q-tag{display:none}
+.q-nav .q-live:hover{color:#fff!important}
+.q-res{padding:0 10px!important}
+.q-pill{background:transparent!important;color:#cfc8c1!important;height:40px!important;padding:0 10px!important;font-size:13px!important;box-shadow:none!important}
+.q-pill svg{color:oklch(0.88 0.17 95)!important}
+.q-res:hover .q-pill{color:#fff!important;transform:none!important;box-shadow:none!important}
+.q-head > .q-lang{border-left:0!important}
+.q-lang > div > button{background:transparent!important;color:#f4f0ec!important;border-color:#3a3431!important}
+.q-dash-m > span{background:transparent!important;color:#cfc8c1!important;border-color:transparent!important}
+.q-dash-m:hover > span{color:#fff!important}
+.q-head > a:last-child{background:transparent!important;color:#0b0b0b!important;border-left:0!important;position:relative;isolation:isolate;padding:0 26px 0 18px!important}
+.q-head > a:last-child::before{content:"";position:absolute;inset:8px 8px 8px 0;background:#5bd16a;border-radius:999px;z-index:-1;transition:background .15s}
+.q-head > a:last-child:hover{background:transparent!important;color:#0b0b0b!important}
+.q-head > a:last-child:hover::before{background:#86e35a}
+#qstat{margin-right:auto;display:flex;align-items:center;gap:6px;min-width:0;white-space:nowrap;overflow:hidden;font:500 12px/1 "IBM Plex Mono",monospace;letter-spacing:.02em;text-transform:none;color:#8a827b}
+#qstat b{color:#5bd16a;font-weight:700}
+#qstat b.w{color:#f4f0ec}
+#qstat i{font-style:normal;color:#3a3431;margin:0 2px}
+#qstat .qd{width:7px;height:7px;border-radius:50%;background:#5bd16a;box-shadow:0 0 0 3px rgba(91,209,106,.2);margin-right:4px;flex:none}
+#qstat .up{color:#5bd16a;font-weight:700}
+#qstat .dn{color:#e3262b;font-weight:700}
+@media (max-width:1199px){#qstat .qs-quai{display:none}}
+#qstatm{display:none}
+@media (max-width:767px){
+  .q-head{margin:8px 8px 0!important;top:8px!important}
+  .q-head > a:first-child{padding:8px 10px!important;font-size:18px!important}
+  .q-head > .q-lang{padding:0 4px!important}
+  .q-head > a:last-child{padding:0 16px 0 12px!important;font-size:13px!important}
+  .q-head > a:last-child::before{inset:8px 6px 8px 2px}
+  .q-head > .q-res,.q-head > .q-dash-m{box-sizing:border-box;min-width:0;border-top:1px solid #2a2523!important}
+  .q-head > .q-res{padding:8px 5px 8px 10px!important}
+  .q-head > .q-dash-m{padding:8px 10px 8px 5px!important}
+  .q-res .q-pill,.q-dash-m > span{height:40px!important;min-width:0;justify-content:center;font-size:12px!important;padding:0 8px!important;border:1px solid #3a3431!important;border-radius:10px}
+  #qstatm{display:flex;order:6;flex:1 1 100%;justify-content:center;align-items:center;gap:6px;padding:2px 12px 10px;font:500 12px/1 "IBM Plex Mono",monospace;color:#8a827b;white-space:nowrap}
+  #qstatm b{color:#5bd16a;font-weight:700}
+  #qstatm i{font-style:normal;color:#3a3431}
+  #qstatm .qd{width:7px;height:7px;border-radius:50%;background:#5bd16a;margin-right:4px}
+  #qstatm .qs-quai{display:none}
+}
 /* readability: no tiny text, buttons use site font */
 button{font-family:inherit}
 :not(.q-tracker *)[style*="font-size: 10px"],:not(.q-tracker *)[style*="font-size: 11px"]{font-size:12px!important}
@@ -1112,6 +1157,37 @@ class Component extends DCLogic {
     if(p>=0.995) c.add('q-rk-up'); else if(p<=0.005) c.remove('q-rk-up');
   }
   window.addEventListener('scroll',flip,{passive:true}); window.addEventListener('load',flip);
+})();
+</script>
+<script>
+/* QOGE header stats: $QOGE price + holders (window.QOGE_METRICS) and QUAI price (/api/quai, Vercel only). Re-inserted if React re-renders. */
+(function(){
+  var quai=null;
+  function lang(){ return document.documentElement.lang==='ru'?'ru':'en'; }
+  function plural(n){ var a=n%10,b=n%100; return a===1&&b!==11?'холдер':(a>=2&&a<=4&&(b<12||b>14))?'холдера':'холдеров'; }
+  function html(){
+    var M=window.QOGE_METRICS; if(!M||!M.priceQuai) return '';
+    var L=lang(), h='<span class="qd"></span><span>$QOGE</span><b>'+M.priceQuai.toFixed(6)+'</b><span>QUAI</span>';
+    if(M.holders!=null) h+='<i>·</i><b>'+M.holders+'</b><span>'+(L==='ru'?plural(M.holders):'holders')+'</span>';
+    if(quai&&quai.price){ var c=quai.ch24; h+='<span class="qs-quai"><i>·</i><span>QUAI</span> <b class="w">$'+quai.price.toFixed(4)+'</b>'+(c!=null?' <span class="'+(c>=0?'up':'dn')+'">'+(c>=0?'▲':'▼')+Math.abs(c).toFixed(1)+'%</span>':'')+'</span>'; }
+    return h;
+  }
+  function mount(){
+    var nav=document.querySelector('.q-nav'); if(!nav) return;
+    var el=document.getElementById('qstat');
+    if(!el||el.parentNode!==nav){ el=document.createElement('div'); el.id='qstat'; nav.insertBefore(el,nav.firstChild); }
+    var h=html(); if(el.dataset.h!==h){ el.innerHTML=h; el.dataset.h=h; }
+    /* phone copy: a row under the buttons; placed before the buy link so it stays the header's last child */
+    var head=document.querySelector('.q-head'), buy=head&&head.querySelector(':scope > a[href="#buy"]'), m=document.getElementById('qstatm');
+    if(head&&buy&&(!m||m.parentNode!==head||m.nextElementSibling!==buy)){ if(!m){ m=document.createElement('div'); m.id='qstatm'; } head.insertBefore(m,buy); }
+    if(m&&m.dataset.h!==h){ m.innerHTML=h; m.dataset.h=h; }
+  }
+  function loadQuai(){
+    if(/github\.io$/.test(location.hostname)) return;
+    fetch('/api/quai').then(function(r){ return r.json(); }).then(function(j){ if(j&&j.market){ quai=j.market; mount(); } }).catch(function(){});
+  }
+  loadQuai(); setInterval(loadQuai,5*60*1000);
+  setInterval(mount,1000); mount();
 })();
 </script>
 <script>
