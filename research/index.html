@@ -109,11 +109,9 @@ header.q .buy:hover{background:var(--paper);color:var(--ink)}
  header.q .buy{padding:0 10px;font-size:12px}
  header.q .crumb{visibility:hidden}
  .grid{grid-template-columns:1fr!important;gap:14px!important}
- .card:not(.soon){display:grid;grid-template-columns:120px 1fr;align-items:stretch}
- .card:not(.soon).hide{display:none}
- .card:not(.soon) img{display:none}
- .tick{display:flex;align-items:center;justify-content:center;border-right:3px solid var(--paper);font-weight:900;font-stretch:115%;font-size:24px;letter-spacing:.02em}
- .x{aspect-ratio:auto;border-bottom:0;border-right:3px solid var(--paper)}
+ /* phones: full report cover on top of each card (the cover already shows the project and key numbers) */
+ .card{min-width:0}
+ .card:not(.soon) img{width:100%;height:auto}
  .card .b{padding:12px 12px 14px;gap:6px}
  .card h2{font-size:18px}
  .card p{font-size:14px;line-height:1.4}
