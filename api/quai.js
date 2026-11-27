@@ -54,8 +54,15 @@ const SOURCES = {
   async market(get) {
     try { return await SOURCES.marketCoinGecko(get); }
     catch (e) {
-      const t = await get('https://api.coinpaprika.com/v1/tickers/quai-quai-network'), q = t.quotes?.USD;
-      if (!q?.price) throw e;
+      let t = null; try { t = await get('https://api.coinpaprika.com/v1/tickers/quai-quai-network'); } catch (e2) {}
+      const q = t?.quotes?.USD;
+      if (!q?.price) {
+        // last resort: price published by the official explorer (no volume or changes)
+        const o = await get(`${EXP}/stats/overview`).catch(() => null);
+        if (!(o?.quaiPrice > 0)) throw e;
+        return { price: Number(o.quaiPrice), mcap: null, vol24: null, ch24: null, ch7: null, ch30: null, ath: null, athDate: null, atl: null, atlDate: null,
+          tickers: [], tickersFailed: true, backup: 'explorer.qu.ai' };
+      }
       return { price: q.price, mcap: null, vol24: q.volume_24h, ch24: q.percent_change_24h, ch7: q.percent_change_7d, ch30: q.percent_change_30d,
         ath: q.ath_price, athDate: q.ath_date, atl: null, atlDate: null, tickers: [], tickersFailed: true, backup: 'CoinPaprika' };
     }
@@ -105,14 +112,20 @@ const SOURCES = {
     }
   },
   // Chain-wide counters: Quaiscan, else the official explorer (no "today" count there).
+  // Counters: null/0/NaN mean "not available right now" (explorer.qu.ai answers null while its headline metrics rebuild,
+  // Nov 27, 2026 showed 0 transactions) — they become null, and a missing total is an error so the Redis cache is used.
   async network(get) {
+    const pos = v => (v == null || v === '' || !isFinite(Number(v)) || Number(v) <= 0 ? null : Number(v));
+    let r;
     try {
       const s = await get(`${SCAN}/stats`);
-      return { totalTx: Number(s.total_transactions), txToday: Number(s.transactions_today), gasToday: Number(s.gas_used_today), addresses: Number(s.total_addresses) };
+      r = { totalTx: pos(s.total_transactions), txToday: pos(s.transactions_today), gasToday: pos(s.gas_used_today), addresses: pos(s.total_addresses) };
     } catch (e) {
       const s = await get(`${EXP}/stats/overview`);
-      return { totalTx: Number(s.totalTransactions), txToday: null, gasToday: null, addresses: Number(s.totalQuaiAddresses ?? s.totalAddresses), qiAddresses: Number(s.totalQiAddresses) || null };
+      r = { totalTx: pos(s.totalTransactions), txToday: null, gasToday: null, addresses: pos(s.totalQuaiAddresses ?? s.totalAddresses), qiAddresses: pos(s.totalQiAddresses) };
     }
+    if (r.totalTx == null) throw new Error('network: total transactions not available');
+    return r;
   },
 };
 async function walletsQuaiscan(get) {
@@ -602,7 +615,28 @@ function health(d) {
     if (hf.requests > 0 && Math.abs(sum / hf.requests - 1) > 0.03) p.push(`⚠️ Hashference: сумма по дням (${sum}) не сходится с итогом (${hf.requests})`);
   }
   if (d.historyError) p.push('❌ История (Redis): ' + d.historyError.slice(0, 140));
-  return p;
+  return p.concat(sanity(d));
+}
+// Cross-checks between sources: every rule is a number that must agree with another one.
+// Runs on every request (data.health) and in the daily Telegram check, so a wrong number is reported, not shown silently.
+function sanity(d) {
+  const w = [], rel = (a, b) => Math.abs(a / b - 1), day = 864e5, now = Date.now(), today = new Date().toISOString().slice(0, 10);
+  const m = d.market, x = d.dex, s = d.supply, so = d.soap, r = d.recon, h = d.hashference;
+  if (m?.price > 0 && x?.price > 0 && rel(m.price, x.price) > 0.25) w.push(`⚠️ Цена: CoinGecko ${m.price} и пул Quainance ${x.price.toFixed(6)} расходятся больше чем на 25%`);
+  if (m?.price > 0 && m?.mcap > 0 && s?.supply > 0 && rel(m.mcap, m.price * s.supply) > 0.15) w.push(`⚠️ Капитализация ${Math.round(m.mcap)} не сходится с ценой × предложение (${Math.round(m.price * s.supply)})`);
+  if (m && !(m.depthUp > 0)) w.push('⚠️ Глубина стаканов +2% = 0: ни одна биржа не дала стакан');
+  if (r?.revenue > 0 && so?.total > 0 && rel(r.revenue, so.total) > 0.01) w.push('⚠️ Выручка SOAP в сверке и в источнике различается больше чем на 1%');
+  if (so?.months?.length && so.total > 0) { const sum = so.months.reduce((a, x) => a + x[1], 0); if (rel(sum, so.total) > 0.02) w.push(`⚠️ SOAP: сумма по месяцам ${Math.round(sum)} ≠ итог ${Math.round(so.total)}`); }
+  if (so?.last30 > so?.total) w.push('⚠️ SOAP: выручка за 30 дней больше, чем за всё время');
+  if (r?.burnShare > 1.05) w.push(`⚠️ Сожжено ${Math.round(r.burnShare * 100)}% выручки — больше 100%, проверьте цены сжиганий`);
+  const c = s?.d30?.coverage; if (c != null && (c < 0 || c > 1.5)) w.push(`⚠️ Доля сгоревших новых монет вне разумных пределов: ${c}`);
+  if (s?.d30 && !(s.d30.mined > 0)) w.push('⚠️ Майнинг за 30 дней = 0 — supply.qu.ai отдал пустые данные');
+  const pc = d.priceChart; if (pc?.length && now - Date.parse(pc[pc.length - 1][0] + 'T00:00:00Z') > 2 * day) w.push('⚠️ История цены не обновлялась больше 2 дней: последний день ' + pc[pc.length - 1][0]);
+  const nx = s?.unlocks?.next; if (nx?.t && nx.t * 1000 < now - day) w.push('⚠️ Следующий разлок в прошлом — обновите расписание UNLOCKS в api/quai.js');
+  if (h?.daily?.length) { const last = h.daily[h.daily.length - 1][0]; if (now - Date.parse(last + 'T00:00:00Z') > 2 * day) w.push('⚠️ Hashference: последний день в данных ' + last); }
+  if (h?.history?.length && h.daily?.length) { const H = Object.fromEntries(h.history); for (const [k, v] of h.daily) if (k < today && H[k] != null && H[k] !== v) { w.push(`⚠️ Hashference: архив и источник расходятся за ${k} (${H[k]} и ${v})`); break; } }
+  if (d.history?.length && d.history[d.history.length - 1][0] !== today && !d.historyError) w.push('⚠️ История: нет записи за сегодня');
+  return w;
 }
 async function notifyOwner(text) {
   const token = process.env.TELEGRAM_BOT_TOKEN, owner = process.env.TELEGRAM_OWNER_ID;
@@ -675,3 +709,4 @@ module.exports.collect = collect;
 module.exports.hashferenceArchive = hashferenceArchive;
 module.exports.getJson = getJson;
 module.exports.health = health;
+module.exports.sanity = sanity;

@@ -121,6 +121,14 @@ Open https://www.qoge.fun/api/quai (or `fetch('/api/quai')` in a browser on qoge
 - Write plainly: say what a number means and what it is compared with; when two numbers look contradictory (e.g. "99% of revenue burned" vs "50% coverage"), explain the difference next to them.
 
 ## How to check changes
+- **Deep render test (run before every handover):** `python3 tools/quai-deep-test.py <repo folder>` — 4 data scenarios
+  (live-like, partial sources, extreme values, API down) × EN/RU × widths 360–1920; reports page errors, text artifacts
+  (undefined/NaN/null/".."), overflow, clipped or spilling text, empty blocks. Must print OK for all 56 runs.
+- **Live cross-checks (`sanity()` in api/quai.js, part of `data.health` and the daily Telegram check):** CoinGecko vs Quainance price,
+  mcap vs price × supply, SOAP revenue in the audit vs the source and vs the monthly sum, burned share ≤ 100%, coverage range,
+  mined > 0, price history and Hashference data not older than 2 days, next unlock not in the past, today's history record exists.
+- Counters that come back 0/null (explorer.qu.ai while it rebuilds headline metrics) are treated as missing, not as 0.
+- Price backups: CoinGecko → CoinPaprika → `quaiPrice` from explorer.qu.ai `/stats/overview`.
 - Render offline with Playwright: open `file:///…/research/quai-live/index.html`, abort all http(s) requests (page then uses the snapshot), set `localStorage['qoge-lang']` to `ru`/`en`, screenshot at 1440 and 390 px, check `document.documentElement.scrollWidth` equals the viewport width and there are no page errors.
 - API logic: `node -e "require('./api/quai.js').assemble({...})"` with mocked parts; history with a mocked `fetch` for Redis.
   `hashferenceArchive`, `getJson` and `health` are exported for such tests (mock `global.fetch`, set KV_REST_API_URL/TOKEN before require).
