@@ -733,6 +733,8 @@ function shareText(el){
 }
 function openShare(el,btn){
   var k=el.getAttribute('data-k'), link=location.origin+'/q?k='+k+'&l='+L+'&t='+Math.floor(Date.now()/36e5),   /* t = hour: X caches a card per link, so a new hour gives fresh numbers */ img=location.origin+'/api/qcard?k='+k+'&l='+L;
+  // warm the card on the CDN now, so X gets it instantly when it asks (a slow first answer makes X post without a picture)
+  try{ new Image().src=location.origin+'/api/qcard?k='+k+'&l='+L+'&v='+Math.floor(Date.now()/36e5); fetch(link,{mode:'no-cors'}); }catch(e){}
   var m=$('shareMenu'); if(!m){ m=document.createElement('div'); m.id='shareMenu'; document.body.appendChild(m); document.addEventListener('click',function(){ m.classList.remove('on'); }); }
   m.innerHTML='<a target="_blank" rel="noopener" href="https://x.com/intent/post?text='+encodeURIComponent(shareText(el))+'&url='+encodeURIComponent(link)+'">'+t('shrX')+'</a>'+
     '<a href="'+img+'" download="qnn-quai-'+k+'.png" target="_blank" rel="noopener">'+t('shrImg')+'</a><button type="button" id="shrCopy">'+t('shrCopy')+'</button>';
