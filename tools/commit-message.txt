@@ -1,4 +1,0 @@
-Quai Live: Hashference section with models, apps, long history, staking, mining shares
-
-Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
-Claude-Session: https://claude.ai/code/session_01K147gCJvatrcQ7zCd5Mvvq
