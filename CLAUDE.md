@@ -127,6 +127,9 @@ Owner speaks Russian (sometimes types Russian on an English layout); answer in R
 - Wallet check (#qwal, under the calculator in #buy): `api/wallet.js` (Edge, GET /api/wallet?a=0x…) returns QUAI
   (explorer, backup RPC quai_getBalance), $QOGE and Mars Gum balanceOf via RPC quai_call (backup: explorer token-balances),
   other tokens. Public data only, nothing stored; last address kept in localStorage 'qoge-wallet'. Hidden on github.io/file://.
+- QUAI tokenomics passport + watch: rules in `api/_tokenomics.js` (single source), watcher `api/quai-watch.js`
+  (blog/docs/go-quai releases + on-chain check, Telegram buttons), warning banner on the dashboard. Details and the
+  "update the passport" procedure: tools/quai-dashboard.md, "Tokenomics passport and watch".
 - Mobile layout: `@media (max-width:767px)` block in index.html helmet styles.
 
 ## Links

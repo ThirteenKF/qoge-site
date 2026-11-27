@@ -20,6 +20,8 @@ def live():
     D['network']={'totalTx':None,'txToday':None,'gasToday':None,'addresses':None,'qiAddresses':277150}
     D['priceChart']=[[d,0.007] for d in days(120)]
     D['history']=[[d,{'p':.007,'du':2000,'dx':20000,'cov':.45,'r30':170000,'hst':3100000}] for d in days(7)]
+    D['tokenomics']={'version':'t','updatedAt':'2026-11-27T16:00:00Z','affects':['unlock','supply','cov'],'issues':[],
+      'forks':[{'id':'polaris','date':'2026-10-13','en':'Polaris fork: 236.5M QUAI of founder unlocks cancelled','ru':'Форк Polaris: отменено 236,5 млн QUAI разлоков основателей','url':'https://qu.ai/blog/introducing-the-polaris-fork'}]}
     return D
 def partial():
     D=live(); 
@@ -31,7 +33,12 @@ def extreme():
     D=live(); h=D['hashference']; h['daily']=[[d,0] for d in days(30)]; h['requests']=0; h['models']=[]; h['apps']=[]; h['netDaily']=[]
     D['market']['price']=123456.789; D['market']['depthUp']=0
     return D
-SC={'live':live(),'partial':partial(),'extreme':extreme(),'down':None}
+SC={'live':live(),'partial':partial(),'extreme':extreme(),'down':None,'warnYel':live(),'warnRed':live()}
+# tokenomics warning state (/api/quai-watch) per scenario; none = no warning
+EV=lambda i,lvl,ru,en,url=None:{'id':'e%d'%i,'src':'blog','level':lvl,'ru':ru,'en':en,'url':url,'at':now.isoformat()}
+WATCH={'warnYel':{'events':[EV(1,'yellow','Новая статья в блоге Quai: «introducing the vega fork»','New post on the Quai blog: "introducing the vega fork"','https://qu.ai/blog/x')],'level':'yellow','affects':['unlock','supply','cov']},
+  'warnRed':{'events':[EV(2,'red','Разлок генезиса №22 (~3.7 млн QUAI, около 2026-11-30) не появился в предложении: пришло ~0.1 млн. Похоже, график разлоков изменился.','Genesis unlock #22 (~3.7M QUAI, around 2026-11-30) did not show up in the supply: only ~0.1M arrived. The unlock schedule seems to have changed.'),
+     EV(3,'yellow','В документации Quai изменились цифры токеномики (quai-emissions): новые 1,100,000,000; убраны 1,332,840,016','Tokenomics numbers changed in the Quai docs (quai-emissions): new 1,100,000,000; removed 1,332,840,016','https://docs.qu.ai/x')],'level':'red','affects':['unlock','supply','cov']}}
 BAD=re.compile(r'undefined|NaN|Infinity|\bnull\b|\[object|(?<!\.)\.\.(?!\.)|\{\{|\$-|−−|\s,\s')
 async def check(pg):
     return await pg.evaluate(r"""(BAD)=>{const re=new RegExp(BAD); const out={};
@@ -41,6 +48,7 @@ async def check(pg):
       const clipped=[]; document.querySelectorAll('.tile .v,.dt .v,.vc .v,.tile .d,.dt .s,td,th,.sum,.ev .v,h1,h2,h3,.big2').forEach(e=>{ if(e.offsetParent&&(e.scrollWidth>e.clientWidth+2)) clipped.push((e.className||e.tagName)+':'+e.innerText.slice(0,30)); }); out.clipped=clipped.slice(0,6);
       const out2=[]; document.querySelectorAll('.tile,.dt,.vc,.panel').forEach(p=>{ const r=p.getBoundingClientRect(); p.querySelectorAll('*').forEach(c=>{ const q=c.getBoundingClientRect(); if(q.width&&q.right>r.right+2&&getComputedStyle(c).position!=='absolute'&&!c.closest('.tbl')) out2.push((c.className&&c.className.baseVal===undefined?c.className:c.tagName)+':'+(c.innerText||'').slice(0,20)); }); }); out.spill=[...new Set(out2)].slice(0,6);
       out.empty=['events','verdicts','summary','dynTiles','pulseTiles','priceChart','hfTiles','hfLong','hfModels','hfApps','hfShares','hfStake','supplyTiles','soapTiles','exTable','ecoTiles'].filter(id=>{const e=document.getElementById(id); return e&&e.offsetParent&&!e.innerHTML.trim();});
+      const bn=document.getElementById('tkBanner'); out.banner=bn&&!bn.hidden?bn.className+' marks='+document.querySelectorAll('.tkm').length:'';
       out.status=document.getElementById('status').innerText; return out;}""", BAD.pattern)
 async def run():
     res=[]
@@ -52,17 +60,19 @@ async def run():
                     pg=await b.new_page(viewport={'width':w,'height':900}); errs=[]
                     pg.on('pageerror', lambda e: errs.append('pageerror:'+str(e)))
                     body=json.dumps(D) if D else None
-                    def mk(body):
+                    wbody=json.dumps(WATCH.get(sc,{'events':[],'level':None}))
+                    def mk(body,wbody):
                       async def route(r, req=None):
                         u=r.request.url
-                        if '/api/quai' in u: await (r.fulfill(status=200,body=body,content_type='application/json') if body else r.fulfill(status=502,body='{}'))
+                        if '/api/quai-watch' in u: await r.fulfill(status=200,body=wbody,content_type='application/json')
+                        elif '/api/quai' in u: await (r.fulfill(status=200,body=body,content_type='application/json') if body else r.fulfill(status=502,body='{}'))
                         elif u.startswith('http://site/'):
                             path=os.path.join(SITE,u[len('http://site/'):].split('?')[0])
                             if path.endswith(os.sep) or path.endswith('/'): path=os.path.join(path,'index.html')
                             await r.fulfill(path=path)
                         else: await r.abort()
                       return route
-                    await pg.route('**/*', mk(body))
+                    await pg.route('**/*', mk(body,wbody))
                     await pg.add_init_script("try{localStorage.clear();localStorage.setItem('qoge-lang','%s')}catch(e){}"%lang)
                     await pg.goto('http://site/research/quai-live/?lang='+lang); await pg.wait_for_timeout(1800)
                     c=await check(pg); c['errs']=errs
@@ -71,7 +81,11 @@ async def run():
                         i=await pg.query_selector('[data-tip]')
                         if i: await i.click(); c['tip']=await pg.evaluate("getComputedStyle(document.querySelector('.tip')).opacity")
                     await pg.close()
-                    bad={k:v for k,v in c.items() if v and k not in ('status','ctx','tip')}
+                    bad={k:v for k,v in c.items() if v and k not in ('status','ctx','tip','banner')}
+                    want=sc.startswith('warn')
+                    if want and not c.get('banner'): bad['banner']='missing'
+                    if not want and c.get('banner'): bad['banner']='unexpected: '+c['banner']
+                    if want and c.get('banner') and ' marks=0' in c['banner']: bad['banner']='no tile marks'
                     res.append((sc,lang,w,bad,c.get('ctx'),c.get('tip'),c['status']))
         await b.close()
     return res

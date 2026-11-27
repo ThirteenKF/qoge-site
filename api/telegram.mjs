@@ -180,7 +180,19 @@ async function webhook(request) {
     const q = u.callback_query;
     const from = String(q.from?.id || '');
     if (from !== OWNER) { await tg('answerCallbackQuery', { callback_query_id: q.id, text: 'Нет доступа' }); return new Response('ok'); }
-    const [act, id] = String(q.data || '').split(':');
+    const [act, id, evId] = String(q.data || '').split(':');
+    // tokenomics warning buttons from api/quai-watch.js: tk:ok:<event> = important (red banner), tk:no:<event> = false alarm (banner off)
+    if (act === 'tk') {
+      const raw = await redis('HGET', 'quai:tk:events', evId);
+      if (!raw) { await tg('answerCallbackQuery', { callback_query_id: q.id, text: 'Событие не найдено' }); return new Response('ok'); }
+      const e = JSON.parse(raw); e.status = id === 'ok' ? 'confirmed' : 'dismissed'; e.by = from; e.decidedAt = new Date().toISOString();
+      await redis('HSET', 'quai:tk:events', evId, JSON.stringify(e));
+      const ok = id === 'ok';
+      await tg('answerCallbackQuery', { callback_query_id: q.id, text: ok ? 'Отмечено как важное: на дашборде красное предупреждение' : 'Ложная тревога: предупреждение снято' });
+      await tg('editMessageReplyMarkup', { chat_id: q.message.chat.id, message_id: q.message.message_id, reply_markup: { inline_keyboard: [[{ text: ok ? '❗ Важно — напиши Claude обновить паспорт' : '✖ Ложная тревога, снято', callback_data: 'done' }]] } });
+      return new Response('ok');
+    }
+    if (act === 'done') { await tg('answerCallbackQuery', { callback_query_id: q.id }); return new Response('ok'); }
     const d = await getDraft(id);
     if (!d) { await tg('answerCallbackQuery', { callback_query_id: q.id, text: 'Черновик устарел или уже обработан' }); return new Response('ok'); }
     await redis('DEL', DRAFT(id)); // one tap = one post, no double posting

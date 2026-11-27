@@ -23,15 +23,9 @@ const LLAMA = 'https://api.llama.fi';
 const DEX_PAIR = '0x0021f5cc862ebb0252ba209266f2fabbc7592e83';
 const DEX_FEE = 0.003;
 
-// Genesis unlock schedule after the Singularity and Polaris forks, taken from the team's supply tracker
-// (supply.qu.ai, GENESIS_UNLOCK_SCHEDULE = post-Singularity schedule minus FOUNDER_UNLOCKS from month 22).
-// [schedule month, QUAI]; month m unlocks at block m * 518400. Sum of months 22..48 = 90.39M QUAI.
-const BLOCKS_PER_MONTH = 518400;
-const UNLOCK_DATES = { 13: '2026-03-04', 14: '2026-04-03', 15: '2026-05-03', 16: '2026-06-02', 17: '2026-07-02', 18: '2026-08-01', 19: '2026-08-31', 20: '2026-09-30' };
-const UNLOCKS = [[13,51892587],[14,13642587],[15,13141025],[16,13680731],[17,12976319],[18,13123261],[19,12596288],[20,13103525],[21,12578525],
-  [22,3735412],[23,3730412],[24,3723120],[25,3660620],[26,3677287],[27,3643954],[28,3643954],[29,3643954],[30,3643954],[31,3643954],
-  [32,3649825],[33,3613083],[34,3241870],[35,3241870],[36,3241870],[37,3241870],[38,3241870],[39,3241870],[40,2991870],[41,2991870],
-  [42,2991870],[43,2991870],[44,2991870],[45,2991870],[46,2991870],[47,2991870],[48,2991870]];
+// Tokenomics rules (unlock schedule, forks) live in one place: api/_tokenomics.js ("passport").
+const TK = require('./_tokenomics.js');
+const { BLOCKS_PER_MONTH, UNLOCK_DATES, UNLOCKS } = TK;
 
 const SOURCES = {
   // Price, volume, order-book depth (±2%) per exchange.
@@ -444,7 +438,7 @@ function assemble(p) {
     const bt = s.blockTime30 || s.blockTime || 5.2, head = s.head;
     const at = blk => head ? Math.round(Date.now() / 1000 + (blk - head) * bt) : null;
     // Past unlock dates: the tracker's own calendar (UNLOCK_DATES, then +30 days per month); future ones from block time.
-    const pastDate = m => UNLOCK_DATES[m] ? Date.parse(UNLOCK_DATES[m] + 'T00:00:00Z') / 1000 : Date.parse('2026-09-30T00:00:00Z') / 1000 + (m - 20) * 2592000;
+    const pastDate = TK.pastDate;
     const sched = UNLOCKS.map(([m, q]) => { const block = m * BLOCKS_PER_MONTH; return { m, block, t: head && block <= head ? pastDate(m) : at(block), quai: q }; });
     const now = Date.now() / 1000;
     const future = head ? sched.filter(u => u.block > head) : [];
@@ -632,7 +626,7 @@ function sanity(d) {
   const c = s?.d30?.coverage; if (c != null && (c < 0 || c > 1.5)) w.push(`⚠️ Доля сгоревших новых монет вне разумных пределов: ${c}`);
   if (s?.d30 && !(s.d30.mined > 0)) w.push('⚠️ Майнинг за 30 дней = 0 — supply.qu.ai отдал пустые данные');
   const pc = d.priceChart; if (pc?.length && now - Date.parse(pc[pc.length - 1][0] + 'T00:00:00Z') > 2 * day) w.push('⚠️ История цены не обновлялась больше 2 дней: последний день ' + pc[pc.length - 1][0]);
-  const nx = s?.unlocks?.next; if (nx?.t && nx.t * 1000 < now - day) w.push('⚠️ Следующий разлок в прошлом — обновите расписание UNLOCKS в api/quai.js');
+  const nx = s?.unlocks?.next; if (nx?.t && nx.t * 1000 < now - day) w.push('⚠️ Следующий разлок в прошлом — обновите паспорт токеномики api/_tokenomics.js');
   if (h?.daily?.length) { const last = h.daily[h.daily.length - 1][0]; if (now - Date.parse(last + 'T00:00:00Z') > 2 * day) w.push('⚠️ Hashference: последний день в данных ' + last); }
   if (h?.history?.length && h.daily?.length) { const H = Object.fromEntries(h.history); for (const [k, v] of h.daily) if (k < today && H[k] != null && H[k] !== v) { w.push(`⚠️ Hashference: архив и источник расходятся за ${k} (${H[k]} и ${v})`); break; } }
   if (d.history?.length && d.history[d.history.length - 1][0] !== today && !d.historyError) w.push('⚠️ История: нет записи за сегодня');
@@ -683,6 +677,8 @@ module.exports = async (req, res) => {
     try { await enrich(data); } catch (e) {}
     try { data.history = await history(data); } catch (e) { data.historyError = String(e.message || e).slice(0, 200); }
     const url = req.url || '', cron = /[?&]save=1/.test(url);
+    // passport version + on-chain check of the passport (api/_tokenomics.js); warnings are sent by api/quai-watch.js
+    try { data.tokenomics = { version: TK.VERSION, updatedAt: TK.UPDATED_AT, forks: TK.FORKS, affects: TK.AFFECTS, issues: TK.chainCheck(data.supply) }; } catch (e) {}
     data.health = health(data);
     if (cron) {
       const key = (url.match(/[?&]key=([^&]+)/) || [])[1];

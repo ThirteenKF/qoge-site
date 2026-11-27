@@ -60,3 +60,12 @@ try {
   // Keep the last committed files so the site still shows numbers.
   console.warn('Could not refresh metrics, keeping previous files:', err.message);
 }
+
+// Tokenomics watch for the QUAI dashboard (api/quai-watch.js): this script already runs every 30 min in GitHub Actions,
+// so it also pokes the watcher. The watcher throttles itself; a failure here never affects the metrics or the deploy.
+try {
+  const r = await fetch('https://www.qoge.fun/api/quai-watch?run=1', { signal: AbortSignal.timeout(60000) });
+  console.log('quai-watch:', r.status);
+} catch (err) {
+  console.warn('quai-watch not reached:', err.message);
+}

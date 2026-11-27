@@ -122,7 +122,12 @@ export default async function handler(req) {
   const url = new URL(req.url), q = url.searchParams, origin = url.origin;
   const L = q.get('l') === 'ru' ? 'ru' : 'en', k = KEYS.includes(q.get('k')) ? q.get('k') : 'hf7', t = T[L], f = fmt(L);
   let D = null, M = null;
-  try { D = await (await fetch(origin + '/api/quai', { signal: AbortSignal.timeout(3500) })).json();   // X gives up on slow images, so never wait long M = metric(k, D, L); } catch (e) {}
+  // X gives up on slow images, so never wait long for the data
+  try { D = await (await fetch(origin + '/api/quai', { signal: AbortSignal.timeout(3500) })).json(); M = metric(k, D, L); } catch (e) {}
+  // tokenomics warning (api/quai-watch.js): cards of numbers that depend on the passport get a warning line
+  let warn = null;
+  try { const w = await (await fetch(origin + '/api/quai-watch', { signal: AbortSignal.timeout(1500) })).json();
+    if (w.events?.length && (w.affects || []).includes(k)) warn = { red: w.level === 'red', text: L === 'ru' ? 'ВНИМАНИЕ: изменилась токеномика QUAI, цифра может быть устаревшей' : 'NOTE: QUAI tokenomics changed, this number may be out of date' }; } catch (e) {}
   if (!M) return Response.redirect(origin + '/assets/og.jpg', 302);
 
   const at = t.at + ' ' + f.date(D.updatedAt || Date.now());
@@ -143,7 +148,7 @@ export default async function handler(req) {
     chart = el('div', { width: W, height: H, alignItems: 'flex-end' }, ...M.bars.map((b, i) => el('div', { width: Math.max(2, Math.floor(bw)), marginRight: i === M.bars.length - 1 ? 0 : gap, height: Math.max(3, Math.round(b[0] / mx * H)), backgroundColor: b[1] })));
   }
 
-  const allText = [t.tag, t.sub, M.label.toUpperCase(), M.value, M.sub || '', at, t.site, '$QOGE', '0123456789'].join('');
+  const allText = [t.tag, t.sub, M.label.toUpperCase(), M.value, M.sub || '', at, t.site, '$QOGE', '0123456789', warn ? warn.text : ''].join('');
   const fonts = [];
   try {
     const [black, bold, num, mono] = await Promise.all([font('Inter:wght@900', allText), font('Inter:wght@700', allText), font('Unbounded:wght@700', allText), font('IBM+Plex+Mono:wght@500', allText)]);
@@ -151,7 +156,7 @@ export default async function handler(req) {
       { name: 'Num', data: num, weight: 700, style: 'normal' }, { name: 'Mono', data: mono, weight: 500, style: 'normal' });
   } catch (e) {}
 
-  const tree = el('div', { width: 1200, height: 675, position: 'relative', backgroundColor: BG, color: PAPER, fontFamily: 'Inter', flexDirection: 'column', padding: '44px 64px 0 64px' },
+  const tree = el('div', { width: 1200, height: 675, position: 'relative', backgroundColor: BG, color: PAPER, fontFamily: 'Inter', flexDirection: 'column', padding: (warn ? '64px' : '44px') + ' 64px 0 64px' },
     el('div', { position: 'absolute', left: 0, top: 0, width: 14, height: 675, backgroundColor: RED }),
     el('div', { alignItems: 'center' },
       el('div', { backgroundColor: RED, color: '#ffffff', padding: '6px 16px', fontSize: 22, fontWeight: 900 }, t.tag),
@@ -160,6 +165,7 @@ export default async function handler(req) {
     el('div', { marginTop: 10, fontFamily: 'Num', fontSize: vSize, fontWeight: 700, color: M.color, lineHeight: 1.05 }, M.value),
     M.sub ? el('div', { marginTop: 14, fontSize: sSize, fontWeight: 700, color: M.subColor || TXT2 }, M.sub) : el('div', {}),
     el('div', { position: 'absolute', left: 64, bottom: 78, width: W }, chart || el('div', {})),
+    warn ? el('div', { position: 'absolute', left: 14, right: 0, top: 0, height: 40, alignItems: 'center', paddingLeft: 50, backgroundColor: warn.red ? RED : '#d6b42a', color: warn.red ? '#ffffff' : '#111111', fontSize: 20, fontWeight: 900 }, warn.text) : el('div', {}),
     el('div', { position: 'absolute', left: 64, right: 64, bottom: 28, justifyContent: 'space-between', alignItems: 'center', fontFamily: 'Mono', fontSize: 20, color: MUTE },
       el('div', {}, t.site + ' · ' + at),
       el('div', { fontFamily: 'Inter', fontSize: 30, fontWeight: 900, color: RED }, '$QOGE')));

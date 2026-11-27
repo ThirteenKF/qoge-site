@@ -161,6 +161,29 @@ Do not touch the main page or other research pages unless asked; the owner usual
 - CEX depth within +2% ≈ $2.2K; Quainance QUAI/USDT pool ≈ $20K but only ~$100 within ±2% ($500 buy moves it ~10%); DEX ≈ 2–3% of QUAI trading.
 - Hashference demand doubling week over week (≈10K requests/7 d); 62% of its credit comes from QUAI staking.
 
+## Tokenomics passport and watch (Nov 27, 2026)
+- `api/_tokenomics.js` = the passport: unlock schedule (UNLOCKS, UNLOCK_DATES, BLOCKS_PER_MONTH), FORKS (shown in the
+  feed as "tokenomics"), AFFECTS (data-k keys of the numbers that depend on it: unlock, supply, cov), VERSION, UPDATED_AT.
+  api/quai.js takes every tokenomics rule from here; nothing else hard-codes the schedule (the History chart's past
+  unlock markers are facts, not rules).
+- `chainCheck(supply)` (same file): per day, residual = supply change − mining + SOAP burns (noise ±0.2M/day). A scheduled
+  unlock must show up as ≥50% of its size within −3…+4 days of its block (checked once the window is complete);
+  a residual > max(1.5M, 10×robust σ) on a day without a scheduled unlock = coins the passport doesn't know about (red);
+  a big unexplained drop = yellow. Output in /api/quai as `tokenomics.issues`.
+- `api/quai-watch.js`: `?run=1` (every 30 min from scripts/fetch-metrics.mjs in GitHub Actions + Vercel cron 12:10 UTC, Redis lock 20 min)
+  checks qu.ai/sitemap.xml (new/updated blog posts whose slug mentions fork/unlock/burn/supply/emission…), supply-size
+  numbers (≥1,000,000) on docs.qu.ai tokenomics pages (overview, quai-emissions, protocol-upgrades, soap), go-quai GitHub
+  releases mentioning a fork, and chainCheck. First run of a source = silent baseline. New finding → Redis hash
+  `quai:tk:events` + Telegram to the owner with buttons «Это важно» (tk:ok → red) / «Ложная тревога» (tk:no → hidden),
+  handled in api/telegram.mjs. Plain GET = banner state (edge 5 min); any error = no banner.
+- Dashboard: `#tkBanner` under the header (yellow = possible change, red = confirmed / chain mismatch), ⚠ marks on the
+  AFFECTS tiles and the Supply heading; X cards of those keys get a warning strip (api/qcard.js).
+- **When the owner says "обнови паспорт токеномики"**: read the event (Telegram text / banner), check the official numbers
+  (supply.qu.ai next unlock + table, docs.qu.ai quai-emissions, the blog post), update UNLOCKS/UNLOCK_DATES/FORKS in
+  api/_tokenomics.js, set VERSION and UPDATED_AT = now (UTC) → every earlier event counts as handled, the banner goes.
+  A chain finding that is still true after the update is raised again on the next run. Run the deep test.
+- Deep test has scenarios warnYel / warnRed (banner + marks must appear) and checks that no banner shows otherwise.
+
 ## Backlog (ideas agreed with the owner, not built yet)
 - Mining block: share of donor-chain blocks found by SOAP (≈2% of BCH, ≈0.3–0.4% LTC/DOGE, ≈30% RVN on a 5-day sample — recheck on 30 days), miners' daily pay in USD vs buyback per day, workshares by algorithm (rollups data).
 - Alerts to Telegram/X on burns, upcoming unlocks, SOAP-wallet leaks, coverage drops (reuse `api/telegram.mjs` drafts).

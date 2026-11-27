@@ -20,12 +20,19 @@
   "functions": {
     "api/quai.js": {
       "maxDuration": 60
+    },
+    "api/quai-watch.js": {
+      "maxDuration": 60
     }
   },
   "crons": [
     {
       "path": "/api/quai?save=1",
       "schedule": "50 23 * * *"
+    },
+    {
+      "path": "/api/quai-watch?run=1",
+      "schedule": "10 12 * * *"
     }
   ]
 }

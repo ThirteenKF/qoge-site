@@ -198,6 +198,14 @@ nav.tabs a:hover{border-color:var(--red)!important;color:var(--red)}
 .src{margin-top:44px;padding:18px 20px;border:1px solid #232323;background:rgba(5,5,5,.92);font-size:14px;line-height:1.6;color:var(--txt2)}
 .src a{color:var(--yel)}
 .src ul{margin:8px 0 0;padding-left:18px}
+/* tokenomics warning (api/quai-watch.js) */
+.tkb{margin-top:24px;padding:16px 18px;border:2px solid;font-size:15px;line-height:1.55;color:var(--paper)}
+.tkb.yel{border-color:#d6b42a;background:#1a1606}.tkb.red{border-color:#e3262b;background:#1d0708}
+.tkb .h{font:800 14px/1.4 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase}.tkb.yel .h{color:#f0cf47}.tkb.red .h{color:#ff6b6e}
+.tkb ul{margin:8px 0 0;padding-left:18px}.tkb li{margin-top:4px}.tkb a{color:inherit;text-decoration:underline}.tkb p{margin:8px 0 0;color:var(--txt2);font-size:14px}
+.tkb button{margin-top:10px;background:none;border:1px solid #555;color:var(--txt2);font:600 12px/1 'JetBrains Mono',monospace;padding:7px 10px;cursor:pointer;text-transform:uppercase;letter-spacing:.06em}
+.tkm{display:block;margin-top:6px;font:700 11px/1.4 'JetBrains Mono',monospace;letter-spacing:.04em;text-transform:uppercase;color:#f0cf47}
+.tkw.red-w .tkm,h2 .tkm.r{color:#ff6b6e}h2 .tkm{display:inline-block;margin:0 0 0 12px;vertical-align:middle}
 footer.q{margin-top:64px;border-top:1px solid var(--line);padding:28px 16px 40px;font-size:11px;letter-spacing:.1em;color:#6f6f6f;text-transform:uppercase;line-height:1.7}
 footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
 </style>
@@ -211,6 +219,7 @@ footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12p
 </header>
 
 <main class="wrap">
+<div id="tkBanner" class="tkb" role="status" hidden></div>
 <section style="padding-top:40px">
   <span class="tag" data-en="Live · updated hourly" data-ru="Онлайн · обновление раз в час">Live · updated hourly</span>
   <h1><span style="color:inherit" data-en="Independent" data-ru="Независимый">Independent</span> <span data-en="QUAI dashboard" data-ru="дашборд QUAI">QUAI dashboard</span></h1>
@@ -456,7 +465,11 @@ evBurn:'Last burn', evBurnV:function(b,d){return date(b.t)+' · '+num(b.quai)+' 
   fdLeak:function(q,u,to){return '<b>'+q+' QUAI</b>'+(u?' ≈ '+u:'')+' left the SOAP wallet without being burned → '+to;},
   fdHf:function(n,prev){return 'Hashference record: <b>'+n+' requests</b> in a day (previous best '+prev+')';},
   fdPx:function(c,p){return 'QUAI '+(c.charAt(0)==='+'?'jumped':'fell')+' <b>'+c.replace(/^[+−]/,'')+'</b> in a day, to '+p;},
-  fdTag:{burn:'burn',unl:'unlock',leak:'SOAP leak',hf:'Hashference',px:'price'},
+  fdTag:{burn:'burn',unl:'unlock',leak:'SOAP leak',hf:'Hashference',px:'price',fork:'tokenomics'},
+  tkYel:'Possible change in QUAI tokenomics', tkRed:'QUAI tokenomics changed: some numbers are out of date',
+  tkYelP:'Numbers that depend on the rules (next unlock, supply growth, share of new coins burned) may be inaccurate. We are checking.',
+  tkRedP:'Out of date until we update: next unlock, supply growth, share of new coins burned. The rest of the dashboard is live and correct.',
+  tkSrc:'source', tkLess:'Hide', tkMore:function(n){return 'Show '+n+' more';}, tkTile:'may be out of date: tokenomics change',
   shr:'Share', shrX:'Post on X', shrImg:'Download picture', shrCopy:'Copy link', shrCopied:'Link copied ✓', shrTail:'Live Quai data by QNN',
   hfReq:'Hashference requests, 30 d', hf7:'Last 7 full days', hf7D:function(b){return 'requests vs '+num(b)+' the week before';},
   hfDevT:'Devices paying with mining', hfDevD:function(h){return (h.devicesConnected!=null?'connected now: '+num(h.devicesConnected)+' · ':'')+'mining shares in 30 d: '+num(h.shares30);},
@@ -531,7 +544,11 @@ evBurn:'Последнее сжигание', evBurnV:function(b,d){return date(
   fdLeak:function(q,u,to){return 'С кошелька SOAP ушло <b>'+q+' QUAI</b>'+(u?' ≈ '+u:'')+' не на сжигание → '+to;},
   fdHf:function(n,prev){return 'Рекорд Hashference: <b>'+n+' запросов</b> за день (прошлый рекорд '+prev+')';},
   fdPx:function(c,p){return 'QUAI '+(c.charAt(0)==='+'?'вырос':'упал')+' на <b>'+c.replace(/^[+−]/,'')+'</b> за день, до '+p;},
-  fdTag:{burn:'сжигание',unl:'разлок',leak:'утечка SOAP',hf:'Hashference',px:'цена'},
+  fdTag:{burn:'сжигание',unl:'разлок',leak:'утечка SOAP',hf:'Hashference',px:'цена',fork:'токеномика'},
+  tkYel:'Возможно изменение токеномики QUAI', tkRed:'Токеномика QUAI изменилась: часть данных устарела',
+  tkYelP:'Цифры, которые зависят от правил (следующий разлок, рост предложения, доля сгоревших новых монет), могут быть неточными. Проверяем.',
+  tkRedP:'Устарели до обновления дашборда: следующий разлок, рост предложения, доля сгоревших новых монет. Остальные данные живые и верные.',
+  tkSrc:'источник', tkLess:'Свернуть', tkMore:function(n){return 'Ещё '+n;}, tkTile:'может быть устаревшим: изменилась токеномика',
   shr:'Поделиться', shrX:'Опубликовать в X', shrImg:'Скачать картинку', shrCopy:'Скопировать ссылку', shrCopied:'Ссылка скопирована ✓', shrTail:'Живые данные Quai от QNN',
   hfReq:'Запросы к Hashference, 30 дн.', hf7:'7 полных дней', hf7D:function(b){return 'запросов против '+num(b)+' неделей раньше';},
   hfDevT:'Устройства, платящие майнингом', hfDevD:function(h){return (h.devicesConnected!=null?'подключено сейчас: '+num(h.devicesConnected)+' · ':'')+'майнинговых шар за 30 дн.: '+num(h.shares30);},
@@ -736,8 +753,20 @@ function openShare(el,btn){
   // warm the card on the CDN now, so X gets it instantly when it asks (a slow first answer makes X post without a picture)
   try{ new Image().src=location.origin+'/api/qcard?k='+k+'&l='+L+'&v='+Math.floor(Date.now()/36e5); fetch(link,{mode:'no-cors'}); }catch(e){}
   var m=$('shareMenu'); if(!m){ m=document.createElement('div'); m.id='shareMenu'; document.body.appendChild(m); document.addEventListener('click',function(){ m.classList.remove('on'); }); }
-  m.innerHTML='<a target="_blank" rel="noopener" href="https://x.com/intent/post?text='+encodeURIComponent(shareText(el))+'&url='+encodeURIComponent(link)+'">'+t('shrX')+'</a>'+
+  var intent='https://x.com/intent/post?text='+encodeURIComponent(shareText(el))+'&url='+encodeURIComponent(link);
+  m.innerHTML='<a id="shrX" target="_blank" rel="noopener" href="'+intent+'">'+t('shrX')+'</a>'+
     '<a href="'+img+'" download="qnn-quai-'+k+'.png" target="_blank" rel="noopener">'+t('shrImg')+'</a><button type="button" id="shrCopy">'+t('shrCopy')+'</button>';
+  // one click: open the X window at once (so no popup blocker), make sure the card picture is ready on our CDN, then load the post form.
+  // X reads the picture only once per link and gives up if it is slow, so it must never meet a cold image.
+  m.querySelector('#shrX').onclick=function(e){
+    e.preventDefault(); e.stopPropagation(); m.classList.remove('on');
+    var w=window.open('about:blank','_blank'); if(!w){ location.href=intent; return; }
+    try{ w.opener=null; w.document.write('<body style="background:#000;color:#aaa;font:16px sans-serif;display:grid;place-items:center;height:90vh">QNN · Quai Live…</body>'); }catch(x){}
+    var v=Math.floor(Date.now()/36e5), go=function(){ try{ w.location.replace(intent); }catch(x){ w.location=intent; } };
+    var tm=setTimeout(go,6000);
+    Promise.all([fetch(location.origin+'/api/qcard?k='+k+'&l='+L+'&v='+v).then(function(r){return r.blob()}), fetch(link,{mode:'no-cors'})])
+      .then(function(){ clearTimeout(tm); setTimeout(go,300); }, function(){ clearTimeout(tm); go(); });
+  };
   m.querySelector('#shrCopy').onclick=function(e){ e.stopPropagation(); var me=this; (navigator.clipboard?navigator.clipboard.writeText(link):Promise.reject()).then(function(){ me.textContent=t('shrCopied'); me.className='ok'; }).catch(function(){ prompt('',link); }); };
   m.onclick=function(e){ if(e.target.tagName==='A') m.classList.remove('on'); else e.stopPropagation(); };
   var r=btn.getBoundingClientRect(); m.classList.add('on');
@@ -746,11 +775,28 @@ function openShare(el,btn){
 
 // ---------- events feed: built from the same data as the dashboard, newest first ----------
 var FEED_OPEN=false;
+// ---------- tokenomics warning: state from /api/quai-watch (null = no warning; any failure = no warning) ----------
+var WATCH=null, TK_OPEN=false;
+function renderWatch(){
+  var b=$('tkBanner'); if(!b) return;
+  document.querySelectorAll('.tkm').forEach(function(x){ x.remove(); });
+  var W=WATCH, evs=W&&W.events||[];
+  if(!evs.length){ b.hidden=true; b.innerHTML=''; return; }
+  var red=W.level==='red', item=function(e){ return '<li>'+esc(e[L]||e.en)+(e.url?' · <a href="'+esc(e.url)+'" target="_blank" rel="noopener">'+t('tkSrc')+' ↗</a>':'')+'</li>'; };
+  b.className='tkb '+(red?'red':'yel'); b.hidden=false;
+  b.innerHTML='<div class="h">⚠ '+t(red?'tkRed':'tkYel')+'</div><ul>'+evs.slice(0,TK_OPEN?20:1).map(item).join('')+'</ul><p>'+t(red?'tkRedP':'tkYelP')+'</p>'+
+    (evs.length>1?'<button type="button" id="tkMore">'+(TK_OPEN?t('tkLess'):T[L].tkMore(evs.length-1))+'</button>':'');
+  var mb=$('tkMore'); if(mb) mb.onclick=function(){ TK_OPEN=!TK_OPEN; renderWatch(); };
+  var mark=function(el,cls){ var m=document.createElement('span'); m.className='tkm'+(red?' r':''); m.textContent='⚠ '+t('tkTile'); if(red) m.style.color='#ff6b6e'; el.appendChild(m); };
+  (W.affects||['unlock','supply','cov']).forEach(function(k){ document.querySelectorAll('[data-k="'+k+'"]').forEach(function(el){ mark(el.classList.contains('ev')&&el.querySelector(':scope > div')||el); }); });
+  var sh=document.querySelector('#supply > h2'); if(sh) mark(sh);
+}
 function buildFeed(){
   var ev=[], r=D.recon, s=D.supply, h=D.hashference, pc=D.priceChart||[], now=Date.now()/1000;
   var pxs={}; pc.forEach(function(p){ pxs[p[0]]=p[1]; });
   var dayOf=function(ts){ return new Date(ts*1000).toISOString().slice(0,10); };
-  var COL={burn:'#e3262b',unl:'#d6b42a',leak:'#e3262b',hf:'#2e97ca',px:'#f2f2f2'};
+  var COL={burn:'#e3262b',unl:'#d6b42a',leak:'#e3262b',hf:'#2e97ca',px:'#f2f2f2',fork:'#b07cff'};
+  ((D.tokenomics&&D.tokenomics.forks)||[]).forEach(function(f){ ev.push({t:Date.parse(f.date+'T12:00:00Z')/1000,k:'fork',ico:ICO.info,x:esc(f[L]||f.en)+(f.url?' · <a href="'+esc(f.url)+'" target="_blank" rel="noopener">'+t('tkSrc')+' ↗</a>':'')}); });
   if(r&&r.recentBurns) r.recentBurns.forEach(function(b){ var p=pxs[dayOf(b.t)];
     var who=b.from===(D.addresses&&D.addresses.soap)?t('fdSoap'):(b.label==='Gate'?t('fdGate'):t('fdOther')+scan(b.from));
     ev.push({t:b.t,k:'burn',ico:ICO.fire,x:T[L].fdBurn(num(b.quai),p?usd(b.quai*p):'',who)}); });
@@ -932,6 +978,7 @@ function render(){
   renderHist();
   renderFeed();
   markShare();
+  renderWatch();
   $('srcList').innerHTML=T[L].src.map(function(s){return '<li>'+s+'</li>';}).join('');
 }
 
@@ -965,6 +1012,7 @@ if(location.protocol!=='file:' && !/github\.io$/.test(location.hostname)){
     D=merged; LIVE=true; render();
     try{ var keep={}; for(var k2 in j) if(k2!=='history') keep[k2]=j[k2]; localStorage.setItem('quai-last',JSON.stringify(keep)); }catch(e){}
   }).catch(function(){});
+  fetch('/api/quai-watch').then(function(r){ return r.ok?r.json():null; }).then(function(j){ if(j&&Array.isArray(j.events)){ WATCH=j; renderWatch(); } }).catch(function(){});
 }
 })();
 </script>
