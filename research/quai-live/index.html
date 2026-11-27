@@ -180,6 +180,7 @@ footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12p
   <details class="gloss"><summary data-en="What the terms mean" data-ru="Словарик: что значат термины">What the terms mean</summary><dl><div><dt data-en="QUAI" data-ru="QUAI">QUAI</dt><dd data-en="The main coin of the Quai network. Everything on this page is about it." data-ru="Главная монета сети Quai. Весь дашборд — о ней.">The main coin of the Quai network. Everything on this page is about it.</dd></div><div><dt data-en="Qi" data-ru="Qi">Qi</dt><dd data-en="Quai’s second coin, used for payments. It can be converted into QUAI and back." data-ru="Вторая монета сети Quai, для платежей. Её можно конвертировать в QUAI и обратно.">Quai’s second coin, used for payments. It can be converted into QUAI and back.</dd></div><div><dt data-en="SOAP" data-ru="SOAP">SOAP</dt><dd data-en="Quai’s buyback program: miners also mine BCH, LTC, DOGE and RVN, those coins are sold, and the money buys QUAI that is then burned." data-ru="Программа выкупа Quai: майнеры попутно добывают BCH, LTC, DOGE и RVN, эти монеты продают, на выручку покупают QUAI и сжигают.">Quai’s buyback program: miners also mine BCH, LTC, DOGE and RVN, those coins are sold, and the money buys QUAI that is then burned.</dd></div><div><dt data-en="Burn" data-ru="Сжигание">Burn</dt><dd data-en="Sending coins to an address nobody can spend from. They leave circulation for good." data-ru="Отправка монет на адрес, с которого их никто не может забрать. Они навсегда уходят из обращения.">Sending coins to an address nobody can spend from. They leave circulation for good.</dd></div><div><dt data-en="Genesis unlock" data-ru="Разлок генезиса">Genesis unlock</dt><dd data-en="Coins created at launch (team, investors, foundation) that become sellable step by step on a schedule." data-ru="Монеты, выпущенные при запуске сети (команде, инвесторам, фонду), которые по расписанию постепенно становятся доступны для продажи.">Coins created at launch (team, investors, foundation) that become sellable step by step on a schedule.</dd></div><div><dt data-en="Circulating supply" data-ru="Предложение в обращении">Circulating supply</dt><dd data-en="How many QUAI exist right now and can be traded." data-ru="Сколько QUAI существует сейчас и может продаваться.">How many QUAI exist right now and can be traded.</dd></div><div><dt data-en="Order book, depth ±2%" data-ru="Стакан, глубина ±2%">Order book, depth ±2%</dt><dd data-en="An exchange’s list of buy and sell orders. Depth +2% is how many dollars can be bought before the price rises 2%. Bigger depth means a calmer price." data-ru="Список заявок на покупку и продажу на бирже. Глубина +2% — на сколько долларов можно купить, пока цена не вырастет на 2%. Чем больше, тем спокойнее цена.">An exchange’s list of buy and sell orders. Depth +2% is how many dollars can be bought before the price rises 2%. Bigger depth means a calmer price.</dd></div><div><dt data-en="DEX, pool, TVL" data-ru="DEX, пул, TVL">DEX, pool, TVL</dt><dd data-en="A DEX is an exchange inside the blockchain; trades go through a pool of two coins. TVL is the money locked in all the pools." data-ru="DEX — обменник прямо в блокчейне, обмен идёт через пул из двух монет. TVL — сколько денег лежит во всех пулах.">A DEX is an exchange inside the blockchain; trades go through a pool of two coins. TVL is the money locked in all the pools.</dd></div><div><dt data-en="Hashference" data-ru="Hashference">Hashference</dt><dd data-en="The Quai team’s AI service; requests can be paid with mining, QUAI or Qi. More requests means real use of the network." data-ru="ИИ-сервис команды Quai, за запросы можно платить майнингом, QUAI или Qi. Больше запросов — значит сетью реально пользуются.">The Quai team’s AI service; requests can be paid with mining, QUAI or Qi. More requests means real use of the network.</dd></div><div><dt data-en="x402 Work" data-ru="x402 Work">x402 Work</dt><dd data-en="A way to pay for a request with a few seconds of computing instead of money." data-ru="Способ оплатить запрос несколькими секундами вычислений вместо денег.">A way to pay for a request with a few seconds of computing instead of money.</dd></div><div><dt data-en="pp" data-ru="п.п.">pp</dt><dd data-en="Percentage points: the difference between two percentages (38% vs 46% is −8 pp)." data-ru="Процентные пункты: разница между двумя процентами (38% против 46% — это −8 п.п.).">Percentage points: the difference between two percentages (38% vs 46% is −8 pp).</dd></div><div><dt data-en="ATH" data-ru="ATH">ATH</dt><dd data-en="All-time high: the highest price ever." data-ru="Исторический максимум цены.">All-time high: the highest price ever.</dd></div></dl></details>
   <nav class="tabs mono" aria-label="Sections">
     <a href="#pulse" data-en="Pulse" data-ru="Пульс">Pulse</a>
+    <a href="#hf">Hashference</a>
     <a href="#supply" data-en="Supply" data-ru="Предложение">Supply</a>
     <a href="#soap" data-en="SOAP audit" data-ru="Проверка SOAP">SOAP audit</a>
     <a href="#market" data-en="Liquidity" data-ru="Ликвидность">Liquidity</a>
@@ -203,6 +204,25 @@ footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12p
     <div class="legend" id="priceLegend"></div>
     <div class="chart" id="priceChart"></div>
     <p class="note" id="priceNote"></p>
+  </div>
+</section>
+
+<section class="s" id="hf">
+  <h2>Hashference</h2>
+  <p class="k" data-en="The Quai team’s AI service: one API to dozens of AI models, paid with mining, QUAI or Qi. The Quai community watches it as the first real use of the network. Requests are all received requests, the same count as hashference.com/statistics." data-ru="ИИ-сервис команды Quai: один API к десяткам ИИ-моделей с оплатой майнингом, QUAI или Qi. Сообщество Quai следит за ним как за первым реальным использованием сети. Запросы — все полученные запросы, как на hashference.com/statistics.">Hashference</p>
+  <div class="tiles c4" id="hfTiles"></div>
+  <div class="panel">
+    <h3 data-en="Requests per day, all history" data-ru="Запросы по дням, вся история">Requests per day</h3>
+    <div class="sub mono" id="hfLongSub"></div>
+    <div class="chart" id="hfLong"></div>
+  </div>
+  <div class="duo">
+    <div class="panel"><h3 data-en="Top models, 30 days" data-ru="Топ моделей, 30 дней">Top models</h3><div class="sub mono" data-en="ranked by tokens, as on hashference.com" data-ru="по числу токенов, как на hashference.com">by tokens</div><div class="tbl" id="hfModels"></div></div>
+    <div class="panel"><h3 data-en="Apps and agents, 30 days" data-ru="Приложения и агенты, 30 дней">Apps and agents</h3><div class="sub mono" data-en="where the requests come from" data-ru="откуда приходят запросы">apps</div><div class="tbl" id="hfApps"></div></div>
+  </div>
+  <div class="duo">
+    <div class="panel"><h3 data-en="Paid with mining: shares per day" data-ru="Оплата майнингом: шары по дням">Mining shares</h3><div class="sub mono" data-en="accepted mining shares turned into AI credit · devices in the tooltip" data-ru="принятые майнинговые шары, превращённые в ИИ-кредиты · устройства — в подсказке">shares</div><div class="chart" id="hfShares"></div></div>
+    <div class="panel"><h3 data-en="QUAI staked for AI credit" data-ru="QUAI в стейкинге ради ИИ-кредитов">Staked QUAI</h3><div class="sub mono" data-en="HashferenceStaking contract balance · recorded daily" data-ru="баланс контракта HashferenceStaking · запись раз в день">staking</div><div class="chart" id="hfStake"></div></div>
   </div>
 </section>
 
@@ -312,11 +332,6 @@ footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12p
   <h2 data-en="Ecosystem" data-ru="Экосистема">Ecosystem</h2>
   <p class="k" data-en="Hashference is an AI API you can pay for with mining, QUAI or Qi; x402 Work lets apps pay for requests with a few seconds of computation. Both are built by the Quai team." data-ru="Hashference — ИИ-API с оплатой майнингом, QUAI или Qi; x402 Work позволяет платить за запросы несколькими секундами вычислений. Оба сделаны командой Quai.">Ecosystem.</p>
   <div class="tiles" id="ecoTiles"></div>
-  <div class="panel">
-    <h3 data-en="Hashference requests per day" data-ru="Запросы к Hashference по дням">Hashference requests</h3>
-    <div class="sub mono" data-en="hashference.com/statistics" data-ru="hashference.com/statistics">hashference.com</div>
-    <div class="chart" id="hfChart"></div>
-  </div>
 </section>
 
 <section class="src" id="method">
@@ -388,7 +403,11 @@ evBurn:'Last burn', evBurnV:function(b,d){return date(b.t)+' · '+num(b.quai)+' 
   dxShare:'DEX share of trading, 24h', dxShareD:'Share of QUAI trading that went through the DEX on Quai itself; the rest is centralized exchanges',
   depth:'Depth within ±2%', depthD:function(u,d){return usd(u)+' to buy · '+usd(d)+' to sell, all exchanges';},
   ex:'Exchange', pair:'Pair', spread:'Spread', dUp:'+2% depth', dDn:'−2% depth',
-  hfReq:'Hashference requests, 30 d', hfAt:function(t){return 'hashference.com data from '+new Date(t).toLocaleString(loc(),{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});}, hfTok:'AI tokens processed', hfTokD:'by Hashference, last 30 days', hfDev:function(n){return n+' active devices in 7 days';}, hfFund:'Hashference credit from staking', hfFundD:function(f){return 'QUAI staking '+pct(f.staking)+' · QUAI/Qi deposits '+pct(f.deposits)+' · mining '+pct(f.mining);},
+  hfReq:'Hashference requests, 30 d', hf7:'Last 7 full days', hf7D:function(b){return 'requests vs '+num(b)+' the week before';},
+  hfDevT:'Devices paying with mining', hfDevD:function(h){return (h.devicesConnected!=null?'connected now: '+num(h.devicesConnected)+' · ':'')+'mining shares in 30 d: '+num(h.shares30);},
+  hfLongSub:function(f,n){return 'our day archive since '+dayLabel(f)+' + hashference.com · '+n+' days · today partial';},
+  hfModel:'Model', hfApp:'App', hfReqs:'Requests', hfToks:'Tokens', hfShare:'Share', hfSharesT:'shares', hfDevs:'devices', hfX4:'x402 payments',
+  hfStakeWait:function(d){return 'Recording since '+d+'. The chart appears after 3 days.';}, hfAt:function(t){return 'hashference.com data from '+new Date(t).toLocaleString(loc(),{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});}, hfTok:'AI tokens processed', hfTokD:'by Hashference, last 30 days', hfDev:function(n){return n+' active devices in 7 days';}, hfFund:'Hashference credit from staking', hfFundD:function(f){return 'QUAI staking '+pct(f.staking)+' · QUAI/Qi deposits '+pct(f.deposits)+' · mining '+pct(f.mining);},
   stk:'Staked in Hashference', stkD:function(p){return 'QUAI locked for AI credit ('+p+')';},
   x402:'x402 Work payments, 30 d', x402D:function(x){return 'of them Hashference: '+x.hashference+' · services: '+x.services;},
   txs:'Transactions today', txsAll:'Transactions, all time', addrD:function(n){return [n.addresses?'Quai addresses: '+num(n.addresses):'',n.qiAddresses?'Qi addresses: '+num(n.qiAddresses):''].filter(Boolean).join(' · ');}, txsD:function(n){return 'all time: '+num(n.totalTx)+(n.addresses?' · addresses: '+num(n.addresses):'');},
@@ -451,7 +470,11 @@ evBurn:'Последнее сжигание', evBurnV:function(b,d){return date(
   dxShare:'Доля DEX в торгах, 24 ч', dxShareD:'Какая часть торгов QUAI за сутки прошла через DEX в самой сети Quai, остальное — централизованные биржи',
   depth:'Глубина в пределах ±2%', depthD:function(u,d){return usd(u)+' на покупку · '+usd(d)+' на продажу, все биржи';},
   ex:'Биржа', pair:'Пара', spread:'Спред', dUp:'Глубина +2%', dDn:'Глубина −2%',
-  hfReq:'Запросы к Hashference, 30 дн.', hfAt:function(t){return 'данные hashference.com на '+new Date(t).toLocaleString(loc(),{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});}, hfTok:'Обработано ИИ-токенов', hfTokD:'Hashference за 30 дней', hfDev:function(n){return 'активных устройств за 7 дней: '+n;}, hfFund:'Кредиты Hashference из стейкинга', hfFundD:function(f){return 'стейкинг QUAI '+pct(f.staking)+' · пополнения QUAI/Qi '+pct(f.deposits)+' · майнинг '+pct(f.mining);},
+  hfReq:'Запросы к Hashference, 30 дн.', hf7:'7 полных дней', hf7D:function(b){return 'запросов против '+num(b)+' неделей раньше';},
+  hfDevT:'Устройства, платящие майнингом', hfDevD:function(h){return (h.devicesConnected!=null?'подключено сейчас: '+num(h.devicesConnected)+' · ':'')+'майнинговых шар за 30 дн.: '+num(h.shares30);},
+  hfLongSub:function(f,n){return 'наш архив по дням с '+dayLabel(f)+' + hashference.com · '+n+' дн. · сегодня неполный';},
+  hfModel:'Модель', hfApp:'Приложение', hfReqs:'Запросы', hfToks:'Токены', hfShare:'Доля', hfSharesT:'шар', hfDevs:'устройств', hfX4:'оплат x402',
+  hfStakeWait:function(d){return 'Запись идёт с '+d+'. График появится через 3 дня.';}, hfAt:function(t){return 'данные hashference.com на '+new Date(t).toLocaleString(loc(),{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});}, hfTok:'Обработано ИИ-токенов', hfTokD:'Hashference за 30 дней', hfDev:function(n){return 'активных устройств за 7 дней: '+n;}, hfFund:'Кредиты Hashference из стейкинга', hfFundD:function(f){return 'стейкинг QUAI '+pct(f.staking)+' · пополнения QUAI/Qi '+pct(f.deposits)+' · майнинг '+pct(f.mining);},
   stk:'В стейкинге Hashference', stkD:function(p){return 'QUAI заблокировано ради ИИ-кредитов ('+p+')';},
   x402:'Оплаты x402 Work, 30 дн.', x402D:function(x){return 'из них Hashference: '+x.hashference+' · сервисов: '+x.services;},
   txs:'Транзакций сегодня', txsAll:'Транзакций за всё время', addrD:function(n){return [n.addresses?'адресов Quai: '+num(n.addresses):'',n.qiAddresses?'адресов Qi: '+num(n.qiAddresses):''].filter(Boolean).join(' · ');}, txsD:function(n){return 'всего: '+num(n.totalTx)+(n.addresses?' · адресов: '+num(n.addresses):'');},
@@ -590,6 +613,39 @@ function renderWaterfall(s,m){ var d=s.d30; if(d.unlocked==null){ $('waterfall')
   if(big) rows+=row(t('covTyp'),T[L].covTypV(now/typNeed),'#5bd16a');
   if(d.mined) rows+=row(t('covTeam'),pct(d.burned/d.mined));
   $('coverage').innerHTML='<h3>'+t('covT')+'</h3><div class="big2">'+pct(cov)+'</div><div class="bar2"><div style="flex:'+cov.toFixed(3)+';background:#e3262b"></div><div style="flex:'+(1-cov).toFixed(3)+';background:#333333"></div></div><p>'+T[L].covP(d.burned,newS)+'</p><div class="kvs">'+rows+'</div>'+(big?'<p class="note">'+T[L].covNote(u.last,u.next)+'</p>':'');
+}
+
+
+// ---------- Hashference section ----------
+function renderHF(hf,w){
+  var sec=$('hf'); if(!hf){ sec.style.display='none'; return; } sec.style.display='';
+  var tl='', hw=hfWeeks(hf.daily), q=hw[1]?hw[0]/hw[1]:null;
+  tl+=tile(t('hfReq'),num(hf.requests!=null?hf.requests:hf.daily.reduce(function(a,d){return a+d[1];},0)),hf.updatedAt?T[L].hfAt(hf.updatedAt):'');
+  tl+=tile(t('hf7'),num(hw[0])+(q?' <span style="font-size:.55em;color:'+(q>=1?'#5bd16a':'#e3262b')+'">×'+dc(q.toFixed(1))+'</span>':''),T[L].hf7D(hw[1]));
+  if(hf.tokens!=null) tl+=tile(t('hfTok'),num(hf.tokens),t('hfTokD'));
+  if(hf.devices7d!=null) tl+=tile(t('hfDevT'),num(hf.devices7d),hf.shares30!=null?T[L].hfDevD(hf):T[L].hfDev(hf.devices7d));
+  if(w&&w.staking) tl+=tile(t('stk'),num(w.staking.balance)+' QUAI',T[L].stkD(hf.stakingPlans&&hf.stakingPlans.length?hf.stakingPlans.map(function(p){return num(p[0])+' → $'+p[1]+(L==='ru'?'/мес':'/mo');}).join(', '):''));
+  if(hf.funding&&hf.funding.staking!=null) tl+=tile(t('hfFund'),pct(hf.funding.staking),T[L].hfFundD(hf.funding));
+  $('hfTiles').innerHTML=tl;
+  // long history: our archive + today
+  var hs=(hf.history&&hf.history.length?hf.history:hf.daily);
+  $('hfLongSub').textContent=T[L].hfLongSub(hs[0][0],hs.length);
+  barChart($('hfLong'),hs.map(function(d){return dayLabel(d[0]);}),[{color:'#2e97ca',vals:hs.map(function(d){return d[1];})}],
+    function(v){return num(v);},function(i){return '<b>'+dayLabel(hs[i][0])+'</b><br>'+t('req')+': '+num(hs[i][1]);},Math.max(1,Math.ceil(hs.length/8)));
+  // tables
+  var tb=function(rows,first){ return '<table><thead><tr><th>'+first+'</th><th>'+t('hfReqs')+'</th><th>'+t('hfToks')+'</th><th>'+t('hfShare')+'</th></tr></thead><tbody>'+
+    rows.map(function(r){return '<tr><td style="word-break:break-word">'+esc(String(r[0]))+'</td><td>'+num(r[1])+'</td><td>'+num(r[2])+'</td><td>'+pct1((r[3]||0)*100)+'</td></tr>';}).join('')+'</tbody></table>'; };
+  $('hfModels').innerHTML=hf.models&&hf.models.length?tb(hf.models,t('hfModel')):'<p class="note">—</p>';
+  $('hfApps').innerHTML=hf.apps&&hf.apps.length?tb(hf.apps,t('hfApp')):'<p class="note">—</p>';
+  // mining shares per day (devices and x402 in the tooltip)
+  var nd=hf.netDaily||[];
+  if(nd.length) barChart($('hfShares'),nd.map(function(d){return dayLabel(d[0]);}),[{color:'#d6b42a',vals:nd.map(function(d){return d[2]||0;})}],
+    function(v){return num(v);},function(i){var d=nd[i]; return '<b>'+dayLabel(d[0])+'</b><br>'+num(d[2])+' '+t('hfSharesT')+' · '+num(d[1])+' '+t('hfDevs')+(d[3]?' · '+num(d[3])+' '+t('hfX4'):'');},5);
+  else $('hfShares').innerHTML='<p class="note">—</p>';
+  // staked QUAI over time, from our daily history
+  var H=(D.history||[]).filter(function(h){return h[1].hst!=null;}).map(function(h){return [h[0],h[1].hst];});
+  if(H.length>=3) lineChart($('hfStake'),H,'#e3262b',function(v){return num(v);},function(v){return num(v)+' QUAI';});
+  else $('hfStake').innerHTML='<p class="note">'+T[L].hfStakeWait(H.length?dayLabel(H[0][0]):dayLabel(new Date().toISOString().slice(0,10)))+'</p>';
 }
 
 // ---------- render ----------
@@ -744,15 +800,10 @@ function render(){
 
   // ecosystem
   var h5='';
-  if(hf){ h5+=tile(t('hfReq'),num(hf.requests!=null?hf.requests:hf.daily.reduce(function(a,d){return a+d[1];},0)),T[L].hfDev(hf.devices7d)+(hf.updatedAt?' · '+T[L].hfAt(hf.updatedAt):''));
-    h5+=tile(t('hfTok'),num(hf.tokens),t('hfTokD'));
-    h5+=tile(t('hfFund'),pct(hf.funding.staking),T[L].hfFundD(hf.funding)); }
-  if(w) h5+=tile(t('stk'),num(w.staking.balance)+' QUAI',T[L].stkD(hf&&hf.stakingPlans?hf.stakingPlans.map(function(p){return num(p[0])+' → $'+p[1]+(L==='ru'?'/мес':'/mo');}).join(', '):''));
   if(x) h5+=tile(t('x402'),num(x.payments),T[L].x402D(x));
   if(n) h5+= n.txToday!=null ? tile(t('txs'),num(n.txToday),T[L].txsD(n)) : tile(t('txsAll'),num(n.totalTx),T[L].addrD(n));
   $('ecoTiles').innerHTML=h5;
-  if(hf) barChart($('hfChart'),hf.daily.map(function(d){return dayLabel(d[0]);}),[{color:'#2e97ca',vals:hf.daily.map(function(d){return d[1];})}],
-    function(v){return num(v);},function(i){return '<b>'+dayLabel(hf.daily[i][0])+'</b><br>'+t('req')+': '+num(hf.daily[i][1]);},5);
+  renderHF(hf,w);
 
   renderHist();
   $('srcList').innerHTML=T[L].src.map(function(s){return '<li>'+s+'</li>';}).join('');

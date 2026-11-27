@@ -10,7 +10,8 @@ the SOAP buyback (what the team says it earned vs what was really burned on-chai
 Not affiliated with the Quai team; no financial advice. Built Nov 2026.
 
 Sections, top to bottom: hero + status line → "Key takeaways, last 30 days" (event strip + 4 verdict cards) →
-Pulse (dynamic tiles with sparklines, 120-day price chart with unlock/burn markers) → Supply (tiles, 30-day
+Pulse (dynamic tiles with sparklines, 120-day price chart with unlock/burn markers) → Hashference (own section, priority:
+tiles, all-history requests chart from our archive, top models, apps & agents, mining shares per day, QUAI staked over time) → Supply (tiles, 30-day
 waterfall + "Buyback coverage" card, mined vs burned per day, genesis unlocks) → SOAP audit (where the revenue went,
 chain mix, monthly revenue vs burned, leaks table, latest burns, gas-burner note) → Liquidity (CEX impact/depth,
 Quainance DEX pool row, exchanges table) → History (coverage + SOAP revenue backfilled; depth + DEX pool recorded
@@ -49,6 +50,9 @@ daily) → Ecosystem (Hashference, x402, staking, network) → Method and source
   A finished day the source later reports below 50% of the archived value keeps the archived value (`hashference.corrected`).
   If hashference.com is down and there is no Redis cache, the 30-day series is rebuilt from the archive (`series:'archive'`,
   shown in the status line as a backup copy).
+  `/v1/stats?days=90` is fetched too (optional) only to seed the archive with older days; the API returns `hashference.history`
+  (archive + today, up to 400 days) for the long chart. Also passed: `models`/`apps` ([name, requests, tokens, share of tokens], top 8,
+  30 days), `netDaily` ([day, devices, shares, x402]), `devicesConnected`, `shares30`.
 - **Quainance DEX**: QUAI/USDT pair `0x0021f5cc862ebb0252ba209266f2fabbc7592e83` (token0 USDT 6 decimals, token1 WQUAI 18). Reserves via `POST https://rpc.quai.network/cyprus1` method `quai_call`, data `0x0902f1ac` (getReserves). TVL and swap volume of all Quainance pools from DefiLlama `https://api.llama.fi/tvl/quainance` and `/summary/dexs/quainance`.
 - Genesis unlock schedule: constant `UNLOCKS` in `api/quai.js`, copied from supply.qu.ai's JS bundle (GENESIS_UNLOCK_SCHEDULE after Singularity/Polaris; month m unlocks at block m×518400). Past dates: `UNLOCK_DATES`. Update by hand if the team changes the schedule.
 
@@ -62,7 +66,7 @@ daily) → Ecosystem (Hashference, x402, staking, network) → Method and source
    then the static snapshot `assets/quai-dash.js`. Both show as "Snapshot · updated …" in the status line.
 - Every request has a 12 s timeout and one retry on a network error, timeout or HTTP 5xx (`getJson`; the Quainance RPC call has the timeout too);
   HTTP 429 is retried twice with a pause.
-- Order books: a CoinGecko ticker whose ±2% depth equals a live exchange book within 1% on both sides is dropped as a mirror
+- Order books: a CoinGecko ticker whose ±2% depth matches a live exchange book within 5% on both sides is dropped as a mirror
   (BitKan copies Gate's book; counting it doubled the depth).
 The daily Telegram check reports every source running on a backup or cache.
 
@@ -83,7 +87,7 @@ The daily Telegram check reports every source running on a backup or cache.
 
 ## History (Redis)
 - Same Upstash database as the Discord/Telegram bots (`KV_REST_API_URL`/`KV_REST_API_TOKEN` or `UPSTASH_REDIS_REST_*` in Vercel env; never in the repo).
-- Hash `quai:hist`, field = UTC date, value = JSON `{p, mc, v, du, dd, dx, dxv, tvl, cov, b30, sup, lk, r30, lu, bs, hf, x4, tx}` (price, mcap, volume, depth up/down, DEX pool USD, DEX vol, Quainance TVL, coverage, burned 30 d, supply, locked, SOAP revenue 30 d, leaks USD, burn share, Hashference requests, x402 payments, tx today). Rewritten on every run; the last run of the day wins.
+- Hash `quai:hist`, field = UTC date, value = JSON `{p, mc, v, du, dd, dx, dxv, tvl, cov, b30, sup, lk, r30, lu, bs, hf, x4, tx}` (price, mcap, volume, depth up/down, DEX pool USD, DEX vol, Quainance TVL, coverage, burned 30 d, supply, locked, SOAP revenue 30 d, leaks USD, burn share, Hashference requests, x402 payments, tx today, `hst` QUAI in HashferenceStaking, `hdv` Hashference devices 7 d). Rewritten on every run; the last run of the day wins.
 - The page joins `QUAI_HIST_BASE` (backfill) with `data.history` (days after `to`). Depth/pool charts show "recording since Nov 21" until 3 points exist.
 - Lost or changed formula → rebuild the backfill with `scripts/quai-backfill.js`.
 
@@ -160,4 +164,4 @@ Do not touch the main page or other research pages unless asked; the owner usual
 - Page: glossary (12 terms, EN/RU), plain-words "Bottom line" sentence above the verdicts, "share of revenue burned" vs
   "new coins offset by burns" renamed so they cannot be confused, (i) tooltips open on tap on phones, month labels "Dec ’25".
 - Network tile hides a zero address count (explorer returns `addresses: 0`).
-
+- Hashference got its own section after Pulse (nav "Hashference"); the Ecosystem section keeps x402 and network tiles.

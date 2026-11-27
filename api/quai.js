@@ -176,7 +176,9 @@ const SOURCES2 = {
   // Requests = demand.* ("received": every request, as shown on hashference.com/statistics). The top-level daily/summary
   // only count requests with measured tokens and had gaps (Nov 22, 2026: 6 measured vs 543 received), kept as measured*.
   async hashference(get) {
-    const [s, st] = await Promise.all([get('https://hashference.com/v1/stats?days=30'), get('https://hashference.com/v1/staking').catch(() => ({}))]);
+    // days=90 is optional: only used to seed our day archive with the older days
+    const [s, st, s90] = await Promise.all([get('https://hashference.com/v1/stats?days=30'), get('https://hashference.com/v1/staking').catch(() => ({})),
+      get('https://hashference.com/v1/stats?days=90').catch(() => null)]);
     const recv = s.demand && Array.isArray(s.demand.daily) && s.demand.daily.length ? s.demand : null;
     const daily = (recv ? recv.daily : s.daily || []).filter(d => d && d.day && isFinite(d.requests)).map(d => [String(d.day).slice(0, 10), Number(d.requests)]);
     if (!daily.length) throw new Error('hashference: empty daily series');
@@ -188,6 +190,14 @@ const SOURCES2 = {
       funding: Object.fromEntries((s.funding || []).map(f => [f.source, f.share])),
       devices7d: s.network?.devices?.active7d, x402: s.network?.x402?.requests,
       stakingPlans: (st.plans || []).map(p => [p.principalQuai, p.monthlyMicrousd / 1e6]),
+      // [name, requests, tokens, share of tokens], last 30 days, as ranked on hashference.com/statistics
+      models: (s.models || []).slice(0, 8).map(m => [m.model, m.requests, m.tokens, m.share]),
+      apps: (s.apps || []).slice(0, 8).map(a => [a.app, a.requests, a.tokens, a.share]),
+      // [day, active devices, accepted mining shares, x402 payments]
+      netDaily: (s.network?.daily || []).map(d => [String(d.day).slice(0, 10), d.devices, d.shares, d.x402]),
+      devicesConnected: s.network?.devices?.connected, shares30: s.network?.shares?.accepted,
+      older: (s90?.demand?.daily || []).filter(d => d && d.day && isFinite(d.requests)).map(d => [String(d.day).slice(0, 10), Number(d.requests)])
+        .filter(d => d[0] < daily[0][0]),
     };
   },
   // x402 Work public stats (pay-with-work payments).
@@ -323,9 +333,9 @@ function assemble(p) {
       const live = new Set(p.books.map(x => x.ex.toLowerCase()));
       m.tickers = p.books.map(x => ({ ex: x.ex, pair: x.pair, vol: x.vol, spread: x.spread, up: x.up, down: x.down, live: true }))
         .concat((m.tickers || []).filter(t => !live.has(String(t.ex).split(' ')[0].toLowerCase())));
-    // A CoinGecko ticker whose ±2% depth equals a live book within 1% on both sides is a mirror of that book
-    // (BitKan shows Gate's book): counting it would double the depth.
-    const same = (a, b) => a > 0 && Math.abs(a / b - 1) < 0.01;
+    // A CoinGecko ticker whose ±2% depth matches a live book within 5% on BOTH sides is a mirror of that book
+    // (BitKan shows Gate's book, CoinGecko's copy is a few minutes old: 841/913 vs 855/914): counting it would double the depth.
+    const same = (a, b) => a > 0 && b > 0 && Math.abs(a / b - 1) < 0.05;
     m.tickers = m.tickers.filter(t => t.live || !p.books.some(b => same(t.up, b.up) && same(t.down, b.down)));
     }
     const up = m.tickers.reduce((a, t) => a + t.up, 0), down = m.tickers.reduce((a, t) => a + t.down, 0);
@@ -490,6 +500,7 @@ function dayRecord(d) {
     cov: n(d.supply?.d30?.coverage), b30: n(d.supply?.d30?.burned), sup: n(d.supply?.supply), lk: n(d.supply?.unlocks?.locked),
     r30: n(d.soap?.last30), lu: n(d.recon?.leakUsd), bs: n(d.recon?.burnShare),
     hf: n(d.hashference?.requests), x4: n(d.x402?.payments), tx: n(d.network?.txToday),
+    hst: n(d.wallets?.staking?.balance), hdv: n(d.hashference?.devices7d),
   });
 }
 // Last good answer of every source, kept up to 3 days: if a source and its backup both fail, the page shows these numbers.
@@ -522,15 +533,28 @@ async function hashferenceArchive(parts, cached) {
       return [day, v];
     });
     if (corrected.length) { h.corrected = corrected; h.requests = h.daily.reduce((a, d) => a + d[1], 0); }
+    for (const [day, v] of h.older || []) if (!(arc[day] > 0) && v >= 0) set.push(day, String(v));
+    delete h.older;
     if (set.length) await redis('HSET', 'quai:hf', ...set);
-    h.archiveDays = Object.keys(arc).length + set.length / 2;
+    for (let i = 0; i < set.length; i += 2) arc[set[i]] = Number(set[i + 1]);
+    h.archiveDays = Object.keys(arc).length;
+    // full day history for the long chart: archive + today's running value
+    const all = Object.assign({}, arc); for (const [day, v] of h.daily) all[day] = v;
+    h.history = Object.keys(all).sort().slice(-400).map(d => [d, all[d]]);
+    return;
+  }
+  if (h && !h.error && Array.isArray(h.daily)) {  // served from the Redis cache: no writes, still give the long history
+    delete h.older;
+    const all = Object.assign({}, arc); for (const [day, v] of h.daily) all[day] = v;
+    h.history = Object.keys(all).sort().slice(-400).map(d => [d, all[d]]);
     return;
   }
   if (h && h.error && Object.keys(arc).length) {
     const days = Object.keys(arc).filter(d => d < today).sort().slice(-30);
     if (days.length >= 7) {
       const daily = days.map(d => [d, arc[d]]);
-      parts.hashference = { requests: daily.reduce((a, d) => a + d[1], 0), daily, series: 'archive', archiveError: h.error, updatedAt: null };
+      parts.hashference = { requests: daily.reduce((a, d) => a + d[1], 0), daily, series: 'archive', archiveError: h.error, updatedAt: null,
+        history: Object.keys(arc).sort().slice(-400).map(d => [d, arc[d]]) };
     }
   }
 }
