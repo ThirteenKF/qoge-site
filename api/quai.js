@@ -173,11 +173,18 @@ const SOURCES2 = {
     };
   },
   // Hashference public stats (AI API paid with mining / QUAI).
+  // Requests = demand.* ("received": every request, as shown on hashference.com/statistics). The top-level daily/summary
+  // only count requests with measured tokens and had gaps (Nov 22, 2026: 6 measured vs 543 received), kept as measured*.
   async hashference(get) {
-    const [s, st] = await Promise.all([get('https://hashference.com/v1/stats?days=30'), get('https://hashference.com/v1/staking')]);
+    const [s, st] = await Promise.all([get('https://hashference.com/v1/stats?days=30'), get('https://hashference.com/v1/staking').catch(() => ({}))]);
+    const recv = s.demand && Array.isArray(s.demand.daily) && s.demand.daily.length ? s.demand : null;
+    const daily = (recv ? recv.daily : s.daily || []).filter(d => d && d.day && isFinite(d.requests)).map(d => [String(d.day).slice(0, 10), Number(d.requests)]);
+    if (!daily.length) throw new Error('hashference: empty daily series');
     return {
-      requests: s.summary?.requests, tokens: s.summary?.tokens,
-      daily: (s.daily || []).map(d => [d.day, d.requests]),
+      requests: recv && isFinite(recv.requests) ? Number(recv.requests) : daily.reduce((a, d) => a + d[1], 0),
+      measured: s.summary?.requests, tokens: s.summary?.tokens,
+      daily, measuredDaily: (s.daily || []).map(d => [d.day, d.requests]),
+      series: recv ? 'received' : 'measured', updatedAt: s.updatedAt || null,
       funding: Object.fromEntries((s.funding || []).map(f => [f.source, f.share])),
       devices7d: s.network?.devices?.active7d, x402: s.network?.x402?.requests,
       stakingPlans: (st.plans || []).map(p => [p.principalQuai, p.monthlyMicrousd / 1e6]),
@@ -228,7 +235,7 @@ SOURCES.books = async function books(get) {
 // Quainance (DEX on Quai): QUAI/USDT pool reserves read from the chain (getReserves),
 // all-protocol TVL and swap volume from DefiLlama.
 SOURCES.dex = async function dex(get) {
-  const r = await fetch(RPC, { method: 'POST', headers: { 'content-type': 'application/json' },
+  const r = await fetch(RPC, { method: 'POST', signal: AbortSignal.timeout(12000), headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'quai_call', params: [{ to: DEX_PAIR, data: '0x0902f1ac' }, 'latest'] }) });
   if (!r.ok) throw new Error('quai rpc -> HTTP ' + r.status);
   const hex = ((await r.json()).result || '').slice(2);
@@ -316,6 +323,10 @@ function assemble(p) {
       const live = new Set(p.books.map(x => x.ex.toLowerCase()));
       m.tickers = p.books.map(x => ({ ex: x.ex, pair: x.pair, vol: x.vol, spread: x.spread, up: x.up, down: x.down, live: true }))
         .concat((m.tickers || []).filter(t => !live.has(String(t.ex).split(' ')[0].toLowerCase())));
+    // A CoinGecko ticker whose ±2% depth equals a live book within 1% on both sides is a mirror of that book
+    // (BitKan shows Gate's book): counting it would double the depth.
+    const same = (a, b) => a > 0 && Math.abs(a / b - 1) < 0.01;
+    m.tickers = m.tickers.filter(t => t.live || !p.books.some(b => same(t.up, b.up) && same(t.down, b.down)));
     }
     const up = m.tickers.reduce((a, t) => a + t.up, 0), down = m.tickers.reduce((a, t) => a + t.down, 0);
     const best = m.tickers.slice().sort((a, b) => b.vol - a.vol)[0];
@@ -447,10 +458,15 @@ async function getJson(url) {
   const headers = { 'user-agent': 'qoge-site-quai-dashboard/1.0 (+https://www.qoge.fun/research/quai-live/)', accept: 'application/json' };
   // Optional free CoinGecko Demo key (Vercel env COINGECKO_API_KEY): shared Vercel IPs often hit the public rate limit (HTTP 429).
   if (url.startsWith(CG) && process.env.COINGECKO_API_KEY) headers['x-cg-demo-api-key'] = process.env.COINGECKO_API_KEY;
+  const short = url.replace(/\?.*/, '');
   for (let attempt = 0; ; attempt++) {
-    const res = await fetch(url, { headers });
+    let res;
+    // 12 s per try; one more try after a network error or timeout (a source hanging must not eat the 60 s budget)
+    try { res = await fetch(url, { headers, signal: AbortSignal.timeout(12000) }); }
+    catch (e) { if (attempt < 1) { await new Promise(r => setTimeout(r, 1500)); continue; } throw new Error(`${short} -> ${e.name === 'TimeoutError' ? 'timeout 12 s' : 'network error'}`); }
     if (res.status === 429 && attempt < 2) { await new Promise(r => setTimeout(r, 2500 * (attempt + 1))); continue; }
-    if (!res.ok) throw new Error(`${url.replace(/\?.*/, '')} -> HTTP ${res.status}`);
+    if (res.status >= 500 && attempt < 1) { await new Promise(r => setTimeout(r, 1500)); continue; }
+    if (!res.ok) throw new Error(`${short} -> HTTP ${res.status}`);
     return res.json();
   }
 }
@@ -483,9 +499,40 @@ async function cacheParts(parts) {
   await Promise.all(Object.keys(parts).map(async k => {
     if (parts[k] && !parts[k].error) { await redis('SET', 'quai:cache:' + k, JSON.stringify({ t: Date.now(), v: parts[k] })); return; }
     const raw = await redis('GET', 'quai:cache:' + k), c = raw && JSON.parse(raw);
-    if (c && Date.now() - c.t < 3 * 864e5) { parts[k] = c.v; used[k] = { at: new Date(c.t).toISOString(), error: String(parts[k]?.error || '') }; }
+    if (c && Date.now() - c.t < 7 * 864e5) { parts[k] = c.v; used[k] = { at: new Date(c.t).toISOString(), error: String(parts[k]?.error || '') }; }
   }));
   return used;
+}
+// Every finished UTC day of Hashference requests goes to hash quai:hf (day -> requests).
+// - source OK: finished days are written; a finished day that the source now reports below half of the archived value
+//   keeps the archived value (listed in hashference.corrected);
+// - source down and no cache: the 30-day series is rebuilt from the archive (hashference.series = 'archive').
+async function hashferenceArchive(parts, cached) {
+  if (!R_URL || !R_TOKEN) return;
+  const flat = await redis('HGETALL', 'quai:hf') || [], arc = {};
+  for (let i = 0; i < flat.length; i += 2) arc[flat[i]] = Number(flat[i + 1]);
+  const today = new Date().toISOString().slice(0, 10), h = parts.hashference;
+  if (h && !h.error && Array.isArray(h.daily) && !cached.hashference) {
+    const set = [], corrected = [];
+    h.daily = h.daily.map(([day, v]) => {
+      if (day >= today) return [day, v];
+      const old = arc[day];
+      if (old > 0 && v < old * 0.5) { corrected.push(day); return [day, old]; }
+      if (old !== v) set.push(day, String(v));
+      return [day, v];
+    });
+    if (corrected.length) { h.corrected = corrected; h.requests = h.daily.reduce((a, d) => a + d[1], 0); }
+    if (set.length) await redis('HSET', 'quai:hf', ...set);
+    h.archiveDays = Object.keys(arc).length + set.length / 2;
+    return;
+  }
+  if (h && h.error && Object.keys(arc).length) {
+    const days = Object.keys(arc).filter(d => d < today).sort().slice(-30);
+    if (days.length >= 7) {
+      const daily = days.map(d => [d, arc[d]]);
+      parts.hashference = { requests: daily.reduce((a, d) => a + d[1], 0), daily, series: 'archive', archiveError: h.error, updatedAt: null };
+    }
+  }
 }
 async function history(data) {
   if (!R_URL || !R_TOKEN) return null;
@@ -512,7 +559,16 @@ function health(d) {
   if (d.market && !d.marketError && !(d.market.price > 0)) p.push('⚠️ CoinGecko: нет цены QUAI');
   if (d.dex && !d.dexError && !(d.dex.poolUsd > 1000)) p.push(`⚠️ Пул QUAI/USDT на Quainance почти пуст: ${Math.round(d.dex.poolUsd || 0)} $`);
   if (d.market?.backup) p.push(`⚠️ CoinGecko не отвечает — цена из резервного источника (${d.market.backup})`);
-  for (const [k, c] of Object.entries(d.cached || {})) p.push(`⚠️ ${SECTION_RU[k] || k}: источник не отвечает, показаны данные из кэша от ${c.at.slice(0, 16).replace('T', ' ')} UTC`);
+  for (const [k, c] of Object.entries(d.cached || {})) if (!(k === 'hashference' && d.hashference?.series === 'archive')) p.push(`⚠️ ${SECTION_RU[k] || k}: источник не отвечает, показаны данные из кэша от ${c.at.slice(0, 16).replace('T', ' ')} UTC`);
+  const hf = d.hashference;
+  if (hf && !d.hashferenceError) {
+    if (hf.series === 'archive') p.push('⚠️ Hashference: hashference.com не отвечает — график из нашего архива по дням (' + String(hf.archiveError || '').slice(0, 80) + ')');
+    if (hf.series === 'measured') p.push('⚠️ Hashference: в ответе нет поля demand (все полученные запросы) — показаны только запросы с измеренными токенами, цифры ниже официальных');
+    if (hf.updatedAt && Date.now() - Date.parse(hf.updatedAt) > 6 * 36e5) p.push('⚠️ Hashference: статистика не обновлялась с ' + hf.updatedAt.slice(0, 16).replace('T', ' ') + ' UTC');
+    if (hf.corrected?.length) p.push('⚠️ Hashference: источник занизил прошедшие дни ' + hf.corrected.join(', ') + ' — оставлены значения из архива');
+    const sum = (hf.daily || []).reduce((a, x) => a + x[1], 0);
+    if (hf.requests > 0 && Math.abs(sum / hf.requests - 1) > 0.03) p.push(`⚠️ Hashference: сумма по дням (${sum}) не сходится с итогом (${hf.requests})`);
+  }
   if (d.historyError) p.push('❌ История (Redis): ' + d.historyError.slice(0, 140));
   return p;
 }
@@ -553,6 +609,9 @@ module.exports = async (req, res) => {
     const parts = await collect(getJson);
     let cached = {};
     try { cached = await cacheParts(parts); } catch (e) {}
+    try { await hashferenceArchive(parts, cached); } catch (e) {}
+    // shown in the page status line as a backup copy, like the Redis cache
+    if (parts.hashference?.series === 'archive') { const dl = parts.hashference.daily; cached.hashference = { at: dl[dl.length - 1][0] + 'T23:59:59Z', error: String(parts.hashference.archiveError || '') }; }
     const data = assemble(parts);
     if (Object.keys(cached).length) data.cached = cached;
     try { await enrich(data); } catch (e) {}
@@ -580,3 +639,7 @@ module.exports = async (req, res) => {
 module.exports.SOURCES = SOURCES;
 module.exports.assemble = assemble;
 module.exports.collect = collect;
+// for offline tests (tools/quai-dashboard.md, "How to check changes")
+module.exports.hashferenceArchive = hashferenceArchive;
+module.exports.getJson = getJson;
+module.exports.health = health;

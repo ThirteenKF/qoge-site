@@ -333,6 +333,8 @@ footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12p
 (function(){
 var SNAP = window.QUAI_DASH || {};
 var D = SNAP, LIVE = false, FROM_SNAP = [];
+// The last live answer this browser saw is a fresher fallback than the bundled snapshot when the API is down.
+(function(){ try{ var c=JSON.parse(localStorage.getItem('quai-last')||'null'); if(c&&c.updatedAt&&(!SNAP.updatedAt||c.updatedAt>SNAP.updatedAt)){ for(var k in SNAP) if(c[k]==null) c[k]=SNAP[k]; SNAP=c; D=c; } }catch(e){} })();
 var L = 'en';
 var SECTIONS = ['market','dex','priceChart','recon','soap','supply','wallets','network','hashference','x402'];
 
@@ -386,7 +388,7 @@ evBurn:'Last burn', evBurnV:function(b,d){return date(b.t)+' · '+num(b.quai)+' 
   dxShare:'DEX share of trading, 24h', dxShareD:'Share of QUAI trading that went through the DEX on Quai itself; the rest is centralized exchanges',
   depth:'Depth within ±2%', depthD:function(u,d){return usd(u)+' to buy · '+usd(d)+' to sell, all exchanges';},
   ex:'Exchange', pair:'Pair', spread:'Spread', dUp:'+2% depth', dDn:'−2% depth',
-  hfReq:'Hashference requests, 30 d', hfTok:'AI tokens processed', hfTokD:'by Hashference, last 30 days', hfDev:function(n){return n+' active devices in 7 days';}, hfFund:'Hashference credit from staking', hfFundD:function(f){return 'QUAI staking '+pct(f.staking)+' · QUAI/Qi deposits '+pct(f.deposits)+' · mining '+pct(f.mining);},
+  hfReq:'Hashference requests, 30 d', hfAt:function(t){return 'hashference.com data from '+new Date(t).toLocaleString(loc(),{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});}, hfTok:'AI tokens processed', hfTokD:'by Hashference, last 30 days', hfDev:function(n){return n+' active devices in 7 days';}, hfFund:'Hashference credit from staking', hfFundD:function(f){return 'QUAI staking '+pct(f.staking)+' · QUAI/Qi deposits '+pct(f.deposits)+' · mining '+pct(f.mining);},
   stk:'Staked in Hashference', stkD:function(p){return 'QUAI locked for AI credit ('+p+')';},
   x402:'x402 Work payments, 30 d', x402D:function(x){return 'of them Hashference: '+x.hashference+' · services: '+x.services;},
   txs:'Transactions today', txsAll:'Transactions, all time', addrD:function(n){return [n.addresses?'Quai addresses: '+num(n.addresses):'',n.qiAddresses?'Qi addresses: '+num(n.qiAddresses):''].filter(Boolean).join(' · ');}, txsD:function(n){return 'all time: '+num(n.totalTx)+(n.addresses?' · addresses: '+num(n.addresses):'');},
@@ -395,7 +397,7 @@ evBurn:'Last burn', evBurnV:function(b,d){return date(b.t)+' · '+num(b.quai)+' 
    'Revenue: SOAP dashboard API (soap.qu.ai) — the Quai team\'s own figures, by month.',
    'Burns: every transfer into the burn address 0x0050AF…0000 from the block explorer (<a href="https://quaiscan.io/address/0x0050AF0000000000000000000000000000000000" target="_blank" rel="noopener">Quaiscan</a> or explorer.qu.ai), plus QUAI the SOAP wallet sent to the gas-burner wallet. Valued at the CoinGecko daily close on the burn day; buying happens a few days earlier, so this is a slightly low estimate while the price falls.',
    '“Sent elsewhere”: transfers out of the <a href="https://quaiscan.io/address/0x0053bcdc4F5Af4B35079d4D091fCD1D86A958D06" target="_blank" rel="noopener">SOAP wallet</a> that did not go to the burn address or the gas burner, minus what the same address later burned or sent back. Who owns those wallets is unknown.',
-   'Supply, mining and daily burns: supply.qu.ai API. Order books, ±2% depth and volume: the exchanges\' free public APIs (MEXC, Gate, Kraken; a book far from the others\' price is skipped). Market cap, price history and other exchanges: CoinGecko, kept in a cache so a CoinGecko outage shows the last known numbers. Hashference and x402: their public /stats APIs.',
+   'Supply, mining and daily burns: supply.qu.ai API. Order books, ±2% depth and volume: the exchanges\' free public APIs (MEXC, Gate, Kraken; a book far from the others\' price is skipped). Market cap, price history and other exchanges: CoinGecko, kept in a cache so a CoinGecko outage shows the last known numbers. Hashference and x402: their public /stats APIs. Hashference requests are all received requests, the same number as hashference.com/statistics (not only the ones with measured tokens); weekly comparisons use complete UTC days. Every finished day is also stored in our own archive: if hashference.com is down, the chart is built from it, and a day the source suddenly reports much lower than before keeps the archived value.',
    'Quainance DEX: QUAI/USDT pool reserves read straight from the chain (getReserves on the pair contract via rpc.quai.network); price impact by the constant-product formula with the 0.3% fee. All-pool TVL and swap volume: DefiLlama.',
    'Refreshed at most once an hour through the site\'s own server function. If a source is down, that section shows the last snapshot and the status line says so.'
   ]
@@ -449,7 +451,7 @@ evBurn:'Последнее сжигание', evBurnV:function(b,d){return date(
   dxShare:'Доля DEX в торгах, 24 ч', dxShareD:'Какая часть торгов QUAI за сутки прошла через DEX в самой сети Quai, остальное — централизованные биржи',
   depth:'Глубина в пределах ±2%', depthD:function(u,d){return usd(u)+' на покупку · '+usd(d)+' на продажу, все биржи';},
   ex:'Биржа', pair:'Пара', spread:'Спред', dUp:'Глубина +2%', dDn:'Глубина −2%',
-  hfReq:'Запросы к Hashference, 30 дн.', hfTok:'Обработано ИИ-токенов', hfTokD:'Hashference за 30 дней', hfDev:function(n){return 'активных устройств за 7 дней: '+n;}, hfFund:'Кредиты Hashference из стейкинга', hfFundD:function(f){return 'стейкинг QUAI '+pct(f.staking)+' · пополнения QUAI/Qi '+pct(f.deposits)+' · майнинг '+pct(f.mining);},
+  hfReq:'Запросы к Hashference, 30 дн.', hfAt:function(t){return 'данные hashference.com на '+new Date(t).toLocaleString(loc(),{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});}, hfTok:'Обработано ИИ-токенов', hfTokD:'Hashference за 30 дней', hfDev:function(n){return 'активных устройств за 7 дней: '+n;}, hfFund:'Кредиты Hashference из стейкинга', hfFundD:function(f){return 'стейкинг QUAI '+pct(f.staking)+' · пополнения QUAI/Qi '+pct(f.deposits)+' · майнинг '+pct(f.mining);},
   stk:'В стейкинге Hashference', stkD:function(p){return 'QUAI заблокировано ради ИИ-кредитов ('+p+')';},
   x402:'Оплаты x402 Work, 30 дн.', x402D:function(x){return 'из них Hashference: '+x.hashference+' · сервисов: '+x.services;},
   txs:'Транзакций сегодня', txsAll:'Транзакций за всё время', addrD:function(n){return [n.addresses?'адресов Quai: '+num(n.addresses):'',n.qiAddresses?'адресов Qi: '+num(n.qiAddresses):''].filter(Boolean).join(' · ');}, txsD:function(n){return 'всего: '+num(n.totalTx)+(n.addresses?' · адресов: '+num(n.addresses):'');},
@@ -458,7 +460,7 @@ evBurn:'Последнее сжигание', evBurnV:function(b,d){return date(
    'Выручка: API дашборда SOAP (soap.qu.ai) — собственные цифры команды Quai, по месяцам.',
    'Сжигания: все переводы на адрес сжигания 0x0050AF…0000 по обозревателю блоков (<a href="https://quaiscan.io/address/0x0050AF0000000000000000000000000000000000" target="_blank" rel="noopener">Quaiscan</a> или explorer.qu.ai) плюс QUAI, отправленные кошельком SOAP на «сжигатель газа». Оценка — по закрытию дня сжигания на CoinGecko; покупка происходит на несколько дней раньше, поэтому при падающей цене оценка немного занижена.',
    '«Ушло на другие кошельки»: переводы с <a href="https://quaiscan.io/address/0x0053bcdc4F5Af4B35079d4D091fCD1D86A958D06" target="_blank" rel="noopener">кошелька SOAP</a> не на сжигание и не на сжигатель газа, за вычетом того, что тот же адрес потом сам сжёг или вернул. Чьи это кошельки — неизвестно.',
-   'Предложение, майнинг и сжигания по дням: API supply.qu.ai. Стаканы, глубина ±2% и объём: открытые бесплатные API бирж (MEXC, Gate, Kraken; стакан с ценой, далёкой от остальных, пропускается). Капитализация, история цены и прочие биржи: CoinGecko, с кэшем — если CoinGecko не отвечает, показываются последние известные цифры. Hashference и x402: их открытые API /stats.',
+   'Предложение, майнинг и сжигания по дням: API supply.qu.ai. Стаканы, глубина ±2% и объём: открытые бесплатные API бирж (MEXC, Gate, Kraken; стакан с ценой, далёкой от остальных, пропускается). Капитализация, история цены и прочие биржи: CoinGecko, с кэшем — если CoinGecko не отвечает, показываются последние известные цифры. Hashference и x402: их открытые API /stats. Запросы Hashference — все полученные запросы, как на hashference.com/statistics (а не только те, у которых измерены токены); сравнение недель — по полным дням UTC. Каждый завершённый день мы сохраняем в собственный архив: если hashference.com недоступен, график строится по нему, а если источник вдруг показывает за прошедший день намного меньше, чем раньше, остаётся значение из архива.',
    'DEX Quainance: резервы пула QUAI/USDT читаются прямо из блокчейна (getReserves контракта пары через rpc.quai.network); сдвиг цены — по формуле x·y=k с комиссией 0,3%. TVL всех пулов и объём обменов: DefiLlama.',
    'Обновление не чаще раза в час через серверную функцию сайта. Если источник недоступен, раздел показывает последний снимок, и это видно в строке статуса.'
   ]
@@ -742,7 +744,7 @@ function render(){
 
   // ecosystem
   var h5='';
-  if(hf){ h5+=tile(t('hfReq'),num(hf.daily.reduce(function(a,d){return a+d[1];},0)),T[L].hfDev(hf.devices7d));
+  if(hf){ h5+=tile(t('hfReq'),num(hf.requests!=null?hf.requests:hf.daily.reduce(function(a,d){return a+d[1];},0)),T[L].hfDev(hf.devices7d)+(hf.updatedAt?' · '+T[L].hfAt(hf.updatedAt):''));
     h5+=tile(t('hfTok'),num(hf.tokens),t('hfTokD'));
     h5+=tile(t('hfFund'),pct(hf.funding.staking),T[L].hfFundD(hf.funding)); }
   if(w) h5+=tile(t('stk'),num(w.staking.balance)+' QUAI',T[L].stkD(hf&&hf.stakingPlans?hf.stakingPlans.map(function(p){return num(p[0])+' → $'+p[1]+(L==='ru'?'/мес':'/mo');}).join(', '):''));
@@ -784,6 +786,7 @@ if(location.protocol!=='file:' && !/github\.io$/.test(location.hostname)){
     var merged={}; for(var k in j) merged[k]=j[k];
     SECTIONS.forEach(function(k){ if(merged[k]==null&&SNAP[k]!=null){ merged[k]=SNAP[k]; FROM_SNAP.push(k); } });
     D=merged; LIVE=true; render();
+    try{ var keep={}; for(var k2 in j) if(k2!=='history') keep[k2]=j[k2]; localStorage.setItem('quai-last',JSON.stringify(keep)); }catch(e){}
   }).catch(function(){});
 }
 })();

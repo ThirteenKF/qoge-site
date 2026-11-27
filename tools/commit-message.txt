@@ -1,4 +1,4 @@
-Quai Live: glossary, plain-words summary, clearer burn metrics, full-day Hashference, tap tooltips
+Quai Live: exact Hashference data with own archive, sturdier sources, clearer page
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01K147gCJvatrcQ7zCd5Mvvq

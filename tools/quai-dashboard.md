@@ -38,16 +38,32 @@ daily) → Ecosystem (Hashference, x402, staking, network) → Method and source
 - **SOAP dashboard** `https://soap.qu.ai/api`: `/revenues` (all-time by chain), `/revenues/daily?start=&end=` (unix seconds; returns totals for the range, not per day).
 - **Supply tracker** `https://supply.qu.ai/api`: `/stats`, `/supply?period=day&from=&to=&include=burn` (quaiTotalEnd, burnDelta), `/rollups?period=day&from=&to=` (coinbaseQuaiMiningRewardSum = mined; also workshares per algorithm, difficulties, Qi conversion flow — unused yet). Big numbers come as `{__big:"…wei"}`.
 - **Block explorers**: Quaiscan Blockscout `/api/v2` answers Vercel with HTTP 403, so burns/wallets/network fall back to the official explorer `https://explorer.qu.ai/api` (`/address/<a>/transactions?limit=100&cursor=`, `/address/<a>?includeTransactions=false`, `/stats/overview`). Explorer `value` can be scientific notation ("4e+24") → `toWeiString()`.
-- **Hashference** `https://hashference.com/v1/stats?days=30`, `/v1/staking`, `/v1/x402`; **x402** `https://x402.qu.ai/v1/stats?days=30`.
+- **Hashference** `https://hashference.com/v1/stats?days=30`, `/v1/staking` (optional), `/v1/x402`; **x402** `https://x402.qu.ai/v1/stats?days=30`.
+  PRIORITY SOURCE (the whole Quai community watches it). Requests = `demand.requests` / `demand.daily` = all RECEIVED requests,
+  the same number as hashference.com/statistics ("Запросы на инференс … Received"). The top-level `summary`/`daily` count only
+  requests with measured tokens and have gaps (Nov 22, 2026: 6 measured vs 543 received) — kept as `measured`/`measuredDaily`,
+  `series` says which one is used ('received' | 'measured' | 'archive'). `updatedAt` from the source is passed through and shown
+  in the Ecosystem tile. Week-over-week numbers (verdict card + Pulse tile) use the last 7 COMPLETE UTC days (`hfWeeks()` in the page);
+  today's bar is drawn faded and is not counted.
+  Own archive: Redis hash `quai:hf` (UTC day → requests), every finished day written on each run (`hashferenceArchive()`).
+  A finished day the source later reports below 50% of the archived value keeps the archived value (`hashference.corrected`).
+  If hashference.com is down and there is no Redis cache, the 30-day series is rebuilt from the archive (`series:'archive'`,
+  shown in the status line as a backup copy).
 - **Quainance DEX**: QUAI/USDT pair `0x0021f5cc862ebb0252ba209266f2fabbc7592e83` (token0 USDT 6 decimals, token1 WQUAI 18). Reserves via `POST https://rpc.quai.network/cyprus1` method `quai_call`, data `0x0902f1ac` (getReserves). TVL and swap volume of all Quainance pools from DefiLlama `https://api.llama.fi/tvl/quainance` and `/summary/dexs/quainance`.
 - Genesis unlock schedule: constant `UNLOCKS` in `api/quai.js`, copied from supply.qu.ai's JS bundle (GENESIS_UNLOCK_SCHEDULE after Singularity/Polaris; month m unlocks at block m×518400). Past dates: `UNLOCK_DATES`. Update by hand if the team changes the schedule.
 
 ## Backups when a source breaks
 1. Own backups: CoinGecko market → CoinPaprika (`market.backup`), CoinGecko daily prices → Gate daily candles, Quaiscan → explorer.qu.ai,
    CoinGecko tickers ↔ exchange books (MEXC/Gate/Kraken), DefiLlama is optional inside `dex`.
-2. Then the last good answer of every source from Redis (`quai:cache:<source>`, up to 3 days) — listed in `data.cached`
+2. Then the last good answer of every source from Redis (`quai:cache:<source>`, up to 7 days) — listed in `data.cached`
    and in the page status line ("из резервных копий: …").
-3. Then the static snapshot `assets/quai-dash.js` in the browser.
+3. Hashference only: our own day archive `quai:hf` (see Data sources).
+4. In the browser: the last live answer this browser saw (localStorage `quai-last`, without history) if it is newer than the snapshot,
+   then the static snapshot `assets/quai-dash.js`. Both show as "Snapshot · updated …" in the status line.
+- Every request has a 12 s timeout and one retry on a network error, timeout or HTTP 5xx (`getJson`; the Quainance RPC call has the timeout too);
+  HTTP 429 is retried twice with a pause.
+- Order books: a CoinGecko ticker whose ±2% depth equals a live exchange book within 1% on both sides is dropped as a mirror
+  (BitKan copies Gate's book; counting it doubled the depth).
 The daily Telegram check reports every source running on a backup or cache.
 
 ## Key addresses
@@ -74,7 +90,8 @@ The daily Telegram check reports every source running on a backup or cache.
 ## Failure alerts (Telegram)
 - On the daily cron run (`/api/quai?save=1`, user-agent `vercel-cron`) `health()` in `api/quai.js` lists broken sources
   (`<section>Error`) and stale data (supply.qu.ai last day older than 2 days, SOAP 7-day revenue 0, no CoinGecko price,
-  Quainance pool under $1,000, Redis error). If the list is not empty, the QNN bot sends the owner ONE private message
+  Quainance pool under $1,000, Redis error) and Hashference problems (stats older than 6 h, no `demand` field, served from the archive,
+  past days corrected from the archive, daily sum ≠ total by more than 3%). If the list is not empty, the QNN bot sends the owner ONE private message
   (`TELEGRAM_BOT_TOKEN`, `TELEGRAM_OWNER_ID` — same env as `api/telegram.mjs`). Silent when all is fine.
 - The list is also returned publicly as `data.health`.
 - Manual test: `https://www.qoge.fun/api/quai?save=1&test=1&key=<DIGEST_SECRET>` — always sends a message ("all sources work" if OK).
@@ -102,6 +119,7 @@ Open https://www.qoge.fun/api/quai (or `fetch('/api/quai')` in a browser on qoge
 ## How to check changes
 - Render offline with Playwright: open `file:///…/research/quai-live/index.html`, abort all http(s) requests (page then uses the snapshot), set `localStorage['qoge-lang']` to `ru`/`en`, screenshot at 1440 and 390 px, check `document.documentElement.scrollWidth` equals the viewport width and there are no page errors.
 - API logic: `node -e "require('./api/quai.js').assemble({...})"` with mocked parts; history with a mocked `fetch` for Redis.
+  `hashferenceArchive`, `getJson` and `health` are exported for such tests (mock `global.fetch`, set KV_REST_API_URL/TOKEN before require).
 - After the owner publishes: open the live page; the status line must say "Live data" / "Живые данные" with no sections from the snapshot.
 
 ## Workflow
@@ -135,3 +153,11 @@ Do not touch the main page or other research pages unless asked; the owner usual
 - Mining block: share of donor-chain blocks found by SOAP (≈2% of BCH, ≈0.3–0.4% LTC/DOGE, ≈30% RVN on a 5-day sample — recheck on 30 days), miners' daily pay in USD vs buyback per day, workshares by algorithm (rollups data).
 - Alerts to Telegram/X on burns, upcoming unlocks, SOAP-wallet leaks, coverage drops (reuse `api/telegram.mjs` drafts).
 - Share cards per metric (reuse `api/og.js`), a Quai block in QNN Weekly from `/api/quai`, "Tokens on Quai" table, public API docs / embeddable widget.
+
+## Changes Nov 27, 2026
+- Hashference switched to the received series (matches hashference.com/statistics), complete-day weekly comparison,
+  own day archive + regression guard, health checks; source time shown in the Ecosystem tile.
+- Page: glossary (12 terms, EN/RU), plain-words "Bottom line" sentence above the verdicts, "share of revenue burned" vs
+  "new coins offset by burns" renamed so they cannot be confused, (i) tooltips open on tap on phones, month labels "Dec ’25".
+- Network tile hides a zero address count (explorer returns `addresses: 0`).
+
