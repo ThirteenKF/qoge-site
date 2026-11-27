@@ -11,6 +11,10 @@
     {
       "source": "/weekly/:n",
       "destination": "/api/weekly?n=:n"
+    },
+    {
+      "source": "/q",
+      "destination": "/api/qshare"
     }
   ],
   "functions": {

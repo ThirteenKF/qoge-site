@@ -1247,6 +1247,83 @@ class Component extends DCLogic {
 })();
 </script>
 <script>
+/* QOGE wallet check: public balances of a Quai address (api/wallet.js). Mounted under the calculator in #buy; re-mounts if the page re-renders.
+   The last checked address is remembered in this browser only (localStorage 'qoge-wallet'). */
+(function(){
+  if(location.protocol==='file:'||/github\.io$/.test(location.hostname)) return;   // the API lives on Vercel only
+  var T={ru:{h:'Проверь свой кошелёк',s:'Вставь адрес Quai (0x…): покажем $QOGE, QUAI и марсоходы Mars Gum. Только публичные данные блокчейна, мы ничего не сохраняем.',ph:'0x… адрес кошелька Quai',go:'Проверить',
+      bad:'Это не похоже на адрес Quai: нужен 0x и ещё 40 символов.',wait:'Смотрим блокчейн…',fail:'Не удалось получить данные. Попробуй ещё раз через минуту.',
+      qoge:'$QOGE',ofAll:'от всех QOGE',quai:'QUAI',locked:'заблокировано',gum:'Mars Gum',gumN:function(n){return n+' '+(n%10===1&&n%100!==11?'марсоход':(n%10>=2&&n%10<=4&&(n%100<10||n%100>=20))?'марсохода':'марсоходов')},
+      gum0:'пока нет — минт для холдеров',gumSee:'смотреть на Bazarr ↗',gumMint:'как получить ↗',tok:'Другие токены',since:'в сети Quai с',tx:'транзакций',scan:'Quaiscan ↗',forget:'забыть адрес',none:'нет',loc:'ru-RU',partial:'часть данных временно недоступна'},
+    en:{h:'Check your wallet',s:'Paste a Quai address (0x…): we show $QOGE, QUAI and your Mars Gum rovers. Public blockchain data only, nothing is stored.',ph:'0x… Quai wallet address',go:'Check',
+      bad:'That does not look like a Quai address: it needs 0x and 40 more characters.',wait:'Reading the blockchain…',fail:'Could not get the data. Try again in a minute.',
+      qoge:'$QOGE',ofAll:'of all QOGE',quai:'QUAI',locked:'locked',gum:'Mars Gum',gumN:function(n){return n+' rover'+(n===1?'':'s')},
+      gum0:'none yet: holders can mint',gumSee:'see on Bazarr ↗',gumMint:'how to get one ↗',tok:'Other tokens',since:'on Quai since',tx:'transactions',scan:'Quaiscan ↗',forget:'forget address',none:'none',loc:'en-US',partial:'some data is temporarily unavailable'}};
+  var KEY='qoge-wallet', last=null, waited=0;
+  function lang(){return document.documentElement.lang==='ru'?'ru':'en'}
+  function n(v,d){ return v==null?'—':Number(v).toLocaleString(T[lang()].loc,{maximumFractionDigits:d==null?(Math.abs(v)<10?2:0):d}); }
+  function usd(v){ return v==null?'':'≈ $'+Number(v).toLocaleString(T[lang()].loc,{maximumFractionDigits:v<10?2:0}); }
+  function esc(x){ return String(x).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]}); }
+  function build(){
+    var buy=document.getElementById('buy'); if(!buy) return;
+    var old=document.getElementById('qwal'), L=lang(); if(old&&old.dataset.l===L) return;
+    var calc=document.getElementById('qcalc'), h2=buy.querySelector('h2'); if(!calc&&!h2) return;
+    if(!calc&&++waited<8) return;   // give the calculator a few seconds to mount first, so the wallet goes under it
+    if(old) old.remove();
+    var t=T[L], c=document.createElement('div'); c.id='qwal'; c.dataset.l=L;
+    c.innerHTML='<div class="qw-h">'+t.h+'</div><div class="qw-s">'+t.s+'</div>'+
+      '<form class="qw-f" id="qwForm"><input id="qwIn" type="text" spellcheck="false" autocomplete="off" placeholder="'+t.ph+'" aria-label="'+t.ph+'"><button type="submit">'+t.go+'</button></form>'+
+      '<div id="qwOut" class="qw-out" aria-live="polite"></div>';
+    if(calc) calc.parentNode.insertBefore(c,calc.nextSibling); else { var a=h2.parentNode.nextElementSibling||h2.parentNode; a.parentNode.insertBefore(c,a); }
+    var inp=c.querySelector('#qwIn'); var saved=''; try{ saved=localStorage.getItem(KEY)||''; }catch(e){}
+    c.querySelector('#qwForm').onsubmit=function(e){ e.preventDefault(); check(inp.value); };
+    if(last) show(last); else if(saved){ inp.value=saved; check(saved); }
+  }
+  function check(v){
+    var t=T[lang()], out=document.getElementById('qwOut'); v=String(v||'').trim();
+    if(!/^0x[0-9a-fA-F]{40}$/.test(v)){ out.innerHTML='<div class="qw-msg">'+t.bad+'</div>'; return; }
+    out.innerHTML='<div class="qw-msg">'+t.wait+'</div>';
+    fetch('/api/wallet?a='+v).then(function(r){return r.json()}).then(function(j){
+      if(!j||j.error){ out.innerHTML='<div class="qw-msg">'+t.fail+'</div>'; return; }
+      try{ localStorage.setItem(KEY,v); }catch(e){}
+      last=j; show(j);
+    }).catch(function(){ out.innerHTML='<div class="qw-msg">'+t.fail+'</div>'; });
+  }
+  function show(j){
+    var t=T[lang()], out=document.getElementById('qwOut'), M=window.QOGE_METRICS||{}; if(!out) return;
+    var qUsd=M.priceUsd&&M.priceQuai?M.priceUsd/M.priceQuai:null, sup=M.totalSupply||null;
+    var qoge=j.qoge, gum=j.marsGum;
+    var h='<div class="qw-grid">'+
+      '<div class="qw-c"><div class="qw-l">'+t.qoge+'</div><div class="qw-v g">'+n(qoge,0)+'</div><div class="qw-u">'+
+        (qoge!=null&&M.priceUsd?usd(qoge*M.priceUsd)+' · ≈ '+n(qoge*M.priceQuai,2)+' QUAI':'')+(qoge&&sup?'<br>'+n(qoge/sup*100,4)+'% '+t.ofAll:'')+'</div></div>'+
+      '<div class="qw-c"><div class="qw-l">'+t.quai+'</div><div class="qw-v">'+n(j.quai)+'</div><div class="qw-u">'+(j.quai!=null&&qUsd?usd(j.quai*qUsd):'')+(j.quaiLocked>0?'<br>'+n(j.quaiLocked)+' '+t.locked:'')+(j.qi>0?'<br>Qi: '+n(j.qi):'')+'</div></div>'+
+      '<div class="qw-c"><div class="qw-l">'+t.gum+'</div><div class="qw-v">'+(gum==null?'—':gum>0?t.gumN(gum):'0')+'</div><div class="qw-u">'+
+        (gum>0?'<a href="https://www.bazarr.xyz/" target="_blank" rel="noopener">'+t.gumSee+'</a>':gum===0?t.gum0+' · <a href="#nft">'+t.gumMint+'</a>':'')+'</div></div>'+
+      '</div>';
+    if(j.tokens&&j.tokens.length) h+='<div class="qw-tok"><span>'+t.tok+':</span> '+j.tokens.map(function(x){return '<b>'+esc(x.symbol)+'</b> '+n(x.balance);}).join(' · ')+'</div>';
+    h+='<div class="qw-foot">'+(j.firstSeen?t.since+' '+new Date(j.firstSeen).toLocaleDateString(t.loc,{day:'numeric',month:'short',year:'numeric'})+' · ':'')+(j.txCount?t.tx+': '+n(j.txCount,0)+' · ':'')+
+      '<a href="https://quaiscan.io/address/'+j.address+'" target="_blank" rel="noopener">'+t.scan+'</a> · <a href="#" id="qwForget">'+t.forget+'</a>'+(j.errors&&j.errors.length?' · <span class="qw-p">'+t.partial+'</span>':'')+'</div>';
+    out.innerHTML=h;
+    var f=document.getElementById('qwForget'); if(f) f.onclick=function(e){ e.preventDefault(); try{ localStorage.removeItem(KEY); }catch(x){} last=null; out.innerHTML=''; var i=document.getElementById('qwIn'); if(i) i.value=''; };
+  }
+  var st=document.createElement('style');
+  st.textContent='#qwal,#qwal *{box-sizing:border-box}#qwal{margin-top:28px;border:4px solid #141110;background:#fff;box-shadow:8px 8px 0 #141110;padding:22px 24px;color:#141110}'+
+   '#qwal .qw-h{font-weight:900;font-size:24px;text-transform:uppercase}#qwal .qw-s{margin-top:6px;font-size:15px;color:#4a403b;max-width:760px}'+
+   '#qwal .qw-f{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}#qwal .qw-f input{flex:1 1 320px;min-width:0;height:52px;border:3px solid #141110;padding:0 14px;font:600 16px "IBM Plex Mono",monospace;color:#141110;background:#fff;outline:0}'+
+   '#qwal .qw-f button{height:52px;padding:0 22px;border:3px solid #141110;background:#141110;color:#f4f0ec;font:900 16px Archivo,sans-serif;text-transform:uppercase;cursor:pointer}#qwal .qw-f button:hover{background:#5bd16a;color:#0b0b0b}'+
+   '#qwal .qw-out:empty{display:none}#qwal .qw-out{margin-top:16px;background:#141110;color:#f4f0ec;padding:18px 20px}#qwal .qw-msg{font-size:15px}'+
+   '#qwal .qw-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}#qwal .qw-c{border:1px solid #3a3431;padding:14px}'+
+   '#qwal .qw-l{font-family:"IBM Plex Mono",monospace;font-size:13px;color:#cfc8c1;text-transform:uppercase}#qwal .qw-v{font-weight:900;font-size:clamp(22px,2.6vw,34px);line-height:1.1;margin-top:6px;overflow-wrap:anywhere}#qwal .qw-v.g{color:#5bd16a}'+
+   '#qwal .qw-u{margin-top:6px;font-size:14px;color:#cfc8c1;line-height:1.5}#qwal a{color:#f5d33a}#qwal .qw-tok{margin-top:12px;font-size:14px;color:#cfc8c1}#qwal .qw-tok b{color:#f4f0ec}'+
+   '#qwal .qw-foot{margin-top:12px;font-family:"IBM Plex Mono",monospace;font-size:12px;color:#a59e97}#qwal .qw-p{color:#ffb3a8}'+
+   '@media (max-width:767px){#qwal{padding:18px;box-shadow:5px 5px 0 #141110}#qwal .qw-grid{grid-template-columns:minmax(0,1fr)}#qwal .qw-f button{flex:1 1 100%}}';
+  document.head.appendChild(st);
+  var tries=0, iv=setInterval(function(){build(); if(++tries>40) clearInterval(iv)},500);
+  new MutationObserver(function(){ var o=document.getElementById('qwal'); if(!o||o.dataset.l!==lang()) build(); }).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+  new MutationObserver(function(){ if(!document.getElementById('qwal')) build(); }).observe(document.body,{childList:true,subtree:true});
+})();
+</script>
+<script>
 /* QOGE calculator: how many QOGE for N QUAI (constant-product pool estimate). Vanilla JS, re-mounts if the page re-renders. */
 (function(){
   var Y='oklch(0.88 0.17 95)';

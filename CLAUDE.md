@@ -124,6 +124,9 @@ Owner speaks Russian (sometimes types Russian on an English layout); answer in R
 - Deploy check: if the live site does not change ~2 min after a push, look at Vercel deployments
   (GitHub API /repos/ThirteenKF/qoge-site/deployments?environment=Production). On Nov 9 Vercel skipped one push;
   a new push re-triggered it. Images written by the device bridge carry a C2PA chunk (+~5.7KB) — harmless.
+- Wallet check (#qwal, under the calculator in #buy): `api/wallet.js` (Edge, GET /api/wallet?a=0x…) returns QUAI
+  (explorer, backup RPC quai_getBalance), $QOGE and Mars Gum balanceOf via RPC quai_call (backup: explorer token-balances),
+  other tokens. Public data only, nothing stored; last address kept in localStorage 'qoge-wallet'. Hidden on github.io/file://.
 - Mobile layout: `@media (max-width:767px)` block in index.html helmet styles.
 
 ## Links
