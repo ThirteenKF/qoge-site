@@ -107,10 +107,10 @@ function metric(k, D, L) {
 }
 
 async function font(family, text) {
-  const css = await (await fetch('https://fonts.googleapis.com/css2?family=' + family + '&text=' + encodeURIComponent(text))).text();
+  const css = await (await fetch('https://fonts.googleapis.com/css2?family=' + family + '&text=' + encodeURIComponent(text), { signal: AbortSignal.timeout(2500) })).text();
   const mm = css.match(/src: url\((.+?)\) format\('(opentype|truetype)'\)/);
   if (!mm) throw new Error('font ' + family);
-  return (await fetch(mm[1])).arrayBuffer();
+  return (await fetch(mm[1], { signal: AbortSignal.timeout(2500) })).arrayBuffer();
 }
 const el = (type, style, ...children) => {
   const props = { style: { display: 'flex', ...style } };
@@ -122,7 +122,7 @@ export default async function handler(req) {
   const url = new URL(req.url), q = url.searchParams, origin = url.origin;
   const L = q.get('l') === 'ru' ? 'ru' : 'en', k = KEYS.includes(q.get('k')) ? q.get('k') : 'hf7', t = T[L], f = fmt(L);
   let D = null, M = null;
-  try { D = await (await fetch(origin + '/api/quai')).json(); M = metric(k, D, L); } catch (e) {}
+  try { D = await (await fetch(origin + '/api/quai', { signal: AbortSignal.timeout(3500) })).json();   // X gives up on slow images, so never wait long M = metric(k, D, L); } catch (e) {}
   if (!M) return Response.redirect(origin + '/assets/og.jpg', 302);
 
   const at = t.at + ' ' + f.date(D.updatedAt || Date.now());

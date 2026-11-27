@@ -1,4 +1,4 @@
-Quai Live: X share cards, events feed; cross-checks, explorer price backup, null-safe counters, deep test, clearer glossary; home: wallet check
+Share cards: time-limit data and font fetches, fresh link per hour
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01K147gCJvatrcQ7zCd5Mvvq
