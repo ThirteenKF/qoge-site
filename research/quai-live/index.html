@@ -407,7 +407,7 @@ evBurn:'Last burn', evBurnV:function(b,d){return date(b.t)+' · '+num(b.quai)+' 
   hfDevT:'Devices paying with mining', hfDevD:function(h){return (h.devicesConnected!=null?'connected now: '+num(h.devicesConnected)+' · ':'')+'mining shares in 30 d: '+num(h.shares30);},
   hfLongSub:function(f,n){return 'our day archive since '+dayLabel(f)+' + hashference.com · '+n+' days · today partial';},
   hfModel:'Model', hfApp:'App', hfReqs:'Requests', hfToks:'Tokens', hfShare:'Share', hfSharesT:'shares', hfDevs:'devices', hfX4:'x402 payments',
-  hfStakeWait:function(d){return 'Recording since '+d+'. The chart appears after 3 days.';}, hfAt:function(t){return 'hashference.com data from '+new Date(t).toLocaleString(loc(),{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});}, hfTok:'AI tokens processed', hfTokD:'by Hashference, last 30 days', hfDev:function(n){return n+' active devices in 7 days';}, hfFund:'Hashference credit from staking', hfFundD:function(f){return 'QUAI staking '+pct(f.staking)+' · QUAI/Qi deposits '+pct(f.deposits)+' · mining '+pct(f.mining);},
+  hfStakeWait:function(d){return 'Recording since '+d+' — the chart appears after 3 days.';}, hfAt:function(t){return 'hashference.com data from '+new Date(t).toLocaleString(loc(),{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});}, hfTok:'AI tokens processed', hfTokD:'by Hashference, last 30 days', hfDev:function(n){return n+' active devices in 7 days';}, hfFund:'Hashference credit from staking', hfFundD:function(f){return 'QUAI staking '+pct(f.staking)+' · QUAI/Qi deposits '+pct(f.deposits)+' · mining '+pct(f.mining);},
   stk:'Staked in Hashference', stkD:function(p){return 'QUAI locked for AI credit ('+p+')';},
   x402:'x402 Work payments, 30 d', x402D:function(x){return 'of them Hashference: '+x.hashference+' · services: '+x.services;},
   txs:'Transactions today', txsAll:'Transactions, all time', addrD:function(n){return [n.addresses?'Quai addresses: '+num(n.addresses):'',n.qiAddresses?'Qi addresses: '+num(n.qiAddresses):''].filter(Boolean).join(' · ');}, txsD:function(n){return 'all time: '+num(n.totalTx)+(n.addresses?' · addresses: '+num(n.addresses):'');},
@@ -474,7 +474,7 @@ evBurn:'Последнее сжигание', evBurnV:function(b,d){return date(
   hfDevT:'Устройства, платящие майнингом', hfDevD:function(h){return (h.devicesConnected!=null?'подключено сейчас: '+num(h.devicesConnected)+' · ':'')+'майнинговых шар за 30 дн.: '+num(h.shares30);},
   hfLongSub:function(f,n){return 'наш архив по дням с '+dayLabel(f)+' + hashference.com · '+n+' дн. · сегодня неполный';},
   hfModel:'Модель', hfApp:'Приложение', hfReqs:'Запросы', hfToks:'Токены', hfShare:'Доля', hfSharesT:'шар', hfDevs:'устройств', hfX4:'оплат x402',
-  hfStakeWait:function(d){return 'Запись идёт с '+d+'. График появится через 3 дня.';}, hfAt:function(t){return 'данные hashference.com на '+new Date(t).toLocaleString(loc(),{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});}, hfTok:'Обработано ИИ-токенов', hfTokD:'Hashference за 30 дней', hfDev:function(n){return 'активных устройств за 7 дней: '+n;}, hfFund:'Кредиты Hashference из стейкинга', hfFundD:function(f){return 'стейкинг QUAI '+pct(f.staking)+' · пополнения QUAI/Qi '+pct(f.deposits)+' · майнинг '+pct(f.mining);},
+  hfStakeWait:function(d){return 'Запись идёт с '+d+' — график появится через 3 дня.';}, hfAt:function(t){return 'данные hashference.com на '+new Date(t).toLocaleString(loc(),{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});}, hfTok:'Обработано ИИ-токенов', hfTokD:'Hashference за 30 дней', hfDev:function(n){return 'активных устройств за 7 дней: '+n;}, hfFund:'Кредиты Hashference из стейкинга', hfFundD:function(f){return 'стейкинг QUAI '+pct(f.staking)+' · пополнения QUAI/Qi '+pct(f.deposits)+' · майнинг '+pct(f.mining);},
   stk:'В стейкинге Hashference', stkD:function(p){return 'QUAI заблокировано ради ИИ-кредитов ('+p+')';},
   x402:'Оплаты x402 Work, 30 дн.', x402D:function(x){return 'из них Hashference: '+x.hashference+' · сервисов: '+x.services;},
   txs:'Транзакций сегодня', txsAll:'Транзакций за всё время', addrD:function(n){return [n.addresses?'адресов Quai: '+num(n.addresses):'',n.qiAddresses?'адресов Qi: '+num(n.qiAddresses):''].filter(Boolean).join(' · ');}, txsD:function(n){return 'всего: '+num(n.totalTx)+(n.addresses?' · адресов: '+num(n.addresses):'');},
@@ -629,6 +629,8 @@ function renderHF(hf,w){
   $('hfTiles').innerHTML=tl;
   // long history: our archive + today
   var hs=(hf.history&&hf.history.length?hf.history:hf.daily);
+  // start at the first day with requests (the 90-day seed begins with weeks of zeros before launch)
+  var f0=0; while(f0<hs.length-1&&!(hs[f0][1]>0)) f0++; hs=hs.slice(f0);
   $('hfLongSub').textContent=T[L].hfLongSub(hs[0][0],hs.length);
   barChart($('hfLong'),hs.map(function(d){return dayLabel(d[0]);}),[{color:'#2e97ca',vals:hs.map(function(d){return d[1];})}],
     function(v){return num(v);},function(i){return '<b>'+dayLabel(hs[i][0])+'</b><br>'+t('req')+': '+num(hs[i][1]);},Math.max(1,Math.ceil(hs.length/8)));

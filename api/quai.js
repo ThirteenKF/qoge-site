@@ -37,13 +37,14 @@ const SOURCES = {
   // Price, volume, order-book depth (±2%) per exchange.
   async marketCoinGecko(get) {
     const c = await get(`${CG}/coins/quai-network?localization=false&tickers=false&community_data=false&developer_data=false`);
-    let t = {}; try { t = await get(`${CG}/coins/quai-network/tickers?depth=true`); } catch (e) { t = {}; }
+    let t = null; try { t = await get(`${CG}/coins/quai-network/tickers?depth=true`); } catch (e) { t = null; }
     const m = c.market_data;
     return {
       price: m.current_price.usd, mcap: m.market_cap.usd, vol24: m.total_volume.usd,
       ch24: m.price_change_percentage_24h, ch7: m.price_change_percentage_7d, ch30: m.price_change_percentage_30d,
       ath: m.ath.usd, athDate: m.ath_date.usd, atl: m.atl.usd, atlDate: m.atl_date.usd,
-      tickers: (t.tickers || []).filter(x => !x.is_stale && !x.is_anomaly).map(x => ({
+      tickersFailed: !(t && Array.isArray(t.tickers) && t.tickers.length),  // filled from the cache (< 24 h) in cacheParts
+      tickers: ((t && t.tickers) || []).filter(x => !x.is_stale && !x.is_anomaly).map(x => ({
         ex: x.market.name, pair: `${x.base}/${x.target}`, vol: x.converted_volume?.usd || 0,
         spread: x.bid_ask_spread_percentage, up: x.cost_to_move_up_usd || 0, down: x.cost_to_move_down_usd || 0,
       })),
@@ -56,7 +57,7 @@ const SOURCES = {
       const t = await get('https://api.coinpaprika.com/v1/tickers/quai-quai-network'), q = t.quotes?.USD;
       if (!q?.price) throw e;
       return { price: q.price, mcap: null, vol24: q.volume_24h, ch24: q.percent_change_24h, ch7: q.percent_change_7d, ch30: q.percent_change_30d,
-        ath: q.ath_price, athDate: q.ath_date, atl: null, atlDate: null, tickers: [], backup: 'CoinPaprika' };
+        ath: q.ath_price, athDate: q.ath_date, atl: null, atlDate: null, tickers: [], tickersFailed: true, backup: 'CoinPaprika' };
     }
   },
   // Daily USD price for the last year: [['YYYY-MM-DD', price], ...].
@@ -508,7 +509,14 @@ async function cacheParts(parts) {
   if (!R_URL || !R_TOKEN) return {};
   const used = {};
   await Promise.all(Object.keys(parts).map(async k => {
-    if (parts[k] && !parts[k].error) { await redis('SET', 'quai:cache:' + k, JSON.stringify({ t: Date.now(), v: parts[k] })); return; }
+    if (parts[k] && !parts[k].error) {
+      // CoinGecko's tickers call is optional and often rate-limited: keep the last good exchange list (XT.COM etc.) for a day
+      if (k === 'market' && parts[k].tickersFailed) {
+        try { const raw = await redis('GET', 'quai:cache:market'), c = raw && JSON.parse(raw), tk = c?.v?.tickers;
+          if (tk?.length && Date.now() - (c.v.tickersAt || c.t) < 864e5) { parts[k].tickers = tk; parts[k].tickersAt = c.v.tickersAt || c.t; } } catch (e) {}
+      } else if (k === 'market') parts[k].tickersAt = Date.now();
+      await redis('SET', 'quai:cache:' + k, JSON.stringify({ t: Date.now(), v: parts[k] })); return;
+    }
     const raw = await redis('GET', 'quai:cache:' + k), c = raw && JSON.parse(raw);
     if (c && Date.now() - c.t < 7 * 864e5) { parts[k] = c.v; used[k] = { at: new Date(c.t).toISOString(), error: String(parts[k]?.error || '') }; }
   }));
