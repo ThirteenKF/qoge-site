@@ -56,7 +56,7 @@ h1 span{color:var(--yel)}
 nav.tabs{position:sticky;top:56px;z-index:10;display:flex;flex-wrap:wrap;gap:8px;margin-top:28px;padding:10px 0;background:linear-gradient(#050505 70%,transparent)}
 nav.tabs a{font-weight:800;font-size:14px;padding:8px 14px;border:1px solid #333333;background:rgba(5,5,5,.92);text-decoration:none}
 nav.tabs a:hover{border-color:var(--paper)}
-section.s{margin-top:44px;scroll-margin-top:120px}
+section.s{margin-top:44px;scroll-margin-top:120px}#leaks,#gasNote{scroll-margin-top:120px}
 section.s>h2{margin:0;font-family:'Unbounded',sans-serif;font-weight:800;font-size:clamp(20px,2.6vw,30px);letter-spacing:.04em;text-transform:uppercase;line-height:1.1}
 section.s>p.k{margin:10px 0 0;color:var(--txt2);font-size:16px;line-height:1.5;max-width:820px}
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px;margin-top:18px}
@@ -74,6 +74,17 @@ section.s>p.k{margin:10px 0 0;color:var(--txt2);font-size:16px;line-height:1.5;m
 .dexh{margin:26px 0 12px;font-family:'Unbounded',sans-serif;font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#9a9a9a}
 .panel h3{margin:0;font-family:'Unbounded',sans-serif;font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
 .panel .sub{margin-top:4px;font-size:13px;color:var(--mute)}
+.sbig{margin-top:18px;padding:20px 22px;border:1px solid #2a2a2a;border-left:6px solid var(--red);background:#0d0d0d}
+.sbig .sh{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px 24px}
+.sbig .sh span{font-size:15px;color:var(--txt2)}.sbig .sh b{display:block;font:700 clamp(28px,4vw,40px)/1.1 'Unbounded',sans-serif;color:var(--paper);margin-top:4px}
+.sbig .sh .r{text-align:right}.sbig .sh .r b{color:var(--red)}
+.sbig .split{height:22px;margin-top:16px}
+.sbig .sl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:14px}
+.sbig .sl>div{border-top:3px solid;padding-top:8px;min-width:0}
+.sbig .sl .v{font:700 clamp(17px,1.9vw,22px)/1.2 'Unbounded',sans-serif;color:var(--paper)}.sbig .sl .p{font:600 13px/1.4 'JetBrains Mono',monospace;color:var(--txt2);margin-top:2px}
+.sbig .sl .n{font-size:13px;line-height:1.45;color:var(--txt2);margin-top:4px}.sbig .sl a{color:var(--txt2)}
+@media (max-width:767px){.sbig{padding:16px}.sbig .sl{grid-template-columns:repeat(2,minmax(0,1fr))}.sbig .sh .r{text-align:left}}
+@media (max-width:360px){.sbig .sl{grid-template-columns:minmax(0,1fr)}}
 .legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:10px;font-size:13px;color:var(--txt2)}
 .legend i{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:6px;vertical-align:-1px}
 .chart{position:relative;margin-top:8px}
@@ -315,11 +326,10 @@ footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12p
 <section class="s" id="soap">
   <h2 data-en="SOAP audit" data-ru="Проверка SOAP">SOAP audit</h2>
   <p class="k" data-en="SOAP sells coins merge-mined on BCH, LTC, DOGE and RVN, buys QUAI and burns it. Revenue is the team's own figure; burns are read from the blockchain and valued at the price on the burn day." data-ru="SOAP продаёт монеты, намайненные вместе с BCH, LTC, DOGE и RVN, покупает QUAI и сжигает его. Выручка — цифра самой команды; сжигания взяты из блокчейна и оценены по цене в день сжигания.">SOAP audit.</p>
-  <div class="big" id="soapBig"></div>
-  <div class="panel">
-    <h3 data-en="Where SOAP revenue went" data-ru="Куда ушла выручка SOAP">Where SOAP revenue went</h3>
+  <div class="sbig" id="soapBig">
+    <div class="sh" id="soapHead"></div>
     <div class="split" id="soapSplit"></div>
-    <div class="legend" id="splitLegend"></div>
+    <div class="sl" id="splitLegend"></div>
   </div>
   <div class="tiles c4" id="soapTiles"></div>
   <div class="duo">
@@ -339,7 +349,7 @@ footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12p
   </div>
   <div class="cols">
     <div class="panel">
-      <h3 data-en="Sent from the SOAP wallet, not burned" data-ru="Ушло с кошелька SOAP не на сжигание">Sent elsewhere</h3>
+      <h3 id="leaks" data-en="Sent from the SOAP wallet, not burned" data-ru="Ушло с кошелька SOAP не на сжигание">Sent elsewhere</h3>
       <div class="sub" data-en="Net of what the recipient burned or sent back. The team describes SOAP purchases as burned or routed to rewards for locked QUAI, so some of these may be that." data-ru="За вычетом того, что получатель сам сжёг или вернул. По описанию команды, купленные QUAI либо сжигаются, либо идут в награды за блокировку QUAI — часть переводов может быть этим.">Net</div>
       <div class="tbl" id="leakTable"></div>
     </div>
@@ -442,6 +452,8 @@ evBurn:'Last burn', evBurnV:function(b,d){return date(b.t)+' · '+num(b.quai)+' 
   sMined:'Mined', sBurned:'Burned',
   big:function(r){return 'SOAP has earned <b>'+usd(r.revenue)+'</b>. Burns worth <b>'+usd(r.burnedUsd)+'</b> ('+pct(r.burnShare)+', of them '+usd(r.gasUsd)+' via gas, see the note below) are visible on-chain, <b>'+usd(r.leakUsd)+'</b> went to other wallets, <b>'+usd(Math.max(0,r.untracedUsd))+'</b> cannot be traced.';},
   spBurn:'Burned (sent to the burn address)', spGas:'Burned via gas (see note below)', spLeak:'Sent to other wallets', spUntr:'Untraced (exchange costs, timing, unknown)',
+  sbEarn:'SOAP has earned, all time', sbBurn:'burned', sbB:'Burned', sbBd:'sent to the burn address', sbG:'Burned via gas', sbGd:'also burned, in another way: <a href="#gasNote">how ↓</a>',
+  sbL:'Sent to other wallets', sbLd:'<a href="#leaks">who received it ↓</a>', sbU:'Untraced', sbUd:'exchange costs, timing, unknown',
   t30:'Burned, last 30 days', t30D:function(r){return 'revenue '+usd(r.last30.revenue)+' · burned '+usd(r.last30.burnedUsd);},
   team:'Team dashboard shows', teamD:'burned QUAI at today\'s price, so it is not comparable with revenue',
   lastBurn:'Last burn', burnedQ:'Total burned',
@@ -521,6 +533,8 @@ evBurn:'Последнее сжигание', evBurnV:function(b,d){return date(
   sMined:'Намайнено', sBurned:'Сожжено',
   big:function(r){return 'SOAP заработал <b>'+usd(r.revenue)+'</b>. В блокчейне видны сжигания на <b>'+usd(r.burnedUsd)+'</b> ('+pct(r.burnShare)+', из них '+usd(r.gasUsd)+' — через газ, см. пояснение ниже), <b>'+usd(r.leakUsd)+'</b> ушло на другие кошельки, <b>'+usd(Math.max(0,r.untracedUsd))+'</b> отследить нельзя.';},
   spBurn:'Сожжено (на адрес сжигания)', spGas:'Сожжено через газ (см. пояснение ниже)', spLeak:'Ушло на другие кошельки', spUntr:'Не отслеживается (расходы на обмен, задержки, неизвестно)',
+  sbEarn:'SOAP заработал за всё время', sbBurn:'сожжено', sbB:'Сожжено', sbBd:'отправлено на адрес сжигания', sbG:'Сожжено через газ', sbGd:'тоже сожжено, другим способом: <a href="#gasNote">как ↓</a>',
+  sbL:'Ушло на другие кошельки', sbLd:'<a href="#leaks">кто получил ↓</a>', sbU:'Не отслеживается', sbUd:'расходы на обмен, задержки, неизвестно',
   t30:'Сожжено за 30 дней', t30D:function(r){return 'выручка '+usd(r.last30.revenue)+' · сожжено '+usd(r.last30.burnedUsd);},
   team:'Дашборд команды показывает', teamD:'сожжённые QUAI по сегодняшней цене, поэтому с выручкой это не сравнить',
   lastBurn:'Последнее сжигание', burnedQ:'Всего сожжено',
@@ -919,10 +933,12 @@ function render(){
 
   // soap
   if(r){
-    $('soapBig').innerHTML=T[L].big(r);
-    var tot=r.revenue, parts=[[r.burnedUsd-(r.gasUsd||0),'#e3262b',t('spBurn')],[r.gasUsd||0,'#8f1d20',t('spGas')],[r.leakUsd,'#d6b42a',t('spLeak')],[Math.max(0,r.untracedUsd),'#4a4a4a',t('spUntr')]];
+    // one block: what SOAP earned, how much of it is burned, and where every dollar went (bar + four labelled parts)
+    var tot=r.revenue, parts=[[r.burnedUsd-(r.gasUsd||0),'#e3262b',t('spBurn'),t('sbB'),t('sbBd')],[r.gasUsd||0,'#8f1d20',t('spGas'),t('sbG'),t('sbGd')],
+      [r.leakUsd,'#d6b42a',t('spLeak'),t('sbL'),t('sbLd')],[Math.max(0,r.untracedUsd),'#4a4a4a',t('spUntr'),t('sbU'),t('sbUd')]];
+    $('soapHead').innerHTML='<div><span>'+t('sbEarn')+'</span><b>'+usd(tot)+'</b></div><div class="r"><span>'+t('sbBurn')+'</span><b>'+pct(r.burnShare)+'</b></div>';
     $('soapSplit').innerHTML=parts.map(function(p){ return '<div style="flex:'+(p[0]/tot)+';background:'+p[1]+'" data-tip="'+esc('<b>'+p[2]+'</b><br>'+usd(p[0])+' · '+pct(p[0]/tot))+'"></div>'; }).join('');
-    legend($('splitLegend'),parts.map(function(p){ return [p[2]+' — '+usd(p[0])+' ('+pct(p[0]/tot)+')',p[1]]; }));
+    $('splitLegend').innerHTML=parts.map(function(p){ return '<div style="border-top-color:'+p[1]+'"><div class="v">'+usd(p[0])+'</div><div class="p">'+pct(p[0]/tot)+'</div><div class="n"><b style="color:var(--paper)">'+p[3]+'</b><br>'+p[4]+'</div></div>'; }).join('');
     var h3='';
     h3+=tile(t('t30'),pct(r.last30.revenue?r.last30.burnedUsd/r.last30.revenue:null),T[L].t30D(r));
     h3+=tile(t('burnedQ'),num(r.burnedQuai)+' QUAI','');
