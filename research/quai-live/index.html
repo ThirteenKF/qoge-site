@@ -244,6 +244,7 @@ footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12p
     <a href="#supply" data-en="Supply" data-ru="Предложение">Supply</a>
     <a href="#soap" data-en="SOAP audit" data-ru="Проверка SOAP">SOAP audit</a>
     <a href="#market" data-en="Liquidity" data-ru="Ликвидность">Liquidity</a>
+    <a href="#whales" data-en="Whales" data-ru="Киты">Whales</a>
     <a href="#hist" data-en="History" data-ru="История">History</a>
     <a href="#eco" data-en="Ecosystem" data-ru="Экосистема">Ecosystem</a>
     <a href="#method" data-en="Method" data-ru="Методика">Method</a>
@@ -371,6 +372,14 @@ footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12p
   <div class="panel"><h3 data-en="Exchanges" data-ru="Биржи">Exchanges</h3><div class="tbl" id="exTable"></div></div>
 </section>
 
+<section class="s" id="whales" style="display:none">
+  <h2 data-en="Whale moves" data-ru="Движение китов">Whale moves</h2>
+  <p class="k" data-en="Large QUAI transfers of the 200 biggest holders and of the exchange wallets (Gate, MEXC, Kraken), checked every 30 minutes. Only amounts that can move the price are shown: the bar is tied to the order-book depth. A transfer to an exchange is not a sale yet, and exchanges also move coins between their own wallets." data-ru="Крупные переводы QUAI у 200 самых больших держателей и кошельков бирж (Gate, MEXC, Kraken), проверка каждые 30 минут. Показаны только суммы, способные сдвинуть цену: порог привязан к глубине стаканов. Перевод на биржу ещё не продажа, а биржи и сами перекладывают монеты между своими кошельками.">Large QUAI transfers.</p>
+  <div class="tiles" id="whaleTiles"></div>
+  <div class="feed" id="whaleList"></div>
+  <button type="button" class="feedMore" id="whaleMore"></button>
+</section>
+
 <section class="s" id="hist">
   <h2 data-en="History" data-ru="История">History</h2>
   <p class="k" data-en="How the key numbers change over time. The share of new coins burned and SOAP revenue are rebuilt day by day from January 2026; order-book depth and the Quainance pool are recorded once a day from November 21, 2026." data-ru="Как главные цифры меняются со временем. Доля сгоревших новых монет и выручка SOAP восстановлены по дням с января 2026 года; глубина стаканов и пул Quainance записываются раз в день с 21 ноября 2026 года.">History.</p>
@@ -477,7 +486,14 @@ evBurn:'Last burn', evBurnV:function(b,d){return date(b.t)+' · '+num(b.quai)+' 
   fdLeak:function(q,u,to){return '<b>'+q+' QUAI</b>'+(u?' ≈ '+u:'')+' left the SOAP wallet without being burned → '+to;},
   fdHf:function(n,prev){return 'Hashference record: <b>'+n+' requests</b> in a day (previous best '+prev+')';},
   fdPx:function(c,p){return 'QUAI '+(c.charAt(0)==='+'?'jumped':'fell')+' <b>'+c.replace(/^[+−]/,'')+'</b> in a day, to '+p;},
-  fdTag:{burn:'burn',unl:'unlock',leak:'SOAP leak',hf:'Hashference',px:'price',fork:'tokenomics'},
+  fdTag:{burn:'burn',unl:'unlock',leak:'SOAP leak',hf:'Hashference',px:'price',fork:'tokenomics',whale:'whale'},
+  whTo:'To exchanges, 7 days', whFrom:'From exchanges, 7 days', whNet:'Balance of the week', whN:function(n){return n+' transfer'+(n===1?'':'s');},
+  whNetTo:'more went to exchanges: possible selling pressure', whNetFrom:'more was withdrawn from exchanges', whNetEq:'no large exchange flows',
+  whEmpty:function(d){return 'Watching since '+d+': no large transfers yet.';}, whWait:'Collecting the first data: transfers appear within an hour after launch.',
+  whRank:function(n){return '#'+n+' holder';}, whGen:'address from the network launch', whTx:'tx ↗', whMore:function(n){return 'Show '+n+' more';},
+  whK:{toEx:function(q,u,ex,from){return '<b>'+q+' QUAI</b>'+u+' sent to <b>'+ex+'</b> from '+from;}, fromEx:function(q,u,ex,to){return '<b>'+q+' QUAI</b>'+u+' withdrawn from <b>'+ex+'</b> to '+to;},
+    move:function(q,u,from,to){return '<b>'+q+' QUAI</b>'+u+': whale '+from+' moved them to '+to;}, exex:function(q,u,a,b){return '<b>'+q+' QUAI</b>'+u+' moved between exchanges: '+a+' → '+b;}},
+  whAgg:function(n,q,k){return 'and '+n+' more transfer'+(n===1?'':'s')+' '+({toEx:'to exchanges',fromEx:'from exchanges',move:'between wallets',exex:'between exchanges'}[k])+', '+q+' QUAI in total';},
   tkYel:'Possible change in QUAI tokenomics', tkRed:'QUAI tokenomics changed: some numbers are out of date',
   tkYelP:'Numbers that depend on the rules (next unlock, supply growth, share of new coins burned) may be inaccurate. We are checking.',
   tkRedP:'Out of date until we update: next unlock, supply growth, share of new coins burned. The rest of the dashboard is live and correct.',
@@ -558,7 +574,14 @@ evBurn:'Последнее сжигание', evBurnV:function(b,d){return date(
   fdLeak:function(q,u,to){return 'С кошелька SOAP ушло <b>'+q+' QUAI</b>'+(u?' ≈ '+u:'')+' не на сжигание → '+to;},
   fdHf:function(n,prev){return 'Рекорд Hashference: <b>'+n+' запросов</b> за день (прошлый рекорд '+prev+')';},
   fdPx:function(c,p){return 'QUAI '+(c.charAt(0)==='+'?'вырос':'упал')+' на <b>'+c.replace(/^[+−]/,'')+'</b> за день, до '+p;},
-  fdTag:{burn:'сжигание',unl:'разлок',leak:'утечка SOAP',hf:'Hashference',px:'цена',fork:'токеномика'},
+  fdTag:{burn:'сжигание',unl:'разлок',leak:'утечка SOAP',hf:'Hashference',px:'цена',fork:'токеномика',whale:'кит'},
+  whTo:'На биржи за 7 дней', whFrom:'С бирж за 7 дней', whNet:'Итог недели', whN:function(n){var m=n%10,c=n%100; return n+' '+(m===1&&c!==11?'перевод':(m>=2&&m<=4&&(c<10||c>=20))?'перевода':'переводов');},
+  whNetTo:'на биржи пришло больше: возможное давление продаж', whNetFrom:'с бирж вывели больше', whNetEq:'крупных потоков бирж нет',
+  whEmpty:function(d){return 'Наблюдаем с '+d+': крупных переводов пока не было.';}, whWait:'Собираем первые данные: переводы появятся в течение часа после запуска.',
+  whRank:function(n){return '№'+n+' среди держателей';}, whGen:'адрес с запуска сети', whTx:'транзакция ↗', whMore:function(n){return 'Показать ещё '+n;},
+  whK:{toEx:function(q,u,ex,from){return '<b>'+q+' QUAI</b>'+u+' ушло на <b>'+ex+'</b> с кошелька '+from;}, fromEx:function(q,u,ex,to){return '<b>'+q+' QUAI</b>'+u+' выведено с <b>'+ex+'</b> на кошелёк '+to;},
+    move:function(q,u,from,to){return '<b>'+q+' QUAI</b>'+u+': кит '+from+' переложил их на '+to;}, exex:function(q,u,a,b){return '<b>'+q+' QUAI</b>'+u+' переведено между биржами: '+a+' → '+b;}},
+  whAgg:function(n,q,k){return 'и ещё '+n+' '+({toEx:'на биржи',fromEx:'с бирж',move:'между кошельками',exex:'между биржами'}[k])+': всего '+q+' QUAI';},
   tkYel:'Возможно изменение токеномики QUAI', tkRed:'Токеномика QUAI изменилась: часть данных устарела',
   tkYelP:'Цифры, которые зависят от правил (следующий разлок, рост предложения, доля сгоревших новых монет), могут быть неточными. Проверяем.',
   tkRedP:'Устарели до обновления дашборда: следующий разлок, рост предложения, доля сгоревших новых монет. Остальные данные живые и верные.',
@@ -789,6 +812,28 @@ function openShare(el,btn){
 
 // ---------- events feed: built from the same data as the dashboard, newest first ----------
 var FEED_OPEN=false;
+// ---------- whale moves (/api/quai-whales): null until loaded; any failure = the section stays hidden ----------
+var WH=null, WH_OPEN=false, WK={toEx:'#e3262b',fromEx:'#5bd16a',move:'#d6b42a',exex:'#8a8a8a'};
+function whWho(a,rank){ return scan(a)+(rank?' ('+T[L].whRank(rank)+')':''); }
+function whText(m){ var q=num(m.q), u=m.usd?' (~'+usd(m.usd)+')':'', K=T[L].whK, x;
+  if(m.kind==='toEx') x=K.toEx(q,u,esc(m.toEx),whWho(m.from,m.fromRank));
+  else if(m.kind==='fromEx') x=K.fromEx(q,u,esc(m.fromEx),whWho(m.to,m.toRank));
+  else if(m.kind==='exex') x=K.exex(q,u,esc(m.fromEx),esc(m.toEx));
+  else x=K.move(q,u,whWho(m.from,m.fromRank),whWho(m.to,m.toRank));
+  return x+(m.genesis?' · <span style="color:#b07cff">'+t('whGen')+'</span>':'')+' · <a href="https://quaiscan.io/tx/'+esc(m.h)+'" target="_blank" rel="noopener">'+t('whTx')+'</a>'; }
+function renderWhales(){
+  var sec=$('whales'); if(!sec) return; if(!WH){ sec.style.display='none'; return; } sec.style.display='';
+  var w=WH.week, h='';
+  if(w){ var net=w.toEx.q-w.fromEx.q, big=Math.max(w.toEx.q,w.fromEx.q);
+    h+=tile(t('whTo'),num(w.toEx.q)+' QUAI',(w.toEx.usd?'~'+usd(w.toEx.usd)+' · ':'')+T[L].whN(w.toEx.n));
+    h+=tile(t('whFrom'),num(w.fromEx.q)+' QUAI',(w.fromEx.usd?'~'+usd(w.fromEx.usd)+' · ':'')+T[L].whN(w.fromEx.n));
+    h+=tile(t('whNet'),(net>0?'+':net<0?'−':'')+num(Math.abs(net))+' QUAI',!big?t('whNetEq'):net>0?t('whNetTo'):t('whNetFrom')); }
+  $('whaleTiles').innerHTML=h;
+  var mv=WH.moves||[], n=WH_OPEN?mv.length:Math.min(12,mv.length);
+  $('whaleList').innerHTML=mv.length?mv.slice(0,n).map(function(m){ return '<div class="fe"><span class="i" style="color:'+WK[m.kind]+'">'+ICO.info+'</span><span class="d">'+date(m.t)+'</span><span class="x">'+whText(m)+'</span></div>'; }).join('')
+    :'<div class="fe"><span class="i"></span><span class="d"></span><span class="x">'+(WH.started&&WH.updatedAt?T[L].whEmpty(date(WH.updatedAt)):t('whWait'))+'</span></div>';
+  var b=$('whaleMore'); if(mv.length<=12){ b.style.display='none'; } else { b.style.display=''; b.textContent=WH_OPEN?t('fdLess'):T[L].whMore(mv.length-12); b.onclick=function(){ WH_OPEN=!WH_OPEN; renderWhales(); }; }
+}
 // ---------- tokenomics warning: state from /api/quai-watch (null = no warning; any failure = no warning) ----------
 var WATCH=null, TK_OPEN=false;
 function renderWatch(){
@@ -809,7 +854,11 @@ function buildFeed(){
   var ev=[], r=D.recon, s=D.supply, h=D.hashference, pc=D.priceChart||[], now=Date.now()/1000;
   var pxs={}; pc.forEach(function(p){ pxs[p[0]]=p[1]; });
   var dayOf=function(ts){ return new Date(ts*1000).toISOString().slice(0,10); };
-  var COL={burn:'#e3262b',unl:'#d6b42a',leak:'#e3262b',hf:'#2e97ca',px:'#f2f2f2',fork:'#b07cff'};
+  var COL={burn:'#e3262b',unl:'#d6b42a',leak:'#e3262b',hf:'#2e97ca',px:'#f2f2f2',fork:'#b07cff',whale:'#5bd16a'};
+  // whale moves worth a line in the feed (≥ max($5k, 2 × depth)); a day with many of one kind shows 2 and one summary line
+  if(WH&&WH.moves){ var grp={}; WH.moves.filter(function(m){return m.feed;}).forEach(function(m){ var g=dayOf(m.t)+m.kind; (grp[g]=grp[g]||[]).push(m); });
+    Object.keys(grp).forEach(function(g){ var a=grp[g]; a.slice(0,2).forEach(function(m){ ev.push({t:m.t,k:'whale',col:WK[m.kind],ico:ICO.info,x:whText(m)}); });
+      if(a.length>2){ var rest=a.slice(2); ev.push({t:rest[0].t-1,k:'whale',col:WK[a[0].kind],ico:ICO.info,x:T[L].whAgg(rest.length,num(rest.reduce(function(s,m){return s+m.q;},0)),a[0].kind)}); } }); }
   ((D.tokenomics&&D.tokenomics.forks)||[]).forEach(function(f){ ev.push({t:Date.parse(f.date+'T12:00:00Z')/1000,k:'fork',ico:ICO.info,x:esc(f[L]||f.en)+(f.url?' · <a href="'+esc(f.url)+'" target="_blank" rel="noopener">'+t('tkSrc')+' ↗</a>':'')}); });
   if(r&&r.recentBurns) r.recentBurns.forEach(function(b){ var p=pxs[dayOf(b.t)];
     var who=b.from===(D.addresses&&D.addresses.soap)?t('fdSoap'):(b.label==='Gate'?t('fdGate'):t('fdOther')+scan(b.from));
@@ -822,7 +871,7 @@ function buildFeed(){
     hs.forEach(function(d){ if(d[1]>0) seen++; if(d[0]<today&&d[1]>best){ if(seen>7&&best>0) ev.push({t:Date.parse(d[0]+'T12:00:00Z')/1000,k:'hf',ico:ICO.up.replace('currentColor','#2e97ca'),x:T[L].fdHf(num(d[1]),num(best))}); best=d[1]; } }); }
   for(var i=1;i<pc.length;i++){ var c=pc[i][1]/pc[i-1][1]-1; if(Math.abs(c)>=0.1) ev.push({t:Date.parse(pc[i][0]+'T12:00:00Z')/1000,k:'px',ico:(c>0?ICO.up:ICO.down),x:T[L].fdPx(sgn(c*100),px(pc[i][1]))}); }
   ev.sort(function(a,b){ return (b.soon?1:0)-(a.soon?1:0) || b.t-a.t; });
-  return ev.map(function(e){ e.col=COL[e.k]; return e; });
+  return ev.map(function(e){ e.col=e.col||COL[e.k]; return e; });
 }
 function renderFeed(){
   var ev=buildFeed(), sec=$('feed'); if(!ev.length){ sec.style.display='none'; return; } sec.style.display='';
@@ -993,6 +1042,7 @@ function render(){
 
   renderHist();
   renderFeed();
+  renderWhales();
   markShare();
   renderWatch();
   $('srcList').innerHTML=T[L].src.map(function(s){return '<li>'+s+'</li>';}).join('');
@@ -1028,6 +1078,7 @@ if(location.protocol!=='file:' && !/github\.io$/.test(location.hostname)){
     D=merged; LIVE=true; render();
     try{ var keep={}; for(var k2 in j) if(k2!=='history') keep[k2]=j[k2]; localStorage.setItem('quai-last',JSON.stringify(keep)); }catch(e){}
   }).catch(function(){});
+  fetch('/api/quai-whales').then(function(r){ return r.ok?r.json():null; }).then(function(j){ if(j&&Array.isArray(j.moves)&&!j.error){ WH=j; renderWhales(); renderFeed(); } }).catch(function(){});
   fetch('/api/quai-watch').then(function(r){ return r.ok?r.json():null; }).then(function(j){ if(j&&Array.isArray(j.events)){ WATCH=j; renderWatch(); } }).catch(function(){});
 }
 })();

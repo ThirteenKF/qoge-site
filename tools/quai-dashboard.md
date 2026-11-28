@@ -184,6 +184,23 @@ Do not touch the main page or other research pages unless asked; the owner usual
   A chain finding that is still true after the update is raised again on the next run. Run the deep test.
 - Deep test has scenarios warnYel / warnRed (banner + marks must appear) and checks that no banner shows otherwise.
 
+## Whale moves (Nov 28, 2026)
+- `api/quai-whales.js`: `?run=1` every 30 min from scripts/fetch-metrics.mjs (Redis lock 20 min); plain GET = last 30 days
+  of moves + 7-day sums (edge 5 min, any error = section hidden).
+- Watched: top 200 holders from Quaiscan `/api/v2/addresses` (sorted by balance) + exchange wallets EXCH (Gate 0x007e2f…,
+  MEXC 0x006243…, Kraken 0x0075b7…, labels from the official explorer). Skipped: SOAP burn/wallet, WQUAI, Hashference
+  staking, gas burner, unlabelled addresses with >200k txs (mining pool payouts). Quaiscan refused → re-read the last
+  known whales one by one from explorer.qu.ai.
+- Each run compares balances with the previous one (Redis `whale:bal`); only addresses that moved ≥ threshold get their
+  latest txs read (Quaiscan, backup explorer). First run = silent baseline. Moves in Redis hash `whale:moves` (by tx hash,
+  30 days), facts per address (label, first seen) in `whale:info`.
+- Kinds: toEx (red), fromEx (green), exex (gray), move (yellow); `genesis` = sender first seen before 2025-02-08
+  (network launch: foundation/team/investor allocations). The explorer has no vesting flag (locked_balance_quai = 0
+  everywhere), so we say "address from the network launch", never "team".
+- Thresholds from order-book depth ±2% (avg of depthUp/Down): section ≥ max($2k, 0.7×depth); feed ≥ max($5k, 2×depth)
+  (≈ moves the price ~5%), a day with >2 of one kind → 2 lines + "и ещё N…"; Telegram to the owner ≥ max($20k, 4×feed).
+- Wording rule: "ушло на Gate", "выведено с MEXC", never "кит продаёт".
+
 ## Backlog (ideas agreed with the owner, not built yet)
 - Mining block: share of donor-chain blocks found by SOAP (≈2% of BCH, ≈0.3–0.4% LTC/DOGE, ≈30% RVN on a 5-day sample — recheck on 30 days), miners' daily pay in USD vs buyback per day, workshares by algorithm (rollups data).
 - Alerts to Telegram/X on burns, upcoming unlocks, SOAP-wallet leaks, coverage drops (reuse `api/telegram.mjs` drafts).

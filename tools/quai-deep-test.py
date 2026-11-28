@@ -33,6 +33,13 @@ def extreme():
     D=live(); h=D['hashference']; h['daily']=[[d,0] for d in days(30)]; h['requests']=0; h['models']=[]; h['apps']=[]; h['netDaily']=[]
     D['market']['price']=123456.789; D['market']['depthUp']=0
     return D
+import time as _t
+_now=int(_t.time()); _A=lambda i:'0x'+('%040x'%i)
+_M=lambda i,k,q,ex=None,fr=None,tr=None,gen=False,ago=3600:{'h':'0x%064x'%i,'t':_now-ago,'from':_A(i),'to':_A(i+1000),'q':q,'usd':round(q*0.0075),'kind':k,
+   'fromEx':ex if k in('fromEx','exex') else None,'toEx':ex if k in('toEx','exex') else None,'fromRank':fr,'toRank':tr,'genesis':gen,'feed':q*0.0075>=6000}
+WHALES={'updatedAt':now.isoformat(),'started':True,'week':{'toEx':{'q':5200000,'usd':39000,'n':3},'fromEx':{'q':2000000,'usd':15000,'n':1},'move':{'q':3500000,'usd':26250,'n':1}},
+  'moves':[_M(1,'toEx',1200000,'Gate',15,None,True),_M(2,'toEx',2000000,'MEXC',3,ago=4000),_M(3,'toEx',2000000,'Gate',40,ago=4100),_M(4,'toEx',1500000,'Kraken',41,ago=4200),
+   _M(5,'fromEx',2000000,'MEXC',None,7,ago=90000),_M(6,'move',3500000,None,9,None,ago=200000),_M(7,'exex',900000,'Gate',ago=300000)]+[_M(100+i,'move',300000,None,50+i,None,ago=400000+i*1000) for i in range(10)]}
 SC={'live':live(),'partial':partial(),'extreme':extreme(),'down':None,'warnYel':live(),'warnRed':live()}
 # tokenomics warning state (/api/quai-watch) per scenario; none = no warning
 EV=lambda i,lvl,ru,en,url=None:{'id':'e%d'%i,'src':'blog','level':lvl,'ru':ru,'en':en,'url':url,'at':now.isoformat()}
@@ -48,6 +55,7 @@ async def check(pg):
       const clipped=[]; document.querySelectorAll('.tile .v,.dt .v,.vc .v,.tile .d,.dt .s,td,th,.sum,.ev .v,h1,h2,h3,.big2').forEach(e=>{ if(e.offsetParent&&(e.scrollWidth>e.clientWidth+2)) clipped.push((e.className||e.tagName)+':'+e.innerText.slice(0,30)); }); out.clipped=clipped.slice(0,6);
       const out2=[]; document.querySelectorAll('.tile,.dt,.vc,.panel').forEach(p=>{ const r=p.getBoundingClientRect(); p.querySelectorAll('*').forEach(c=>{ const q=c.getBoundingClientRect(); if(q.width&&q.right>r.right+2&&getComputedStyle(c).position!=='absolute'&&!c.closest('.tbl')) out2.push((c.className&&c.className.baseVal===undefined?c.className:c.tagName)+':'+(c.innerText||'').slice(0,20)); }); }); out.spill=[...new Set(out2)].slice(0,6);
       out.empty=['events','verdicts','summary','dynTiles','pulseTiles','priceChart','hfTiles','hfLong','hfModels','hfApps','hfShares','hfStake','supplyTiles','soapTiles','exTable','ecoTiles'].filter(id=>{const e=document.getElementById(id); return e&&e.offsetParent&&!e.innerHTML.trim();});
+      const wh=document.getElementById('whales'); out.whales=wh&&wh.offsetParent?document.querySelectorAll('#whaleList .fe').length:-1;
       const bn=document.getElementById('tkBanner'); out.banner=bn&&!bn.hidden?bn.className+' marks='+document.querySelectorAll('.tkm').length:'';
       out.status=document.getElementById('status').innerText; return out;}""", BAD.pattern)
 async def run():
@@ -61,10 +69,12 @@ async def run():
                     pg.on('pageerror', lambda e: errs.append('pageerror:'+str(e)))
                     body=json.dumps(D) if D else None
                     wbody=json.dumps(WATCH.get(sc,{'events':[],'level':None}))
-                    def mk(body,wbody):
+                    whbody=json.dumps(WHALES if sc in ('live','warnRed') else {'moves':[],'started':sc!='partial','updatedAt':now.isoformat() if sc!='partial' else None,'week':{'toEx':{'q':0,'usd':0,'n':0},'fromEx':{'q':0,'usd':0,'n':0},'move':{'q':0,'usd':0,'n':0}}})
+                    def mk(body,wbody,whbody):
                       async def route(r, req=None):
                         u=r.request.url
-                        if '/api/quai-watch' in u: await r.fulfill(status=200,body=wbody,content_type='application/json')
+                        if '/api/quai-whales' in u: await (r.fulfill(status=200,body=whbody,content_type='application/json') if sc!='down' else r.fulfill(status=502,body='{}'))
+                        elif '/api/quai-watch' in u: await r.fulfill(status=200,body=wbody,content_type='application/json')
                         elif '/api/quai' in u: await (r.fulfill(status=200,body=body,content_type='application/json') if body else r.fulfill(status=502,body='{}'))
                         elif u.startswith('http://site/'):
                             path=os.path.join(SITE,u[len('http://site/'):].split('?')[0])
@@ -72,7 +82,7 @@ async def run():
                             await r.fulfill(path=path)
                         else: await r.abort()
                       return route
-                    await pg.route('**/*', mk(body,wbody))
+                    await pg.route('**/*', mk(body,wbody,whbody))
                     await pg.add_init_script("try{localStorage.clear();localStorage.setItem('qoge-lang','%s')}catch(e){}"%lang)
                     await pg.goto('http://site/research/quai-live/?lang='+lang); await pg.wait_for_timeout(1800)
                     c=await check(pg); c['errs']=errs
@@ -81,7 +91,9 @@ async def run():
                         i=await pg.query_selector('[data-tip]')
                         if i: await i.click(); c['tip']=await pg.evaluate("getComputedStyle(document.querySelector('.tip')).opacity")
                     await pg.close()
-                    bad={k:v for k,v in c.items() if v and k not in ('status','ctx','tip','banner')}
+                    bad={k:v for k,v in c.items() if v and k not in ('status','ctx','tip','banner','whales')}
+                    if sc in ('live','warnRed') and c.get('whales',0)<12: bad['whales']='list %s'%c.get('whales')
+                    if sc=='down' and c.get('whales',-1)!=-1: bad['whales']='shown while API down'
                     want=sc.startswith('warn')
                     if want and not c.get('banner'): bad['banner']='missing'
                     if not want and c.get('banner'): bad['banner']='unexpected: '+c['banner']

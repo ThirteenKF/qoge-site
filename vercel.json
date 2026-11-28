@@ -23,6 +23,9 @@
     },
     "api/quai-watch.js": {
       "maxDuration": 60
+    },
+    "api/quai-whales.js": {
+      "maxDuration": 60
     }
   },
   "crons": [

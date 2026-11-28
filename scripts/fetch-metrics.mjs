@@ -66,6 +66,8 @@ try {
 try {
   const r = await fetch('https://www.qoge.fun/api/quai-watch?run=1', { signal: AbortSignal.timeout(60000) });
   console.log('quai-watch:', r.status);
+  const w = await fetch('https://www.qoge.fun/api/quai-whales?run=1', { signal: AbortSignal.timeout(60000) });   // whale moves (api/quai-whales.js)
+  console.log('quai-whales:', w.status);
 } catch (err) {
   console.warn('quai-watch not reached:', err.message);
 }

@@ -130,6 +130,7 @@ Owner speaks Russian (sometimes types Russian on an English layout); answer in R
 - QUAI tokenomics passport + watch: rules in `api/_tokenomics.js` (single source), watcher `api/quai-watch.js`
   (blog/docs/go-quai releases + on-chain check, Telegram buttons), warning banner on the dashboard. Details and the
   "update the passport" procedure: tools/quai-dashboard.md, "Tokenomics passport and watch".
+- Whale moves on the QUAI dashboard (#whales + feed): `api/quai-whales.js`, details in tools/quai-dashboard.md, "Whale moves".
 - Mobile layout: `@media (max-width:767px)` block in index.html helmet styles.
 
 ## Links
