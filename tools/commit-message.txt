@@ -1,4 +1,4 @@
-Quai Live: SOAP summary block; whale moves section and feed lines
+Quai Live: whale moves in the feed description; estimated date for the next unlock in the feed
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01K147gCJvatrcQ7zCd5Mvvq

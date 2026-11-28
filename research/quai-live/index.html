@@ -257,7 +257,7 @@ footer.q .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12p
 
 <section class="s" id="feed">
   <h2 data-en="Quai events feed" data-ru="Лента событий Quai">Quai events feed</h2>
-  <p class="k" data-en="Everything that moves QUAI, newest first: SOAP burns, genesis unlocks, coins leaving the SOAP wallet, Hashference records and big price days. Built from the same live sources as the dashboard." data-ru="Всё, что двигает QUAI, свежее сверху: сжигания SOAP, разлоки генезиса, монеты с кошелька SOAP не на сжигание, рекорды Hashference и дни с сильным движением цены. Из тех же живых источников, что и весь дашборд.">feed</p>
+  <p class="k" data-en="Everything that moves QUAI, newest first: SOAP burns, genesis unlocks, coins leaving the SOAP wallet, Hashference records, large whale transfers, tokenomics changes and big price days. Built from the same live sources as the dashboard." data-ru="Всё, что двигает QUAI, свежее сверху: сжигания SOAP, разлоки генезиса, монеты с кошелька SOAP не на сжигание, рекорды Hashference, крупные переводы китов, изменения токеномики и дни с сильным движением цены. Из тех же живых источников, что и весь дашборд.">feed</p>
   <div class="feed" id="feedList"></div>
   <button type="button" class="feedMore" id="feedMore"></button>
 </section>
@@ -876,7 +876,7 @@ function buildFeed(){
 function renderFeed(){
   var ev=buildFeed(), sec=$('feed'); if(!ev.length){ sec.style.display='none'; return; } sec.style.display='';
   var n=FEED_OPEN?ev.length:Math.min(10,ev.length);
-  $('feedList').innerHTML=ev.slice(0,n).map(function(e){ return '<div class="fe'+(e.soon?' soon':'')+'"><span class="i" style="color:'+e.col+'">'+e.ico+'</span><span class="d">'+(e.soon?t('fdSoon'):date(e.t))+'</span><span class="x"><span class="tg" style="color:'+e.col+'">'+T[L].fdTag[e.k]+'</span>'+e.x+'</span></div>'; }).join('');
+  $('feedList').innerHTML=ev.slice(0,n).map(function(e){ return '<div class="fe'+(e.soon?' soon':'')+'"><span class="i" style="color:'+e.col+'">'+e.ico+'</span><span class="d">'+(e.soon?'≈ '+date(e.t)+'<br><span style="color:#d6b42a">'+t('fdSoon')+'</span>':date(e.t))+'</span><span class="x"><span class="tg" style="color:'+e.col+'">'+T[L].fdTag[e.k]+'</span>'+e.x+'</span></div>'; }).join('');
   var b=$('feedMore'); if(ev.length<=10){ b.style.display='none'; return; } b.style.display='';
   b.textContent=FEED_OPEN?t('fdLess'):T[L].fdMore(ev.length-10); b.onclick=function(){ FEED_OPEN=!FEED_OPEN; renderFeed(); };
 }
